@@ -93,6 +93,9 @@ request; storefront and product pages meet mobile performance targets.
    **Then** their uploaded photo and personal data are removed within the stated period.
 4. **Given** the product page on a mid-range phone, **When** it loads, **Then** the constructor
    loads lazily and the page meets mobile Core Web Vitals thresholds.
+5. **Given** the site footer, **When** a visitor opens a legal page (e.g., Privacy Policy) in any
+   locale, **Then** the localized page is shown, and the cookie-consent banner links to the
+   Cookie Policy.
 
 ---
 
@@ -162,6 +165,12 @@ request; storefront and product pages meet mobile performance targets.
   version stored files.
 - **FR-025**: The storefront and product page MUST be mobile-first and responsive, with the
   constructor loaded lazily so it does not block first paint.
+- **FR-026**: The system MUST provide localized informational and legal pages — at minimum
+  Terms & Conditions (Regulamin), Privacy Policy, Cookie Policy, Returns & Complaints, Shipping
+  & Delivery, and Contact — in pl/en/uk, linked from the site footer, and editable by staff
+  without a developer.
+- **FR-027**: At checkout the customer MUST accept the Terms & Conditions and acknowledge the
+  Privacy Policy before payment can be completed.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -178,6 +187,9 @@ request; storefront and product pages meet mobile performance targets.
 - **Uploaded Photo**: A customer-provided image, held privately, associated with consent and a
   retention/deletion lifecycle.
 - **Cart**: The in-progress selection of configured items before checkout.
+- **Content Page**: A localized, staff-editable informational or legal page (e.g., Terms,
+  Privacy, Cookies, Returns, Shipping, Contact, and optional About/FAQ) with its own slug,
+  title, body, and SEO metadata per locale.
 
 ## Success Criteria *(mandatory)*
 
@@ -215,6 +227,9 @@ request; storefront and product pages meet mobile performance targets.
 - **The uk locale is temporary** and can be removed via configuration without affecting pl/en.
 - **The payment merchant account and all hosting/service accounts** are owned by the client, so
   the finished platform and its access can be transferred in full.
+- **Legal/policy copy** (Terms/Regulamin, Privacy, Cookies, Returns, Shipping) is supplied by
+  the client or their legal advisor; this feature implements the page structure, localization,
+  and admin editing, not the legal wording itself.
 - **Out of scope for Stage 1** (kept architecturally ready, built later): visual no-code
   template editor, promo codes / sales / gift certificates, and extended statistics (Stage 2);
   AI background removal / enhancement / generation, ERP/CRM, and delivery-service integration
