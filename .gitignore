@@ -17,3 +17,6 @@ out/
 .DS_Store
 Thumbs.db
 *.log
+
+# agent tooling (regenerable; see .specify/ + specs/ for tracked SDD)
+.claude/
