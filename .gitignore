@@ -1,0 +1,19 @@
+# dependencies / build
+node_modules/
+.next/
+dist/
+build/
+out/
+# env / secrets
+.env
+.env.*
+!.env.example
+# hosting / agent-local tooling (not product)
+.vercel/
+.agents/
+.claude/skills/brainstorming
+.claude/settings.local.json
+# os / logs
+.DS_Store
+Thumbs.db
+*.log
