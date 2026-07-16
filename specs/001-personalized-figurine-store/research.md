@@ -3,6 +3,91 @@
 Decisions that resolve the Technical Context. Format per decision: **Decision / Rationale /
 Alternatives considered**.
 
+> **Rev 2 addendum (2026-07-16).** Field research into the reference product, 12 comparable stores,
+> Polish primary market data, and statute text produced decisions §12–§16 below and amended §2/§6.
+> Full evidence: `research/findings-consolidated.md` (repo-external, in the design workspace).
+
+## 12. Product model — catalogue character + customer's face
+
+**Decision**: The figurine body is **catalogue artwork** the customer selects (body type, skin tone,
+outfit); the customer supplies **only a face photo**, whose background is removed automatically.
+
+**Rationale**: This is how the reference product actually works, and it is the only model in which a
+live preview can be honest — the render is fully determined by artwork the system owns plus a
+background-free cutout. Of 12 comparable stores, the one that offers live preview does so exactly
+this way; the ones that accept an arbitrary photo show **no preview at all** and composite by hand
+after the order.
+
+**Alternatives**: Customer's whole photo inside a silhouette (rejected: the preview would lie
+whenever the background is busy, and the print would carry the customer's kitchen); no preview,
+manual compositing (rejected: kills the constructor's value and adds per-order labour).
+
+**Consequence**: background removal moves from "later stage" into the **core** (constitution,
+Development Workflow).
+
+## 13. Background removal — hosted service behind our adapter
+
+**Decision**: Call a hosted cutout/segmentation API through `packages/cutout`, a provider-agnostic
+adapter with a mock implementation for tests. Run it as a queued job with honest progress in the UI,
+retries, and a graceful failure path (order now, photo later).
+
+**Rationale**: Segmentation quality is a vendor's core competence and improves without our work;
+an adapter keeps the provider swappable and the constructor testable offline. The reference product
+labels this "ready in 5–15 sec" — the latency is expected and can be shown honestly rather than hidden.
+
+**Alternatives**: In-house model (rejected: cost/quality, no differentiation); client-side WASM
+segmentation (rejected: mobile CPU + inconsistent quality on the exact devices our traffic uses);
+no removal (rejected: product does not function).
+
+## 14. Photo quality — warn, never block
+
+**Decision**: Assess resolution against the selected print size and **warn with a remedy**; never
+block checkout.
+
+**Rationale**: None of the 12 stores blocks on resolution. A block fires at peak purchase intent
+with no path forward. It also destroys the effort premium the product's pricing rests on: the
+configurator *is* the customer's labour, and labour that fails to complete yields no valuation
+uplift at all.
+
+**Alternatives**: Hard block (the original spec's FR-002 — rejected); silent acceptance (rejected:
+print complaints).
+
+## 15. Cash on delivery — not at launch
+
+**Decision**: Offer card, BLIK, and Przelewy24. **No COD initially**; keep the architecture able to
+add it.
+
+**Rationale**: Polish data shows COD is used as a primary method by only ~4% of shoppers, yet its
+*availability* is named as a credibility factor by ~24% — it is a trust signal more than a payment
+rail. For made-to-order goods the risk is asymmetric: a refused parcel leaves an item nobody else
+can buy. The credibility gap is cheaper to close with reviews and a named guarantee.
+
+**Alternatives**: COD from day one (rejected: dead stock risk); COD above a threshold (kept as a
+later option if the client accepts the risk).
+
+## 16. Ad-traffic entry — no upload on the preloaded page
+
+**Decision**: Paid-social traffic lands on an **upload-free entry page**; the constructor opens on
+an explicit user action. Ad-platform preload bots are excluded from analytics.
+
+**Rationale**: TikTok preloads in-feed landing pages by default and its own documentation advises
+against preloading pages that include file upload — which is precisely our product page. Separately,
+Meta scores landing-page bounce rate and dwell time as ad-quality signals and attaches that
+reputation to the **domain**, so preload traffic counted as visits would degrade delivery cost.
+
+**Alternatives**: Send ads straight to the constructor (rejected: fights the platform's own
+guidance); request preload opt-out (kept as a fallback, requires the platform rep).
+
+## Amendments to earlier decisions
+
+- **§2 (render engine)** — unchanged in mechanism, strengthened in premise: the shared scene is now
+  *guaranteed* deterministic because the body is artwork we own and the face arrives pre-cut.
+- **§6 (payments)** — BLIK is not "one of three methods": it is the primary method for ~56% of
+  Polish shoppers and must be a first-class choice, never nested inside an aggregator. InPost
+  Paczkomat with in-checkout locker selection is effectively mandatory (~83% prefer lockers, ~87% of
+  those choose InPost).
+- **§10 (hosting)** — resolved: **Railway**, account owned by the client.
+
 ## 1. Commerce platform — Medusa v2
 
 **Decision**: Use Medusa v2 for catalog, cart, orders, payments, and admin; extend it with

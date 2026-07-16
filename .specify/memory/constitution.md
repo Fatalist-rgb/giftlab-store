@@ -1,22 +1,30 @@
 <!--
 SYNC IMPACT REPORT
-Version: (unversioned template) → 1.0.0
+Version: 1.0.0 → 1.1.0  (MINOR — new principle + materially expanded guidance)
 Ratified: 2026-07-16 | Last Amended: 2026-07-16
-Change type: Initial ratification (template placeholders → concrete principles)
-Principles defined:
-  I.   Data-Driven Constructor (Universal Engine)
-  II.  Production-File Fidelity (WYSIWYG-to-Print)
-  III. Internationalization by Architecture
-  IV.  Mobile-First Performance
-  V.   Privacy & RODO/GDPR Compliance (NON-NEGOTIABLE)
-  VI.  Ownership & Maintainability
-  VII. Modular, Testable Boundaries
-Added sections: Technology & Architecture Constraints; Development Workflow & Quality Gates
-Removed sections: none
+Change driver: research into the reference product + 12 comparable stores + PL primary market data
+and statute text (see specs/001-personalized-figurine-store/../research/findings-consolidated.md).
+
+Added:
+  VIII. Lawful Commerce by Design (NON-NEGOTIABLE) — paid defaults, per-line withdrawal right +
+        notice provability, price history, no manufactured urgency, consent before tracking.
+Modified:
+  VII.  Modular, Testable Boundaries — added background-removal adapter as a bounded module;
+        withdrawal-right computation added to critical paths requiring tests.
+  Technology & Architecture Constraints — added background-removal service; BLIK first-class;
+        no COD while catalogue is made-to-order; InPost locker selection; RUM (third-party field
+        data excludes in-app browsers); cookie basis art. 399 PKE.
+  Development Workflow & Quality Gates — staged delivery reframed as commercial framing, not
+        technical sequencing; background removal moved into the Core because the product cannot
+        function without it (body is catalogue artwork + customer's face).
+Removed: none. Principles I–VI unchanged.
+
 Templates reviewed:
   ✅ .specify/templates/plan-template.md  — Constitution Check gate is generic; compatible
-  ✅ .specify/templates/spec-template.md  — scope/requirements/entities sections compatible
-  ✅ .specify/templates/tasks-template.md — task categories cover testing/versioning/privacy
+  ✅ .specify/templates/spec-template.md  — compatible
+  ✅ .specify/templates/tasks-template.md — compatible
+Downstream artifacts updated in the same revision: spec.md (rev 2), data-model.md (rev 2),
+plan.md, contracts/, tasks.md.
 Deferred TODOs: none
 -->
 
@@ -87,13 +95,35 @@ platform independently.
 ### VII. Modular, Testable Boundaries
 
 The system MUST be decomposed into independently testable modules: **storefront**,
-**commerce (Medusa)**, **constructor engine** (`packages/constructor`), and **render worker**.
-Modules MUST communicate through well-defined interfaces and be understandable in isolation.
-Critical paths — schema→preview→production-file fidelity, pricing, checkout, payment — MUST
-have automated tests.
+**commerce (Medusa)**, **constructor engine** (`packages/constructor`), **background-removal
+service adapter**, and **render worker**. Modules MUST communicate through well-defined interfaces
+and be understandable in isolation. Critical paths — schema→preview→production-file fidelity,
+pricing, checkout, payment, and withdrawal-right computation — MUST have automated tests.
 
 **Rationale:** isolation keeps the custom constructor decoupled from the commerce platform
 and makes the fidelity guarantee verifiable.
+
+### VIII. Lawful Commerce by Design (NON-NEGOTIABLE)
+
+Polish consumer law is a build constraint, not a launch checklist. The following are structural
+and MUST be enforced in code, not by editorial discipline:
+
+- **No paid defaults.** A pre-selected option that increases the price is refundable on demand;
+  default selections MUST be free.
+- **Withdrawal right is computed per order line**, from actual personalization, and the exact
+  notice shown MUST be recorded — the seller carries the burden of proving the customer was
+  informed before being bound. The store informs about a statutory exclusion; it never purports to
+  create one.
+- **Price transparency.** Price history MUST exist from day one, so that any reduction ever shown —
+  on-site or in advertising — can display the preceding 30-day low beside it.
+- **No manufactured urgency.** Countdown timers that reset per session or per visit are prohibited;
+  only genuine, shared, calendar-anchored deadlines. A displayed delivery date is a promise and
+  MUST be met.
+- **Consent before tracking**, on the current legal basis.
+
+**Rationale:** every item here has a documented enforcement precedent or a direct statutory hook,
+and each is cheap to build in and expensive to retrofit. Protecting the client from fines is part
+of delivering the platform, not an optional extra.
 
 ## Technology & Architecture Constraints
 
@@ -102,8 +132,15 @@ and makes the fidelity guarantee verifiable.
   **Redis + BullMQ** for the render queue; **Cloudflare R2** (S3-compatible) for private photo
   and production-file storage with versioning; **Konva** for constructor/preview and
   server-side rendering; **next-intl** for i18n.
-- **Payments:** cards + BLIK + Przelewy24; the merchant account MUST be owned by the client.
-- **Analytics:** GA4 + GTM + Meta Pixel, consent-gated; Meta Conversions API planned.
+- **Background removal:** a hosted cutout/segmentation service invoked from the constructor, with
+  honest progress feedback and a graceful path when it fails (order now, photo later).
+- **Payments:** cards + BLIK + Przelewy24; the merchant account MUST be owned by the client. BLIK
+  MUST be a first-class choice. Cash on delivery is not offered while the catalogue is
+  made-to-order.
+- **Delivery:** InPost Paczkomat with in-checkout locker selection, plus courier.
+- **Analytics:** GA4 + GTM + Meta Pixel, consent-gated (basis: art. 399 PKE); real-user monitoring
+  from actual visitors, since third-party field datasets exclude in-app browsers. Meta Conversions
+  API planned.
 - **Repository:** monorepo — `apps/storefront`, `apps/medusa`, `apps/render-worker`,
   `packages/constructor`, `packages/config`. Application code MUST live under ASCII paths.
 - **Resilience:** daily PostgreSQL backups with point-in-time recovery; file versioning in R2.
@@ -111,11 +148,20 @@ and makes the fidelity guarantee verifiable.
 
 ## Development Workflow & Quality Gates
 
-- **Staged delivery.** Work proceeds in stages; each stage ends with a working demo and client
-  acceptance before it is considered done. Stage 1 = MVP (one product, full constructor, cart,
-  checkout, payment, production file, admin, pl/en/uk, analytics, email, responsive, base SEO).
-  Stage 2 = visual template editor, promo codes / sales / gift certificates, extended stats.
-  Stage 3 = AI (background removal, enhancement, generation), ERP/CRM, delivery integration.
+- **Staged delivery is commercial framing, not architecture.** The stages in the contract exist so
+  the client can follow progress and accept work incrementally; they MUST NOT dictate technical
+  sequencing. The system is designed as one coherent whole, and a capability is built when the
+  product needs it to function — not when its stage label arrives. Each stage still ends with a
+  working demo and client acceptance before it is considered done.
+  - **Core (must work for the product to exist):** one product, the full constructor
+    (character selection + face upload + **automatic background removal** + live preview), cart,
+    checkout, payment, production file, admin, pl/en/uk, analytics, email, responsive, base SEO.
+    *Background removal sits in the core because the figurine is catalogue artwork plus the
+    customer's face: without it the customer's background reaches the print and the preview lies.*
+  - **Later:** visual no-code template editor, promo codes / gift certificates / active
+    discounting, extended statistics.
+  - **Later still:** further AI (character generation, photo enhancement), ERP/CRM, carrier
+    integrations beyond checkout delivery choice.
 - **Git-based.** Feature branches; staging environment; changes reviewed before merge.
 - **Quality gates (per stage):** green mobile CWV on storefront/product; production-file
   fidelity verified against preview; automated tests for critical paths; responsive +
@@ -131,4 +177,4 @@ to Principle V (Privacy & RODO). Versioning follows semantic rules: MAJOR for re
 incompatible redefinitions, MINOR for new/expanded principles or sections, PATCH for
 clarifications. Runtime development guidance lives in the feature specs under `specs/`.
 
-**Version**: 1.0.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16
+**Version**: 1.1.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16

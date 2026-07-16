@@ -2,194 +2,275 @@
 
 **Feature Branch**: `001-personalized-figurine-store`
 
-**Created**: 2026-07-16
+**Created**: 2026-07-16 · **Revised**: 2026-07-16 (rev 2 — product model, legal, CRO research)
 
 **Status**: Draft
 
-**Input**: User description: "Stage 1 MVP of GiftLab — an e-commerce storefront selling ONE personalized product (an acrylic 'belly' figurine) through a data-driven online constructor. Primary traffic is paid social (FB/IG/TikTok) on mobile."
+**Input**: A Polish-market storefront selling personalized acrylic figurines ("figurka z brzuszkiem")
+configured by the customer through an online constructor. Traffic is paid social (FB/IG/TikTok),
+mobile-first.
+
+> **Revision note (rev 2).** Research into the reference product and 12 comparable stores changed
+> three foundations: (1) the **product model** — the character body is pre-drawn and selectable;
+> only the **face** comes from the customer's photo, with automatic background removal; (2) the
+> **photo-quality gate** warns instead of blocking; (3) a set of **Polish legal constraints**
+> (paid defaults, withdrawal-right disclosure, cookie basis, price transparency) that are
+> requirements, not nice-to-haves. Sources: `research/findings-consolidated.md`.
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Design and order a personalized figurine (Priority: P1)
+### User Story 1 - Design & order a personalized figurine (Priority: P1)
 
-A shopper arriving from a social ad on their phone opens the product page, launches the
-constructor, uploads a personal photo, positions it, adds a name/short text, picks size and
-accessories, watches the preview and price update live, and completes payment. The system
-records exactly what they designed and confirms the order by email.
+A shopper arrives from a social ad on their phone, picks a character that resembles the person
+the gift is for, uploads a photo of their face, watches the face drop onto the character with the
+background removed automatically, adds a name, chooses size and extras, sees the price update as
+they go, and pays with BLIK. The system stores exactly what they designed and produces the
+manufacturing files automatically.
 
-**Why this priority**: This is the core revenue path. Without it there is no product and no
-sale. It is the smallest slice that delivers real business value on its own.
+**Why this priority**: This is the entire revenue path and the product's reason to exist. Nothing
+else matters if this does not work.
 
-**Independent Test**: On a mobile device, a shopper can upload a photo, customize the figurine,
-add it to the cart, pay, and receive an order confirmation; a resulting order captures the
-complete design and the resolved price.
+**Independent Test**: On a phone, a shopper can configure a figurine end-to-end, pay, and receive
+confirmation; the order carries the complete design, and a production package matching the
+customer's preview is generated.
 
 **Acceptance Scenarios**:
 
-1. **Given** a shopper on the product page, **When** they upload a valid photo and adjust its
-   position/scale/rotation, add text, and choose size/base/accessories/quantity, **Then** the
-   live preview and the price update immediately to reflect every choice.
-2. **Given** a photo below the minimum required resolution, **When** the shopper tries to add
-   the item to the cart, **Then** the system explains the problem and blocks progression until
-   a suitable photo is provided.
-3. **Given** an iPhone HEIC photo that is rotated by its EXIF data, **When** it is uploaded,
-   **Then** it is converted to a supported format and displayed in the correct orientation.
-4. **Given** a completed design in the cart, **When** the shopper pays with card, BLIK, or
-   Przelewy24, **Then** payment succeeds, an order is created that stores the exact design
-   (photo transform, text, options) together with the product-schema version, and a
-   confirmation email is sent.
-5. **Given** a successfully paid order, **When** the production file is generated, **Then** a
-   production package (print file at 300 DPI, a separate cut-contour layer, a parameter
-   specification, and a preview image) exists for that order and matches what the shopper saw.
-6. **Given** a payment that fails or is abandoned, **When** the shopper returns, **Then** their
-   design is preserved in the cart and no production file is generated.
+1. **Given** the product page, **When** the shopper selects character options (body, skin tone,
+   clothing) **Then** the preview updates immediately and always renders correctly, because the
+   body is drawn from the catalogue rather than from the customer's photo.
+2. **Given** a face photo (including an EXIF-rotated iPhone HEIC), **When** it is uploaded,
+   **Then** it is converted, oriented correctly, its background is removed automatically with
+   visible progress, and the resulting face appears in the character's face zone.
+3. **Given** a photo below the recommended resolution, **When** the shopper continues, **Then**
+   the system **warns clearly and offers a remedy but does not block** checkout.
+4. **Given** background removal fails or the shopper is unhappy with the cutout, **When** they
+   proceed, **Then** they can retry, upload a different photo, or **order anyway and send the
+   photo later by email**, without losing the configuration.
+5. **Given** a completed design, **When** the shopper adds a name and chooses options, **Then**
+   the price updates as itemised deltas and **no paid option is pre-selected by default**.
+6. **Given** the cart, **When** the shopper checks out as a guest with card, BLIK, or Przelewy24
+   and selects an InPost parcel locker, **Then** the order is placed and confirmed by email.
+7. **Given** a paid order, **When** production files are generated, **Then** a package exists
+   containing a 300 DPI print file, a separate cut-contour layer, a parameter specification, and
+   a preview — matching what the shopper approved.
+8. **Given** the shopper wants several different figurines, **When** they increase quantity,
+   **Then** they can configure **each one separately** in the same order and the per-unit price
+   decreases according to the published quantity ladder.
+9. **Given** a payment that fails or is abandoned, **When** the shopper returns, **Then** the
+   configuration is preserved and no production files are generated.
 
 ---
 
-### User Story 2 - Fulfill and manage orders (Priority: P2)
+### User Story 2 - Fulfil & manage orders (Priority: P2)
 
-Staff open the admin, review incoming orders, download the production package needed to
-manufacture each figurine, adjust prices and constructor parameters when needed, and export
-orders for accounting or production planning.
+Staff review incoming orders, download everything needed to manufacture each figurine, adjust
+prices and constructor options, and export orders for production planning and accounting.
 
-**Why this priority**: Orders must be fulfillable, but the storefront can begin capturing paid
-orders before the admin is fully polished; fulfillment can start with the data already stored.
+**Why this priority**: Orders must be fulfillable, but the store can begin capturing paid orders
+before the admin is polished — the data is already stored.
 
-**Independent Test**: Staff can open any order, see its full configuration, download its
-production package, change the product's price or options, and export the order list to
-CSV/Excel.
+**Independent Test**: Staff can open any paid order, see its full configuration, download its
+production package, change a price or option, and export orders to CSV/Excel.
 
 **Acceptance Scenarios**:
 
-1. **Given** a paid order, **When** staff open it in the admin, **Then** they see the customer's
-   configuration and can download the complete production package.
-2. **Given** a change in cost, **When** staff edit the product price or an option's price,
-   **Then** new orders reflect the updated pricing.
-3. **Given** a set of orders, **When** staff export them, **Then** they receive a CSV/Excel file
-   containing the order and fulfillment fields.
+1. **Given** a paid order, **When** staff open it, **Then** they see the customer's configuration
+   and can download the complete production package.
+2. **Given** an order whose face photo was deferred (see US1 scenario 4), **When** staff open it,
+   **Then** the order is clearly flagged as awaiting the photo, and once the photo is attached the
+   production package is generated.
+3. **Given** a price or option change, **When** staff publish it, **Then** new orders use the new
+   values while existing orders keep the configuration they were bought under.
+4. **Given** a set of orders, **When** staff export them, **Then** they receive a CSV/Excel file
+   with order, fulfilment, and design-summary columns.
 
 ---
 
-### User Story 3 - Reach, compliance, and trust (Priority: P3)
+### User Story 3 - Trust, reach & compliance (Priority: P3)
 
-Visitors browse in their language (Polish, English, or Ukrainian), see a fast mobile
-experience, are asked for cookie consent before any tracking runs, and can trust that their
-uploaded photos are private and removable. The store is discoverable in search engines.
+A first-time visitor from an ad sees the store in their language, is told honestly when the
+figurine will arrive, understands what happens if it turns out wrong, is asked for cookie consent
+before anything tracks them, and can trust their photo is private.
 
-**Why this priority**: These layers maximize conversion of paid traffic and satisfy legal
-obligations, but they build on top of the core purchasing flow rather than blocking it.
+**Why this priority**: This layer earns the first order from an unknown brand and keeps the store
+lawful, but it builds on top of the purchase flow.
 
-**Independent Test**: The site serves pl/en/uk with correct hreflang and a working language
-switch; analytics fire only after consent; uploaded photos remain private and can be deleted on
-request; storefront and product pages meet mobile performance targets.
+**Independent Test**: The store serves pl/en/uk with correct hreflang; no tracking fires before
+consent; delivery dates and the returns position are clear on the product page; photos are private
+and deletable; mobile performance meets targets.
 
 **Acceptance Scenarios**:
 
-1. **Given** a first-time visitor, **When** the page loads, **Then** no analytics or marketing
-   tags run until the visitor accepts cookie consent.
-2. **Given** the language switch, **When** a visitor selects English or Ukrainian, **Then** all
-   user-facing text changes and the page exposes correct hreflang alternates.
-3. **Given** a customer who requests deletion of their data, **When** the request is processed,
-   **Then** their uploaded photo and personal data are removed within the stated period.
-4. **Given** the product page on a mid-range phone, **When** it loads, **Then** the constructor
-   loads lazily and the page meets mobile Core Web Vitals thresholds.
-5. **Given** the site footer, **When** a visitor opens a legal page (e.g., Privacy Policy) in any
-   locale, **Then** the localized page is shown, and the cookie-consent banner links to the
-   Cookie Policy.
+1. **Given** a first-time visitor, **When** the page loads, **Then** no analytics or marketing tags
+   run until consent is granted, and refusing consent leaves the store fully usable.
+2. **Given** the product page, **When** the shopper reads it, **Then** they see a **delivery date
+   range** (production already included), customer reviews, and the guarantee — before they are
+   asked to buy.
+3. **Given** a personalized item in the cart, **When** the shopper reaches payment, **Then** they
+   are told **clearly and in plain Polish, next to the pay button**, that a made-to-order item has
+   no 14-day withdrawal right — presented together with the voluntary guarantee that replaces it.
+4. **Given** an order containing only standard, non-personalized options, **When** it is placed,
+   **Then** the standard 14-day withdrawal right **does apply** to that line and is not denied.
+5. **Given** the language switch, **When** the visitor selects English or Ukrainian, **Then** all
+   text changes and correct hreflang alternates are exposed.
+6. **Given** a deletion request, **When** it is processed, **Then** the customer's photo and
+   personal data are removed; otherwise photos are deleted automatically when retention expires.
+7. **Given** the product page on a mid-range phone, **When** it loads, **Then** the constructor
+   loads lazily and mobile performance targets are met.
 
 ---
 
 ### Edge Cases
 
-- A very large photo is uploaded → it is accepted and processed without freezing or crashing
-  the shopper's device.
-- A render job fails → it is retried automatically; if it still fails, the order is flagged and
-  staff are alerted, without losing the stored design.
-- A shopper edits a design after adding to cart → the cart and stored design update
-  consistently, and price recalculates.
-- An option combination is invalid per the product schema's constraints → the shopper is
-  prevented from selecting it or warned before checkout.
-- Consent is declined → the site remains fully functional for browsing and ordering, with no
-  tracking.
-- The uk locale is later removed → the site continues to work in pl/en with no residual broken
-  links.
+- Background removal produces a poor cutout (hair, glasses, group photo) → shopper can retry,
+  swap photo, adjust, or defer the photo; never a dead end.
+- A group photo is uploaded where a single face is expected → the shopper is guided to choose or
+  crop one face.
+- A face photo is very large → processed without freezing the device.
+- The AI service is unavailable → the shopper can still order, with the photo deferred; staff are
+  alerted.
+- A production render fails → retried automatically; on final failure the order is flagged for
+  staff, and the design is never lost.
+- An invalid option combination per the schema's constraints → prevented or explained before
+  checkout.
+- Traffic arrives from TikTok's link preloader → it must not be counted as a visit, and no upload
+  or tracking is triggered by it.
+- The uk locale is removed later → pl/en keep working, with no broken links.
 
 ## Requirements *(mandatory)*
 
-### Functional Requirements
+### Functional Requirements — Constructor & product
 
-- **FR-001**: The system MUST let a shopper upload a photo in JPEG, PNG, WebP, or HEIC, convert
-  HEIC to a supported format, and normalize EXIF orientation.
-- **FR-002**: The system MUST verify a minimum photo resolution suitable for print and block
-  checkout with a clear message when the photo is insufficient.
-- **FR-003**: The shopper MUST be able to position, scale, and rotate the uploaded photo within
-  the product's photo zone.
-- **FR-004**: The shopper MUST be able to add custom text (e.g., a name) to the figurine.
-- **FR-005**: The shopper MUST be able to select the product's options (size, base, accessories,
-  quantity) as defined by that product's schema.
-- **FR-006**: The system MUST show a real-time preview that reflects the photo, text, and every
-  selected option.
-- **FR-007**: The system MUST show a live price that updates with options and quantity.
-- **FR-008**: A product MUST be defined by a versioned Product Schema describing photo zones,
-  text fields, options/colors/accessories, constraints, pricing rules, and the cut-contour
-  layer; no product-specific behavior is hardcoded outside the schema.
-- **FR-009**: The shopper MUST be able to add the configured item to a cart that persists across
-  the session.
-- **FR-010**: The system MUST support checkout with card, BLIK, and Przelewy24.
-- **FR-011**: On successful payment, the system MUST persist the complete Design State (photo
-  transform, text, fonts, colors, chosen options) together with a snapshot of the Product Schema
-  version, attached to the order.
-- **FR-012**: The system MUST automatically generate, without manual preparation, a production
-  package containing a 300 DPI print file (PNG/PDF/SVG), a separate CutContour cut-line layer, a
-  JSON parameter specification, and a preview image.
-- **FR-013**: The generated production file MUST correspond to what the shopper saw in the
-  preview (same design, same layout).
-- **FR-014**: The system MUST store uploaded photos and production files privately, using
-  time-limited signed access and encryption at rest.
-- **FR-015**: The system MUST send an order-confirmation email to the customer.
-- **FR-016**: Staff MUST be able to view an order's full configuration and download its
-  production package.
-- **FR-017**: Staff MUST be able to edit product prices and constructor parameters.
-- **FR-018**: Staff MUST be able to export orders to CSV/Excel.
-- **FR-019**: The system MUST serve Polish (default), English, and Ukrainian, with a language
+- **FR-001**: The character body MUST be assembled from **catalogue artwork variants defined in the
+  product schema** (e.g. body type, skin tone, hair, clothing, pose). The customer selects them; the
+  system never derives the body from the customer's photo.
+- **FR-002**: The customer MUST be able to upload a **face photo** in JPEG, PNG, WebP, or HEIC; the
+  system MUST convert HEIC and normalise EXIF orientation.
+- **FR-003**: The system MUST **remove the background from the uploaded face automatically** and
+  place the result in the character's face zone, showing honest progress while it works.
+- **FR-004**: The system MUST evaluate photo resolution against the selected print size and, when
+  it is insufficient, **warn the customer and offer a remedy — it MUST NOT block checkout**.
+- **FR-005**: The customer MUST be able to reposition, scale, and rotate the face within its zone.
+- **FR-006**: The customer MUST be able to add custom text (a name) rendered on the figurine base.
+- **FR-007**: The customer MUST be able to select product options (size, base, accessories,
+  quantity) as declared by the product schema.
+- **FR-008**: The system MUST show a **real-time preview** that reflects every choice. The preview
+  is trustworthy because the body is catalogue artwork and the face is a background-free cutout.
+- **FR-009**: The system MUST show a live price, expressed as **itemised deltas** (e.g. "+20 zł —
+  premium box") alongside the total.
+- **FR-010**: A product MUST be defined by a **versioned Product Schema** covering character
+  variants, face zone, text fields, options, accessories, constraints, pricing rules, and the
+  cut-contour. No product-specific behaviour outside the schema.
+- **FR-011**: Default selections MUST be **free of charge**. The system MUST NOT pre-select any
+  option that increases the price. *(Polish law: a paid default is refundable on demand.)*
+- **FR-012**: The system MUST support ordering **multiple figurines with different designs in a
+  single order**, with a published per-unit quantity ladder.
+- **FR-013**: If background removal fails or the customer chooses, the system MUST allow **ordering
+  with the photo deferred**, collecting it afterwards, without losing the configuration.
+
+### Functional Requirements — Cart, checkout & delivery
+
+- **FR-014**: The cart MUST persist across the session and preserve each item's full configuration.
+- **FR-015**: Checkout MUST be available **as a guest**; creating an account MUST NOT be required.
+- **FR-016**: The system MUST accept **card, BLIK, and Przelewy24**, with BLIK presented as a
+  first-class option rather than hidden inside an aggregator.
+- **FR-017**: The system MUST offer **InPost Paczkomat with in-checkout locker selection**, plus a
+  courier option.
+- **FR-018**: The system MUST show a **delivery date range** — with production time already
+  included — rather than a lead time in working days. The quoted window SHOULD NOT exceed 7 days,
+  and the system MUST NOT display a date it does not expect to meet.
+- **FR-019**: The system MUST apply a free-delivery threshold and show progress toward it.
+- **FR-020**: The system MUST send an order-confirmation email.
+- **FR-021**: The checkout MUST NOT use countdown timers that restart per session or per visit.
+
+### Functional Requirements — Production
+
+- **FR-022**: On successful payment the system MUST persist the complete Design State (character
+  selections, face photo reference and transform, text, options) together with a snapshot of the
+  Product Schema version.
+- **FR-023**: The system MUST automatically generate a production package: a **300 DPI print file**
+  (PNG/PDF/SVG), a **separate cut-contour layer**, a **JSON parameter specification**, and a
+  **preview image** — with no manual preparation.
+- **FR-024**: The production output MUST correspond to the preview the customer approved.
+
+### Functional Requirements — Admin
+
+- **FR-025**: Staff MUST be able to view an order's full configuration and download its production
+  package.
+- **FR-026**: Staff MUST be able to edit prices and constructor options, publishing a new schema
+  version without affecting existing orders.
+- **FR-027**: Staff MUST be able to export orders to CSV/Excel.
+- **FR-028**: Staff MUST be alerted when an order needs attention (render failure, deferred photo).
+
+### Functional Requirements — Trust, legal & compliance
+
+- **FR-029**: The system MUST determine the **14-day withdrawal right per order line at purchase
+  time**: lines carrying customer personalization (face photo and/or custom text) are exempt;
+  lines configured only from standard options are **not** exempt and retain the right.
+- **FR-030**: Where the withdrawal right does not apply, the system MUST inform the customer
+  **clearly, in plain language, before they are bound** — adjacent to the payment action, not only
+  in the terms — and MUST **record which version of that notice the order saw**.
+- **FR-031**: The system MUST present a **voluntary guarantee** alongside the withdrawal notice
+  (design approval before production; remake or refund if the item is wrong), never the exclusion
+  alone.
+- **FR-032**: The system MUST capture explicit consent for photo processing before purchase.
+- **FR-033**: Uploaded photos MUST be stored privately with time-limited signed access and
+  encryption at rest.
+- **FR-034**: Photos and personal data MUST be retained for a defined period (**60 days** after
+  fulfilment) and then deleted automatically; deletion on request MUST be supported at any time.
+- **FR-035**: Analytics and marketing tags MUST NOT load before cookie consent is granted.
+- **FR-036**: The system MUST provide localized informational and legal pages — Terms (Regulamin),
+  Privacy Policy, Cookie Policy, Returns & Complaints, Shipping & Delivery, Contact — editable by
+  staff without a developer. The Terms MUST NOT claim to *create* a returns exclusion, and MUST NOT
+  link to the discontinued EU ODR platform.
+- **FR-037**: The system MUST display the seller's identity (company name, Polish address, tax id,
+  contact) accessibly.
+- **FR-038**: Where reviews are displayed, the system MUST state whether and how they are verified,
+  and MUST mark reviews from confirmed buyers.
+- **FR-039**: If a price reduction is ever displayed, the system MUST also display the lowest price
+  of the preceding 30 days. The data model MUST retain price history to make this possible. *(No
+  discounts are planned for launch; the capability must exist before any is shown, including in
+  advertising.)*
+
+### Functional Requirements — Reach & performance
+
+- **FR-040**: The system MUST serve Polish (default), English, and Ukrainian with a language
   switch and correct hreflang; adding or removing a locale MUST NOT require reworking features.
-- **FR-020**: Analytics and marketing tags (GA4, GTM, Meta Pixel) MUST NOT load before the
-  visitor grants cookie consent.
-- **FR-021**: The system MUST provide base SEO: unique title/description per page, sitemap.xml,
-  robots.txt, canonical URLs, and hreflang alternates.
-- **FR-022**: The system MUST capture explicit consent for photo processing before an order is
-  placed.
-- **FR-023**: The system MUST enforce a defined photo/personal-data retention period and support
-  technical deletion of a customer's personal data on request.
-- **FR-024**: The system MUST perform daily database backups with point-in-time recovery and
-  version stored files.
-- **FR-025**: The storefront and product page MUST be mobile-first and responsive, with the
-  constructor loaded lazily so it does not block first paint.
-- **FR-026**: The system MUST provide localized informational and legal pages — at minimum
-  Terms & Conditions (Regulamin), Privacy Policy, Cookie Policy, Returns & Complaints, Shipping
-  & Delivery, and Contact — in pl/en/uk, linked from the site footer, and editable by staff
-  without a developer.
-- **FR-027**: At checkout the customer MUST accept the Terms & Conditions and acknowledge the
-  Privacy Policy before payment can be completed.
+- **FR-041**: The system MUST provide base SEO: unique title/description per page, sitemap.xml,
+  robots.txt, canonical URLs, hreflang alternates.
+- **FR-042**: The storefront MUST be mobile-first, with the constructor lazy-loaded so it never
+  blocks first paint.
+- **FR-043**: The purchase action MUST remain reachable on mobile via a sticky element that
+  **completes the action in place** rather than scrolling the user elsewhere.
+- **FR-044**: The system MUST provide an **ad-traffic entry page that contains no file upload**,
+  so that link-preloading by ad platforms cannot trigger uploads; the constructor opens on an
+  explicit user action.
+- **FR-045**: The system MUST measure real-user performance from real visitors (including in-app
+  browsers) rather than relying only on third-party field datasets, and MUST exclude ad-platform
+  preload bots from analytics.
+- **FR-046**: Daily database backups with point-in-time recovery and file versioning MUST be in
+  place.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities *(include if data involved)*
 
-- **Product Schema**: The versioned definition of a personalizable product — its photo zones,
-  text fields, options/colors/accessories, constraints, pricing rules, and cut-contour. The
-  single source of what a product allows.
-- **Design State**: A customer's specific configuration — photo transform (position/scale/
-  rotation), text, fonts, colors, and chosen options, plus a reference to the Product Schema
-  version it was built against.
-- **Order**: A purchase that references the customer's Design State and the resulting production
-  package, along with standard commerce data (items, price, payment, contact).
-- **Production Package**: The manufacturing output for an order — the print file, the CutContour
-  layer, the JSON parameter specification, and the preview image.
-- **Uploaded Photo**: A customer-provided image, held privately, associated with consent and a
-  retention/deletion lifecycle.
-- **Cart**: The in-progress selection of configured items before checkout.
-- **Content Page**: A localized, staff-editable informational or legal page (e.g., Terms,
-  Privacy, Cookies, Returns, Shipping, Contact, and optional About/FAQ) with its own slug,
-  title, body, and SEO metadata per locale.
+- **Product Schema**: Versioned definition of a personalizable product — character variant sets,
+  face zone, text fields, options/accessories, constraints, pricing rules, quantity ladder, and
+  cut-contour. The single source of what a product allows.
+- **Design State**: One customer's configuration — chosen character variants, face photo reference
+  and its transform, text values, selected options, quantity — plus the schema version it was built
+  against.
+- **Uploaded Photo**: A customer face photo, private, consented, retention-bound, with its
+  background-removed derivative.
+- **Order**: A purchase referencing one or more Design States, each with its withdrawal-right flag
+  and the version of the legal notice shown, plus references to production packages.
+- **Production Package**: Manufacturing output for an order line — print file, cut-contour layer,
+  parameter specification, preview.
+- **Content Page**: A localized, staff-editable informational or legal page.
+- **Consent Record**: Evidence of photo-processing and cookie consent, with timestamp and scope.
+- **Price History**: Dated record of a product's price, enabling lawful display of any future
+  reduction.
+- **Review**: A customer review with rating, optional photo, and verified-buyer status.
 
 ## Success Criteria *(mandatory)*
 
@@ -197,40 +278,50 @@ request; storefront and product pages meet mobile performance targets.
 
 - **SC-001**: A shopper can go from opening the product page to a paid order on a phone in under
   5 minutes.
-- **SC-002**: For a sample of test orders, the generated production file matches the customer's
-  preview 100% of the time and is print-ready at 300 DPI with a valid, closed cut contour.
-- **SC-003**: Staff can retrieve everything needed to manufacture and fulfill any order in under
-  1 minute from opening it.
-- **SC-004**: Zero analytics or marketing network calls occur before a visitor grants consent.
-- **SC-005**: A customer's photo and personal data are removed within the stated retention/
-  deletion window after a valid request.
-- **SC-006**: Storefront and product pages meet mobile Core Web Vitals "good" thresholds on a
-  mid-range device.
-- **SC-007**: The store is fully usable in Polish, English, and Ukrainian, with correct hreflang
-  alternates on every public page.
-- **SC-008**: Every paid order results in a stored Design State and a generated production
-  package (no order left without its manufacturing data).
+- **SC-002**: For test orders, the production file matches the customer's approved preview 100% of
+  the time and is print-ready at 300 DPI with a valid, closed cut contour.
+- **SC-003**: Every completed configuration renders a correct preview — no design reaches checkout
+  showing artwork the customer would not recognise as their own.
+- **SC-004**: Constructor completion rate is measured and reported; abandonment is attributable to
+  a specific step.
+- **SC-005**: Staff can retrieve everything needed to manufacture and fulfil any order in under
+  1 minute.
+- **SC-006**: Zero analytics or marketing network calls occur before consent is granted.
+- **SC-007**: A customer's photo and personal data are removed within the stated window after a
+  valid request, and automatically at retention expiry.
+- **SC-008**: Storefront and product pages meet mobile Core Web Vitals "good" thresholds, measured
+  on real visitors including in-app browsers.
+- **SC-009**: The store is fully usable in Polish, English, and Ukrainian with correct hreflang on
+  every public page.
+- **SC-010**: Every paid order results in a stored Design State and either a generated production
+  package or an explicit "awaiting photo" state — never silently nothing.
+- **SC-011**: No order can be completed with a pre-selected option the customer did not choose that
+  increased its price.
 
 ## Assumptions
 
-- **Provisional product catalog (client to confirm):** one primary photo zone and one text
-  field; sizes S/M/L; provisional prices S 59 / M 79 / L 99 zł; provisional accessories
-  (keyring +10, magnet +12, name engraving +15, premium box +20 zł); currency PLN; market
-  Poland. Because the constructor is data-driven, these exact values are configuration and can
-  be finalized without code changes.
-- **Minimum photo resolution** is derived from the largest offered print size at 300 DPI; photos
-  below that threshold are blocked at the quality gate.
-- **Photo/personal-data retention:** photos are retained for the order lifecycle plus a
-  reprint/complaint window (assumed 90 days), then auto-deleted; on-request deletion is honored
-  at any time (RODO).
-- **Guest checkout** is the primary path; account creation is optional and not required to order.
-- **The uk locale is temporary** and can be removed via configuration without affecting pl/en.
-- **The payment merchant account and all hosting/service accounts** are owned by the client, so
-  the finished platform and its access can be transferred in full.
-- **Legal/policy copy** (Terms/Regulamin, Privacy, Cookies, Returns, Shipping) is supplied by
-  the client or their legal advisor; this feature implements the page structure, localization,
-  and admin editing, not the legal wording itself.
-- **Out of scope for Stage 1** (kept architecturally ready, built later): visual no-code
-  template editor, promo codes / sales / gift certificates, and extended statistics (Stage 2);
-  AI background removal / enhancement / generation, ERP/CRM, and delivery-service integration
-  (Stage 3).
+- **Product.** The figurine is acrylic with a soft belly element, roughly hand-sized, offered in
+  three sizes. The character body is supplied as catalogue artwork; the customer contributes a face
+  photo and a name. Exact dimensions, prices, accessory list, and the cut-contour specification
+  come from the client and their production partner; until then, benchmark values are used as
+  configuration, not code.
+- **Provisional catalogue:** sizes S/M/L; prices 59/79/99 zł; accessories keyring +10, magnet +12,
+  engraving +15, premium box +20 zł; currency PLN; market Poland. The free-delivery threshold is set
+  where Polish shoppers already expect it rather than above it.
+- **Payment methods** are card, BLIK, and Przelewy24. **Cash on delivery is not offered at launch**:
+  a refused parcel leaves an unsellable personalized item. The architecture keeps it addable if the
+  client accepts that risk.
+- **No price reductions are shown at launch.** Price history exists so that any future discount —
+  on-site or in advertising — can be shown lawfully.
+- **Legal copy** (Terms, Privacy, Cookies, Returns, Shipping) is supplied by the client or their
+  lawyer, drafted for Polish law and this store's actual data processing. This feature implements
+  structure, localization, admin editing, and the per-line withdrawal logic — not the legal wording.
+- **The uk locale is temporary** (development-stage) and removable via configuration.
+- **Hosting and all service accounts** are the client's, so the platform transfers in full.
+- **Delivery stages are a commercial framing, not a technical dependency**: the system is built as
+  one coherent architecture, and capabilities are sequenced to keep the product functional at every
+  demo — background removal is part of the core because the product cannot work without it.
+- **Out of scope for this feature** (architecture stays ready): visual no-code template editor,
+  promo codes / gift certificates / active discounting, extended analytics dashboards, AI character
+  generation and photo enhancement beyond background removal, ERP/CRM, and carrier integrations
+  beyond the checkout delivery choice.
