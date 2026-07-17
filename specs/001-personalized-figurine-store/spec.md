@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-personalized-figurine-store`
 
-**Created**: 2026-07-16 · **Revised**: 2026-07-16 (rev 2 — product model, legal, CRO research)
+**Created**: 2026-07-16 · **Revised**: 2026-07-17 (rev 3 — real product: single size, built-in magnet, quantity-only pricing)
 
 **Status**: Draft
 
@@ -16,6 +16,14 @@ mobile-first.
 > **photo-quality gate** warns instead of blocking; (3) a set of **Polish legal constraints**
 > (paid defaults, withdrawal-right disclosure, cookie basis, price transparency) that are
 > requirements, not nice-to-haves. Sources: `research/findings-consolidated.md`.
+>
+> **Revision note (rev 3).** The reference product page and the finished demo confirmed the real
+> catalogue: **one size** (11 cm / 4.3"), a **magnetic backing built into every unit**, and
+> **every configuration option free** — so **quantity is the only price lever** (a flat base with
+> a per-unit quantity ladder). The earlier S/M/L sizes, the stand/base, and the paid accessories
+> (keyring, magnet, engraving, premium box) were provisional benchmarks and are removed. The
+> "no paid default" invariant (FR-011) stays as a guardrail: it now holds trivially, and protects
+> any future priced option.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -23,7 +31,7 @@ mobile-first.
 
 A shopper arrives from a social ad on their phone, picks a character that resembles the person
 the gift is for, uploads a photo of their face, watches the face drop onto the character with the
-background removed automatically, adds a name, chooses size and extras, sees the price update as
+background removed automatically, adds a name, chooses how many to order, sees the price update as
 they go, and pays with BLIK. The system stores exactly what they designed and produces the
 manufacturing files automatically.
 
@@ -47,8 +55,9 @@ customer's preview is generated.
 4. **Given** background removal fails or the shopper is unhappy with the cutout, **When** they
    proceed, **Then** they can retry, upload a different photo, or **order anyway and send the
    photo later by email**, without losing the configuration.
-5. **Given** a completed design, **When** the shopper adds a name and chooses options, **Then**
-   the price updates as itemised deltas and **no paid option is pre-selected by default**.
+5. **Given** a completed design, **When** the shopper adds a name and adjusts the quantity, **Then**
+   the price updates live — driven by the quantity ladder, since every option is free — and **no
+   paid option is pre-selected by default**.
 6. **Given** the cart, **When** the shopper checks out as a guest with card, BLIK, or Przelewy24
    and selects an InPost parcel locker, **Then** the order is placed and confirmed by email.
 7. **Given** a paid order, **When** production files are generated, **Then** a package exists
@@ -149,19 +158,22 @@ and deletable; mobile performance meets targets.
   system MUST convert HEIC and normalise EXIF orientation.
 - **FR-003**: The system MUST **remove the background from the uploaded face automatically** and
   place the result in the character's face zone, showing honest progress while it works.
-- **FR-004**: The system MUST evaluate photo resolution against the selected print size and, when
-  it is insufficient, **warn the customer and offer a remedy — it MUST NOT block checkout**.
+- **FR-004**: The system MUST evaluate photo resolution against the print size and, when it is
+  insufficient, **warn the customer and offer a remedy — it MUST NOT block checkout**.
 - **FR-005**: The customer MUST be able to reposition, scale, and rotate the face within its zone.
-- **FR-006**: The customer MUST be able to add custom text (a name) rendered on the figurine base.
-- **FR-007**: The customer MUST be able to select product options (size, base, accessories,
-  quantity) as declared by the product schema.
+- **FR-006**: The customer MUST be able to add custom text (a name) rendered on the figurine itself.
+- **FR-007**: The customer MUST be able to select the product options declared by the product
+  schema and choose the quantity. For this product every option is **free of charge** and the
+  quantity is the **only price lever** (a single physical size with a magnetic backing built in).
 - **FR-008**: The system MUST show a **real-time preview** that reflects every choice. The preview
   is trustworthy because the body is catalogue artwork and the face is a background-free cutout.
-- **FR-009**: The system MUST show a live price, expressed as **itemised deltas** (e.g. "+20 zł —
-  premium box") alongside the total.
+- **FR-009**: The system MUST show a **live price**. The only price lever is the **quantity ladder**,
+  shown as the per-unit saving (e.g. "−14 zł/szt from 3 pcs") alongside the total. Should any option
+  ever carry a surcharge, it MUST be shown as an itemised delta.
 - **FR-010**: A product MUST be defined by a **versioned Product Schema** covering character
-  variants, face zone, text fields, options, accessories, constraints, pricing rules, and the
-  cut-contour. No product-specific behaviour outside the schema.
+  variants, face zone, text fields, free options, the fixed physical spec (size, magnetic backing),
+  constraints, quantity-based pricing, and the cut-contour. No product-specific behaviour outside
+  the schema.
 - **FR-011**: Default selections MUST be **free of charge**. The system MUST NOT pre-select any
   option that increases the price. *(Polish law: a paid default is refundable on demand.)*
 - **FR-012**: The system MUST support ordering **multiple figurines with different designs in a
@@ -255,8 +267,9 @@ and deletable; mobile performance meets targets.
 ### Key Entities *(include if data involved)*
 
 - **Product Schema**: Versioned definition of a personalizable product — character variant sets,
-  face zone, text fields, options/accessories, constraints, pricing rules, quantity ladder, and
-  cut-contour. The single source of what a product allows.
+  face zone, text fields, free options, fixed physical spec (size, magnetic backing), constraints,
+  quantity-based pricing (quantity ladder), and cut-contour. The single source of what a product
+  allows.
 - **Design State**: One customer's configuration — chosen character variants, face photo reference
   and its transform, text values, selected options, quantity — plus the schema version it was built
   against.
@@ -300,14 +313,16 @@ and deletable; mobile performance meets targets.
 
 ## Assumptions
 
-- **Product.** The figurine is acrylic with a soft belly element, roughly hand-sized, offered in
-  three sizes. The character body is supplied as catalogue artwork; the customer contributes a face
-  photo and a name. Exact dimensions, prices, accessory list, and the cut-contour specification
-  come from the client and their production partner; until then, benchmark values are used as
+- **Product.** The figurine is acrylic (UV print) with a soft silicone belly element, hand-sized,
+  in a **single format** (~11 cm / 4.3") with a **magnetic backing built into every unit**. The
+  character body is supplied as catalogue artwork; the customer contributes a face photo and a name,
+  printed on the figurine itself. Exact dimensions, prices, and the cut-contour specification come
+  from the client and their production partner; until then, benchmark values are used as
   configuration, not code.
-- **Provisional catalogue:** sizes S/M/L; prices 59/79/99 zł; accessories keyring +10, magnet +12,
-  engraving +15, premium box +20 zł; currency PLN; market Poland. The free-delivery threshold is set
-  where Polish shoppers already expect it rather than above it.
+- **Provisional catalogue:** single size 11 cm (4.3"); flat **base 79 zł** with a per-unit quantity
+  ladder (1 pc 79 · 3 pcs 65/ea · 6 pcs 49/ea); **every option free**; magnetic backing included;
+  currency PLN; market Poland. The free-delivery threshold is set where Polish shoppers already
+  expect it rather than above it.
 - **Payment methods** are card, BLIK, and Przelewy24. **Cash on delivery is not offered at launch**:
   a refused parcel leaves an unsellable personalized item. The architecture keeps it addable if the
   client accepts that risk.

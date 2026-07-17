@@ -81,7 +81,7 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 - [ ] T038 [US1] `GET /store/gl/delivery-estimate` — returns a **date window** with production folded in — in `apps/medusa/src/api/store/gl/delivery-estimate/route.ts`
 - [ ] T039 [P] [US1] Product page shell + lazy-loaded constructor: character pickers (exposed **buttons**, not dropdowns), face upload with progress, live preview in `apps/storefront/src/features/constructor/`
 - [ ] T040 [P] [US1] Cutout UX: honest progress, retry, swap photo, **"order now, send the photo later"** escape hatch in `apps/storefront/src/features/constructor/FaceUpload.tsx`
-- [ ] T041 [P] [US1] Numbered option groups ("Krok 1 z 4") on one screen + live price with **itemised deltas** in `apps/storefront/src/features/constructor/OptionGroups.tsx`
+- [ ] T041 [P] [US1] **Clickable step tabs in one block** (Postać · Zdjęcie · Imię · Ilość) — any tab reachable, completed steps marked, «Wstecz/Dalej» nav, live preview stays visible outside the block; live price via the **quantity ladder** (every option free) in `apps/storefront/src/features/constructor/StepTabs.tsx`
 - [ ] T042 [P] [US1] Quantity ladder UI — configure **several different designs** in one order in `apps/storefront/src/features/constructor/BulkLadder.tsx`
 - [ ] T043 [US1] Mobile sticky buy element as a **drawer that completes add-to-cart in place** (never scroll-to-section) in `apps/storefront/src/features/constructor/StickyBuy.tsx`
 - [ ] T044 [US1] Cart + checkout UI via Medusa store API, **guest checkout**, in `apps/storefront/src/features/checkout/`

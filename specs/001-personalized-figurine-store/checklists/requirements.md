@@ -34,6 +34,6 @@
 - Business-level constraints that are also client requirements (print file formats + 300 DPI,
   CutContour layer, payment methods card/BLIK/Przelewy24, locales pl/en/uk, consent-gated
   analytics) are intentionally retained — they are WHAT the business needs, not HOW to build it.
-- Provisional product catalog values (sizes, prices, accessories, minimum resolution, retention
-  window) are documented in Assumptions and can be locked via `/speckit-clarify` once the client
-  confirms them. They do not block planning because the constructor is data-driven.
+- Provisional product catalog values (size, base price + quantity ladder, minimum resolution,
+  retention window) are documented in Assumptions and can be locked via `/speckit-clarify` once the
+  client confirms them. They do not block planning because the constructor is data-driven.

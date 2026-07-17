@@ -35,8 +35,8 @@ pnpm dev                                   # storefront + medusa + render-worker
 2. Pick character options (body, skin tone, outfit) → preview updates and **always renders**.
 3. Upload a HEIC face photo → converts, appears upright, **background removed automatically** with
    visible progress, lands in the face zone.
-4. Reposition/scale/rotate the face, type a name, choose size L + an accessory → preview and price
-   update live; price shows **itemised deltas**.
+4. Reposition/scale/rotate the face, type a name, set the quantity to 3 → preview and price update
+   live; price shows the **quantity-ladder saving** (every option is free).
 5. Add to cart → checkout **as guest** → InPost locker picked → pay with **BLIK** (test) → order
    placed; confirmation email sent.
 6. Worker renders; `render-status` → `ready`.

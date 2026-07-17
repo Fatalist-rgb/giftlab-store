@@ -8,7 +8,7 @@
 
 A mobile-first storefront where a shopper builds a personalized acrylic figurine: they pick a
 **character from catalogue artwork**, upload a **face photo** whose background is **removed
-automatically**, add a name, choose size and extras, and pay with card/BLIK/Przelewy24. Because the
+automatically**, add a name, choose the quantity, and pay with card/BLIK/Przelewy24. Because the
 body is catalogue artwork and the face arrives background-free, the live preview is trustworthy —
 and the same shared **Design State** + rendering module produces the 300 DPI production file with a
 separate CutContour layer, guaranteeing "what the customer approved is what gets printed".
@@ -67,7 +67,7 @@ async render queue.
 
 | # | Principle | How this plan satisfies it | Status |
 |---|-----------|----------------------------|--------|
-| I | Data-Driven Constructor | Product Schema (versioned JSON) declares character layers/variants, face zone, options, pricing, quantity ladder, cut-contour; no per-product code; `packages/constructor` is schema-generic | ✅ PASS |
+| I | Data-Driven Constructor | Product Schema (versioned JSON) declares character layers/variants, face zone, free options (priced add-ons = options with a non-zero delta), fixed physical spec, quantity-based pricing, cut-contour; no per-product code; `packages/constructor` is schema-generic | ✅ PASS |
 | II | Production-File Fidelity | One `packages/constructor` render module used by preview (Konva/browser) and worker (server canvas); catalogue artwork + background-free face make the render deterministic; order line stores Design State + schema-version snapshot; golden-image fidelity test | ✅ PASS |
 | III | i18n by Architecture | `next-intl` catalogs (pl/en/uk), localized routing + hreflang; add/remove a locale = catalog + config only | ✅ PASS |
 | IV | Mobile-First Performance | Constructor lazy-loaded (dynamic import); upload-free ad entry page; sticky buy drawer completing in place; RUM from real in-app-browser visitors | ✅ PASS |

@@ -1,6 +1,6 @@
 # Contract: Product Schema + Design State (`packages/constructor`)
 
-**Revised**: 2026-07-16 (rev 2 — character layers, quantity ladder, free-default invariant, legal)
+**Revised**: 2026-07-17 (rev 3 — single size, built-in magnet, quantity-only pricing; size/accessory options removed)
 
 The single source of truth for what a product allows and what a customer configured. Exposed as
 typed + zod-validated structures. Both the browser preview and the server renderer import these
@@ -18,7 +18,7 @@ packages/constructor
   pricing:      computePrice(schema, designState[], qty) -> PriceBreakdown  // incl. quantity ladder
   contour:      buildCutContour(schema, scene) -> CutPath
   legal:        computeWithdrawalRight(designState) -> WithdrawalVerdict   // pure, per line
-  quality:      assessPhoto(photo, schema, size) -> { ok, warning? }       // warns, never blocks
+  quality:      assessPhoto(photo, schema) -> { ok, warning? }             // warns, never blocks
 ```
 
 ## ProductSchema (shape)
@@ -45,19 +45,18 @@ packages/constructor
 
   "textFields": [{ "id":"name", "label":{"pl":"Imię","en":"Name","uk":"Ім'я"},
                    "maxLen":20, "fonts":["Bricolage Grotesque"], "colors":["#17131A","#FF6A2B"],
-                   "placement":"base" }],
+                   "placement":"figure" }],                  // printed on the figure, angled at the shoulder
 
-  "options":   [{ "id":"size", "type":"size",
-                  "values":[{"id":"S","priceDelta":0,"dimensionsMm":{"h":80}},
-                            {"id":"M","priceDelta":2000,"dimensionsMm":{"h":110}},
-                            {"id":"L","priceDelta":4000,"dimensionsMm":{"h":140}}],
-                  "default":"S" }],                          // default MUST be a zero-delta value
-  "accessories":[{ "id":"box", "priceDelta":2000, "incompatibleWith":[] }],
+  "options":   [],                                           // every option is free; quantity is the only price lever
   "constraints": { "rules": [] },
 
-  "pricingRules": { "base": 5900, "currency":"PLN",
-                    "quantityLadder": [ {"minQty":1,"unitPrice":5900}, {"minQty":3,"unitPrice":4900},
-                                        {"minQty":6,"unitPrice":3900} ] },
+  // Fixed, non-selectable product spec (single format, magnet built in).
+  "physical":  { "heightMm": 110, "magneticBacking": true, "material": "acrylic+silicone" },
+
+  // Flat base + a per-unit quantity ladder is the ONLY price lever (79 / 65 / 49 zł).
+  "pricingRules": { "base": 7900, "currency":"PLN",
+                    "quantityLadder": [ {"minQty":1,"unitPrice":7900}, {"minQty":3,"unitPrice":6500},
+                                        {"minQty":6,"unitPrice":4900} ] },
 
   "cutContour": { "source":"composite", "offsetMm": 3, "spotName":"CutContour" }
 }
@@ -71,7 +70,7 @@ packages/constructor
   "characterSelections": { "body":"dad", "skin":"s1", "outfit":"tee" },
   "faceLayer": { "uploadedPhotoId":"uuid", "x":18, "y":-6, "scale":1.08, "rotation":-2 },  // null if deferred
   "textValues":[{ "fieldId":"name", "value":"Kuba", "font":"Bricolage Grotesque", "color":"#17131A" }],
-  "selectedOptions": { "size":"M" }, "selectedAccessories":["box"], "quantity":1,
+  "selectedOptions": {}, "quantity":1,
   "photoStatus": "ready"          // ready | deferred | processing | failed
 }
 ```

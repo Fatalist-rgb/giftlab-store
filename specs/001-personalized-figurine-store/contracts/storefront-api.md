@@ -9,7 +9,7 @@ context); admin endpoints require staff auth. All bodies JSON unless noted.
 
 ### GET `/store/gl/products/:handle/schema`
 Returns the published `ProductSchema` (current version): character layers + variants (with artwork
-URLs), face zone, options, accessories, pricing rules incl. quantity ladder.
+URLs), face zone, free options, fixed physical spec, and quantity-based pricing (quantity ladder).
 → `200 { schema: ProductSchema }` · `404` if none published.
 
 ### POST `/store/gl/uploads/sign`

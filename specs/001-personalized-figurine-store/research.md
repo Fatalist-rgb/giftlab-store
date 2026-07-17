@@ -41,8 +41,8 @@ no removal (rejected: product does not function).
 
 ## 14. Photo quality — warn, never block
 
-**Decision**: Assess resolution against the selected print size and **warn with a remedy**; never
-block checkout.
+**Decision**: Assess resolution against the print size and **warn with a remedy**; never block
+checkout.
 
 **Rationale**: None of the 12 stores blocks on resolution. A block fires at peak purchase intent
 with no path forward. It also destroys the effort premium the product's pricing rests on: the
@@ -179,9 +179,9 @@ Medusa payment-provider abstraction lets us swap without touching checkout UI.
 ## 7. Image intake — HEIC / EXIF / resolution
 
 **Decision**: On upload, normalize server-side with `sharp`: convert HEIC→JPEG/PNG (via
-`heic-convert`/libheif), apply EXIF orientation then strip metadata, and reject below the
-minimum print resolution (derived from the largest size at 300 DPI). Store the normalized master
-privately; generate a downscaled web preview.
+`heic-convert`/libheif), apply EXIF orientation then strip metadata, and **flag** anything below the
+recommended print resolution (derived from the print size at 300 DPI) as a warning — never a block
+(see §14). Store the normalized master privately; generate a downscaled web preview.
 
 **Rationale**: iPhone photos are HEIC and EXIF-rotated; normalizing once guarantees the editor
 and the print use the same upright, correctly-sized image. Metadata stripping reduces PII (RODO).

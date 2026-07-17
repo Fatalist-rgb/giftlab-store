@@ -1,6 +1,6 @@
 # Phase 1 Data Model: Personalized Figurine Storefront (Stage 1)
 
-**Revised**: 2026-07-16 (rev 2 — character-based product model, per-line withdrawal, price history)
+**Revised**: 2026-07-17 (rev 3 — single size, built-in magnet, quantity-only pricing; accessories/size options removed)
 
 Conceptual model. Medusa owns standard commerce entities (Product, Variant, Cart, Order, Payment,
 Customer); the entities below are **custom** or **extensions** linked to Medusa records. Storage:
@@ -24,10 +24,10 @@ The versioned definition that makes the constructor data-driven (FR-010).
 | ↳ variants[] | json[] | each: `id`, `label` (i18n), `asset_key` (R2 vector/raster), `price_delta` (usually 0) |
 | face_zone | json | `bounds`, `mask_asset_key`, `min_resolution_px`, allowed transforms |
 | text_fields | json[] | each: `id`, `label` (i18n), `max_len`, `fonts[]`, `colors[]`, placement |
-| options | json[] | each: `id`, `type`(size/base/select), `values[]` (+`price_delta`, `dimensions_mm`), `default` |
-| accessories | json[] | each: `id`, `label`, `price_delta`, `incompatible_with[]` |
-| constraints | json | cross-field rules (e.g. size ↔ face-zone bounds) |
-| pricing_rules | json | base per size + deltas + **quantity_ladder** |
+| options | json[] | generic **free** selects beyond character/text; each: `id`, `label` (i18n), `values[]` (+`price_delta`), `default`. Empty for this product |
+| physical | json | fixed, non-selectable spec: `height_mm` (~110 / 4.3"), `magnetic_backing` (true), `material` |
+| constraints | json | cross-field rules (e.g. variant ↔ face-zone bounds) |
+| pricing_rules | json | single **base** price + **quantity_ladder** (the only price lever) |
 | ↳ quantity_ladder | json[] | each: `min_qty`, `unit_price` — powers FR-012 |
 | cut_contour | json | contour source, offset/bleed mm, spot name (default `CutContour`) |
 | created_at | timestamptz | |
@@ -37,6 +37,10 @@ character layer, a resolvable `face_zone`, and a cut contour.
 **Free-default invariant (FR-011)**: publication MUST reject a schema whose default selection has a
 non-zero total `price_delta`. *Enforced in code, not left to editorial discipline — a paid default is
 legally refundable.*
+**Paid add-ons (Constitution I — "accessory selectors")**: the engine still supports priced add-ons;
+they are modelled as `options` with a non-zero `price_delta` (subject to the free-default invariant),
+not a separate `accessories` array. **This product has none** — every option is free and quantity is
+the only price lever.
 **Immutability**: a published version is never mutated; edits create a new version so existing
 orders stay reproducible.
 
@@ -52,8 +56,7 @@ One customer's configuration against one ProductSchema version (FR-022).
 | character_selections | json | `layer_id` → `variant_id` |
 | face_layer | json | `uploaded_photo_id`, `x`, `y`, `scale`, `rotation` (nullable — deferred photo) |
 | text_values | json[] | each: `field_id`, `value`, `font`, `color` |
-| selected_options | json | `option_id` → `value` |
-| selected_accessories | string[] | accessory ids |
+| selected_options | json | `option_id` → `value` (empty for this product) |
 | photo_status | enum(`ready`,`deferred`,`processing`,`failed`) | supports FR-013 |
 | computed_price | int | minor units (grosz); server-authoritative |
 | is_personalized | bool | derived: true if face photo and/or non-empty text — drives FR-029 |
@@ -160,7 +163,7 @@ photo arrives. Satisfies SC-002/SC-010.
 |-------|------|-------|
 | id | uuid | PK |
 | medusa_product_id | string | |
-| variant_key | string | e.g. size |
+| variant_key | string | price scope (single product; retained for future variants) |
 | price | int | minor units |
 | effective_from | timestamptz | |
 
