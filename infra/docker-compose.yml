@@ -1,0 +1,29 @@
+# Local development infrastructure. `pnpm dev:infra` brings these up.
+# Production Postgres + Redis are managed by Railway (client's account).
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: giftlab
+      POSTGRES_PASSWORD: giftlab
+      POSTGRES_DB: giftlab
+    ports:
+      - '5432:5432'
+    volumes:
+      - gl_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U giftlab']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - gl_redis:/data
+
+volumes:
+  gl_pg:
+  gl_redis:

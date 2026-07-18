@@ -4,6 +4,9 @@ node_modules/
 dist/
 build/
 out/
+.turbo/
+coverage/
+*.tsbuildinfo
 # env / secrets
 .env
 .env.*
