@@ -12,9 +12,12 @@ export { parseProductSchema, safeParseProductSchema, defaultSelectionPriceDelta 
 export * from './design-state/types.js';
 export { parseDesignState, crossCheck } from './design-state/validate.js';
 
-// scene
+// scene + rendering (browser-safe; the server renderer is at "@gl/constructor/server")
 export * from './render/types.js';
 export { buildScene } from './render/scene.js';
+export * from './render/context.js';
+export { drawScene, type DrawOptions } from './render/draw.js';
+export { renderSceneToCanvas, type BrowserRenderOptions } from './render/browser.js';
 
 // pricing
 export {

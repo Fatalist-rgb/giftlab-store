@@ -34,7 +34,7 @@ fidelity + pricing + legal keystone shared by storefront and worker.
 - [x] T007 [P] Implement zod `parseProductSchema` **including the free-default invariant** (reject non-zero default priceDelta) in `packages/constructor/src/schema/validate.ts`
 - [x] T008 [P] Implement `parseDesignState` (cross-check refs, zone bounds, deferred-photo state) in `packages/constructor/src/design-state/validate.ts`
 - [x] T009 Implement deterministic `buildScene(schema, designState, assets)` — composites character layers by zIndex + masked face + text; renders face placeholder when deferred — in `packages/constructor/src/render/scene.ts`
-- [ ] T010 Implement `renderToCanvas` browser + server adapters in `packages/constructor/src/render/{browser,server}.ts` (Konva; server on `@napi-rs/canvas`) + font registration in `packages/constructor/src/render/fonts.ts`
+- [x] T010 Implement `renderToCanvas` browser + server adapters in `packages/constructor/src/render/{browser,server}.ts` (Konva; server on `@napi-rs/canvas`) + font registration in `packages/constructor/src/render/fonts.ts`
 - [x] T011 [P] Implement `computePrice` incl. **quantity ladder** in `packages/constructor/src/pricing/index.ts`
 - [x] T012 [P] Implement `computeWithdrawalRight(designState)` (pure, per line) in `packages/constructor/src/legal/withdrawal.ts`
 - [x] T013 [P] Implement `assessPhoto` — returns **warning, never blocks** — in `packages/constructor/src/quality/index.ts`

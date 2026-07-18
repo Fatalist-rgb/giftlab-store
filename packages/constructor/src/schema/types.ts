@@ -103,6 +103,8 @@ export const productSchemaZ = z.object({
   medusaProductId: z.string().min(1),
   version: z.number().int().positive(),
   status: z.enum(['draft', 'published', 'archived']),
+  // native pixel dimensions of the artwork — the coordinate space faceZone/text live in
+  canvasPx: z.object({ w: z.number().int().positive(), h: z.number().int().positive() }),
   characterLayers: z.array(characterLayerZ).min(1),
   faceZone: faceZoneZ,
   textFields: z.array(textFieldZ).default([]),

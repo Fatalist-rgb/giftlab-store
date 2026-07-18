@@ -6,6 +6,7 @@ export const rawSchema = {
   medusaProductId: 'prod_belly',
   version: 1,
   status: 'published',
+  canvasPx: { w: 304, h: 424 },
   characterLayers: [
     {
       id: 'body',

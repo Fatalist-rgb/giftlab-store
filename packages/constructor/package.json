@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./server": "./src/render/server.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -14,8 +15,12 @@
   "dependencies": {
     "zod": "^3.23.8"
   },
+  "optionalDependencies": {
+    "@napi-rs/canvas": "^0.1.65"
+  },
   "devDependencies": {
     "@gl/config": "workspace:*",
+    "@types/node": "^20.16.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.4"
   }
