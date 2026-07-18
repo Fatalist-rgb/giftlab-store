@@ -19,28 +19,28 @@ US3 = Trust, reach & compliance (P3).
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Create pnpm monorepo skeleton (`pnpm-workspace.yaml`, root `package.json`, `apps/`, `packages/`) at repo root (ASCII paths only)
-- [ ] T002 [P] Create `packages/config` — base `tsconfig.json`, ESLint + Prettier, zod `env` schema in `packages/config/src/env.ts`
-- [ ] T003 [P] Add `.env.example` at repo root: DB, REDIS, R2, payment (P24/Stripe test), cutout-provider key, GTM id, `LOCALES=pl,en,uk`
-- [ ] T004 [P] Add local infra `infra/docker-compose.yml` (postgres:16, redis:7) + `pnpm dev:infra`
-- [ ] T005 [P] Add CI skeleton `.github/workflows/ci.yml` (install, lint, typecheck, test) + root `turbo.json`
+- [x] T001 Create pnpm monorepo skeleton (`pnpm-workspace.yaml`, root `package.json`, `apps/`, `packages/`) at repo root (ASCII paths only)
+- [x] T002 [P] Create `packages/config` — base `tsconfig.json`, ESLint + Prettier, zod `env` schema in `packages/config/src/env.ts`
+- [x] T003 [P] Add `.env.example` at repo root: DB, REDIS, R2, payment (P24/Stripe test), cutout-provider key, GTM id, `LOCALES=pl,en,uk`
+- [x] T004 [P] Add local infra `infra/docker-compose.yml` (postgres:16, redis:7) + `pnpm dev:infra`
+- [x] T005 [P] Add CI skeleton `.github/workflows/ci.yml` (install, lint, typecheck, test) + root `turbo.json`
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
 **⚠️ No user-story work starts until this phase is complete.** `packages/constructor` is the
 fidelity + pricing + legal keystone shared by storefront and worker.
 
-- [ ] T006 [P] Define types `ProductSchema` (character layers/variants, faceZone, quantityLadder), `DesignState`, `Scene` in `packages/constructor/src/schema/types.ts` and `packages/constructor/src/design-state/types.ts` (per contracts/constructor-schema.md)
-- [ ] T007 [P] Implement zod `parseProductSchema` **including the free-default invariant** (reject non-zero default priceDelta) in `packages/constructor/src/schema/validate.ts`
-- [ ] T008 [P] Implement `parseDesignState` (cross-check refs, zone bounds, deferred-photo state) in `packages/constructor/src/design-state/validate.ts`
-- [ ] T009 Implement deterministic `buildScene(schema, designState, assets)` — composites character layers by zIndex + masked face + text; renders face placeholder when deferred — in `packages/constructor/src/render/scene.ts`
+- [x] T006 [P] Define types `ProductSchema` (character layers/variants, faceZone, quantityLadder), `DesignState`, `Scene` in `packages/constructor/src/schema/types.ts` and `packages/constructor/src/design-state/types.ts` (per contracts/constructor-schema.md)
+- [x] T007 [P] Implement zod `parseProductSchema` **including the free-default invariant** (reject non-zero default priceDelta) in `packages/constructor/src/schema/validate.ts`
+- [x] T008 [P] Implement `parseDesignState` (cross-check refs, zone bounds, deferred-photo state) in `packages/constructor/src/design-state/validate.ts`
+- [x] T009 Implement deterministic `buildScene(schema, designState, assets)` — composites character layers by zIndex + masked face + text; renders face placeholder when deferred — in `packages/constructor/src/render/scene.ts`
 - [ ] T010 Implement `renderToCanvas` browser + server adapters in `packages/constructor/src/render/{browser,server}.ts` (Konva; server on `@napi-rs/canvas`) + font registration in `packages/constructor/src/render/fonts.ts`
-- [ ] T011 [P] Implement `computePrice` incl. **quantity ladder** in `packages/constructor/src/pricing/index.ts`
-- [ ] T012 [P] Implement `computeWithdrawalRight(designState)` (pure, per line) in `packages/constructor/src/legal/withdrawal.ts`
-- [ ] T013 [P] Implement `assessPhoto` — returns **warning, never blocks** — in `packages/constructor/src/quality/index.ts`
-- [ ] T014 [P] Implement `buildCutContour(schema, scene)` → vector cut path in `packages/constructor/src/contour/index.ts`
-- [ ] T015 [P] Unit tests (Vitest) for validators (incl. free-default rejection), `computePrice` + ladder, `computeWithdrawalRight`, `assessPhoto` in `packages/constructor/tests/`
-- [ ] T016 [P] Create `packages/cutout` — provider-agnostic background-removal adapter interface + mock implementation + tests in `packages/cutout/src/`
+- [x] T011 [P] Implement `computePrice` incl. **quantity ladder** in `packages/constructor/src/pricing/index.ts`
+- [x] T012 [P] Implement `computeWithdrawalRight(designState)` (pure, per line) in `packages/constructor/src/legal/withdrawal.ts`
+- [x] T013 [P] Implement `assessPhoto` — returns **warning, never blocks** — in `packages/constructor/src/quality/index.ts`
+- [x] T014 [P] Implement `buildCutContour(schema, scene)` → vector cut path in `packages/constructor/src/contour/index.ts`
+- [x] T015 [P] Unit tests (Vitest) for validators (incl. free-default rejection), `computePrice` + ladder, `computeWithdrawalRight`, `assessPhoto` in `packages/constructor/tests/`
+- [x] T016 [P] Create `packages/cutout` — provider-agnostic background-removal adapter interface + mock implementation + tests in `packages/cutout/src/`
 - [ ] T017 Scaffold Medusa v2 backend in `apps/medusa` (Postgres, migrations, admin) per plan.md
 - [ ] T018 [P] Custom module `product-schema` (entity + service + migration) in `apps/medusa/src/modules/product-schema/`
 - [ ] T019 [P] Custom module `design-state` (entity + service + migration, incl. `photo_status`, `is_personalized`) in `apps/medusa/src/modules/design-state/`
