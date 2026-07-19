@@ -41,11 +41,13 @@ fidelity + pricing + legal keystone shared by storefront and worker.
 - [x] T014 [P] Implement `buildCutContour(schema, scene)` → vector cut path in `packages/constructor/src/contour/index.ts`
 - [x] T015 [P] Unit tests (Vitest) for validators (incl. free-default rejection), `computePrice` + ladder, `computeWithdrawalRight`, `assessPhoto` in `packages/constructor/tests/`
 - [x] T016 [P] Create `packages/cutout` — provider-agnostic background-removal adapter interface + mock implementation + tests in `packages/cutout/src/`
-- [ ] T017 Scaffold Medusa v2 backend in `apps/medusa` (Postgres, migrations, admin) per plan.md
-- [ ] T018 [P] Custom module `product-schema` (entity + service + migration) in `apps/medusa/src/modules/product-schema/`
-- [ ] T019 [P] Custom module `design-state` (entity + service + migration, incl. `photo_status`, `is_personalized`) in `apps/medusa/src/modules/design-state/`
-- [ ] T020 [P] Custom module `production-package` + OrderLine extension (`render_status`, `withdrawal_right`, `withdrawal_notice_version`) in `apps/medusa/src/modules/production-package/`
-- [ ] T021 [P] Custom module `price-history` (entity + snapshot on price change) in `apps/medusa/src/modules/price-history/`
+- [x] T017 Scaffold Medusa v2 backend in `apps/medusa` (Postgres, migrations, admin) per plan.md
+- [x] T018 [P] Custom module `product-schema` (entity + service + migration) — shipped as `product_customization` (versioned publish, free-default boundary guard)
+- [x] T019 [P] Custom module `design-state` (entity + service + migration, incl. `photo_status`, `is_personalized`) — shipped in the `personalization` module
+- [x] T020 [P] Custom module `production-package` + OrderLine extension (`render_status`, `withdrawal_right`, `withdrawal_notice_version`) — shipped in `personalization` (models `production_package` + `order_line_design`)
+- [x] T021 [P] Custom module `price-history` (entity + snapshot on price change) — shipped as `price_history` (Omnibus 30-day lowest)
+<!-- Backend modules live under apps/medusa/src/modules/{product_customization,personalization,price_history,content,consent}. Each has a migration and either a unit test (legal invariants: free-default, per-line withdrawal, Omnibus) or a verified smoke; Medusa unit tests run in CI. -->
+
 - [ ] T022 R2 storage helper (presigned PUT/GET, SSE, artwork + photo + package buckets/prefixes) in `apps/medusa/src/lib/r2.ts`
 - [ ] T023 [P] BullMQ queue + ioredis helper (`gl:render`, `gl:cutout`) in `apps/medusa/src/lib/queue.ts`
 - [x] T024 Scaffold Next.js 15 storefront in `apps/storefront` (Tailwind, shadcn/ui, Medusa JS client) per plan.md
@@ -139,7 +141,7 @@ payment; legal pages localized + editable; photos private + deletable.
 - [ ] T065 [US3] Guarantee presentation (design approval before production; remake/refund; no return shipping) on PDP + checkout in `apps/storefront/src/components/Guarantee.tsx`
 - [ ] T066 [P] [US3] `Review` module + PDP reviews with **verified-buyer marking** + verification-method disclosure + summary distribution in `apps/medusa/src/modules/review/` and `apps/storefront/src/features/reviews/`
 - [ ] T067 [P] [US3] RODO: 60-day photo retention job + deletion-request endpoint + private-access enforcement in `apps/medusa/src/jobs/photo-retention.ts` and `apps/medusa/src/api/store/gl/photos/`
-- [ ] T068 [US3] Persist ConsentRecord (photo_processing + cookies) in `apps/medusa/src/modules/consent/`
+- [x] T068 [US3] Persist ConsentRecord (photo_processing + cookies) in `apps/medusa/src/modules/consent/`
 - [ ] T069 [US3] Seller identity block (company, PL address, NIP, contact) in footer + Kontakt in `apps/storefront/src/components/Footer.tsx`
 - [ ] T070 [P] [US3] Upload-free **ad entry pages** (`(ads)` route group) — constructor opens on explicit action — in `apps/storefront/src/app/[locale]/(ads)/`
 - [ ] T071 [P] [US3] RUM (`web-vitals`) reporting segmented by UA/referrer + **filter ad-platform preload bots** from analytics in `apps/storefront/src/lib/rum.ts`
