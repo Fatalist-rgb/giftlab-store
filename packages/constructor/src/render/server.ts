@@ -1,4 +1,4 @@
-import { createCanvas, loadImage, type Image } from '@napi-rs/canvas';
+import { createCanvas, loadImage, type Canvas, type Image } from '@napi-rs/canvas';
 import type { ProductSchema } from '../schema/types.js';
 import type { Ctx2D, MakeCanvas } from './context.js';
 import { drawScene } from './draw.js';
@@ -8,16 +8,17 @@ export interface ServerRenderOptions {
   schema: ProductSchema;
   /** assetKey / photoId / maskAssetKey -> raw image bytes (PNG/JPEG) */
   assetBytes: ReadonlyMap<string, Uint8Array>;
-  /** artwork px -> output px; e.g. targetDpi helper below */
+  /** artwork px -> output px; see scaleForDpi */
   scale?: number;
 }
 
 /**
- * Render a Scene to a PNG buffer on the server (render worker). Uses @napi-rs/canvas
- * (Skia) and the SAME `drawScene` the browser preview uses, so the production file is the
- * customer's approved design at print resolution. Deterministic: same input → same bytes.
+ * Render a Scene to a Skia canvas (render worker). Uses the SAME `drawScene` the browser
+ * preview uses, so the production file is the customer's approved design at print
+ * resolution. Returns the canvas so callers can both encode a PNG and read pixels (the
+ * cut-contour tracer needs the alpha channel). Deterministic: same input → same pixels.
  */
-export async function renderScenePng(scene: Scene, opts: ServerRenderOptions): Promise<Buffer> {
+export async function renderSceneCanvas(scene: Scene, opts: ServerRenderOptions): Promise<Canvas> {
   const scale = opts.scale ?? 1;
   const w = Math.max(1, Math.round(opts.schema.canvasPx.w * scale));
   const h = Math.max(1, Math.round(opts.schema.canvasPx.h * scale));
@@ -36,6 +37,12 @@ export async function renderScenePng(scene: Scene, opts: ServerRenderOptions): P
   };
 
   drawScene(ctx as unknown as Ctx2D, scene, { schema: opts.schema, assets, scale, makeCanvas });
+  return canvas;
+}
+
+/** Render a Scene to a PNG buffer. */
+export async function renderScenePng(scene: Scene, opts: ServerRenderOptions): Promise<Buffer> {
+  const canvas = await renderSceneCanvas(scene, opts);
   return canvas.toBuffer('image/png');
 }
 
