@@ -48,8 +48,8 @@ fidelity + pricing + legal keystone shared by storefront and worker.
 - [ ] T021 [P] Custom module `price-history` (entity + snapshot on price change) in `apps/medusa/src/modules/price-history/`
 - [ ] T022 R2 storage helper (presigned PUT/GET, SSE, artwork + photo + package buckets/prefixes) in `apps/medusa/src/lib/r2.ts`
 - [ ] T023 [P] BullMQ queue + ioredis helper (`gl:render`, `gl:cutout`) in `apps/medusa/src/lib/queue.ts`
-- [ ] T024 Scaffold Next.js 15 storefront in `apps/storefront` (Tailwind, shadcn/ui, Medusa JS client) per plan.md
-- [ ] T025 Configure `next-intl` `[locale]` routing (pl/en/uk) + hreflang + locale switch in `apps/storefront/src/app/[locale]/` and `apps/storefront/src/i18n/`
+- [x] T024 Scaffold Next.js 15 storefront in `apps/storefront` (Tailwind, shadcn/ui, Medusa JS client) per plan.md
+- [x] T025 Configure `next-intl` `[locale]` routing (pl/en/uk) + hreflang + locale switch in `apps/storefront/src/app/[locale]/` and `apps/storefront/src/i18n/`
 - [ ] T026 Scaffold `apps/render-worker` (BullMQ consumer, wires `packages/constructor` + `@napi-rs/canvas` + R2)
 - [ ] T027 Author placeholder character artwork set (body/skin/outfit variants + face mask) and upload to R2 in `apps/medusa/src/scripts/seed-artwork.ts`
 

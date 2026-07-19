@@ -1,0 +1,23 @@
+{
+  "nav": { "shop": "Sklep", "how": "Jak to działa" },
+  "home": {
+    "badge": "Figurka z brzuszkiem",
+    "title": "Twoja twarz na akrylowej figurce",
+    "sub": "Wybierz postać, dodaj imię i zobacz podgląd na żywo — to, co widzisz, trafia do druku.",
+    "cta": "Zaprojektuj figurkę"
+  },
+  "product": {
+    "title": "Zaprojektuj figurkę",
+    "character": "Postać",
+    "name": "Imię",
+    "namePlaceholder": "np. Kuba",
+    "quantity": "Ilość",
+    "priceEach": "/szt",
+    "total": "Razem",
+    "sample": "Wstaw przykładową twarz",
+    "deferred": "Podgląd bez zdjęcia — wgraj je w następnym kroku",
+    "add": "Dodaj do koszyka",
+    "freeNote": "Każda opcja gratis — cena zależy tylko od ilości.",
+    "engine": "Podgląd renderuje wspólny silnik @gl/constructor — ten sam kod pójdzie do druku."
+  }
+}

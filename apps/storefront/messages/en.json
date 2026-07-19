@@ -1,0 +1,23 @@
+{
+  "nav": { "shop": "Shop", "how": "How it works" },
+  "home": {
+    "badge": "Belly figurine",
+    "title": "Your face on an acrylic figurine",
+    "sub": "Pick a character, add a name and watch the live preview — what you see is what gets printed.",
+    "cta": "Design a figurine"
+  },
+  "product": {
+    "title": "Design a figurine",
+    "character": "Character",
+    "name": "Name",
+    "namePlaceholder": "e.g. Kuba",
+    "quantity": "Quantity",
+    "priceEach": "/ea",
+    "total": "Total",
+    "sample": "Insert a sample face",
+    "deferred": "Preview without a photo — upload it in the next step",
+    "add": "Add to cart",
+    "freeNote": "Every option is free — price depends on quantity only.",
+    "engine": "The preview is rendered by the shared @gl/constructor engine — the same code goes to print."
+  }
+}
