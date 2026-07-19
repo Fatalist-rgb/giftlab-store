@@ -31,8 +31,11 @@ class PersonalizationModuleService extends MedusaService({
     computed_price: number
     photo_status?: 'ready' | 'deferred' | 'processing' | 'failed'
   }) {
+    const photo_status =
+      input.photo_status ?? (input.face_layer?.uploaded_photo_id ? 'ready' : 'deferred')
     const personalized = isPersonalized({
       face_layer: input.face_layer,
+      photo_status,
       text_values: input.text_values,
     })
     const [design] = await this.createDesignStates([
@@ -44,8 +47,7 @@ class PersonalizationModuleService extends MedusaService({
         text_values: input.text_values ?? [],
         selected_options: input.selected_options ?? {},
         computed_price: input.computed_price,
-        photo_status:
-          input.photo_status ?? (input.face_layer?.uploaded_photo_id ? 'ready' : 'deferred'),
+        photo_status,
         is_personalized: personalized,
       },
     ])
@@ -66,6 +68,7 @@ class PersonalizationModuleService extends MedusaService({
     const design = await this.retrieveDesignState(input.design_state_id)
     const right = withdrawalRightFor({
       face_layer: design.face_layer as FaceLayer | null,
+      photo_status: design.photo_status as string,
       text_values: design.text_values as Array<{ value?: string | null }> | null,
     })
     const [line] = await this.createOrderLineDesigns([
