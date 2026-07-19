@@ -18,5 +18,6 @@ module.exports = defineConfig({
     { resolve: './src/modules/product_customization' },
     { resolve: './src/modules/personalization' },
     { resolve: './src/modules/price_history' },
+    { resolve: './src/modules/content' },
   ],
 })
