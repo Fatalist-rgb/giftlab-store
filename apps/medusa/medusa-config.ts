@@ -17,5 +17,6 @@ module.exports = defineConfig({
     // GiftLab custom modules (personalized-figurine domain)
     { resolve: './src/modules/product_customization' },
     { resolve: './src/modules/personalization' },
+    { resolve: './src/modules/price_history' },
   ],
 })
