@@ -1,6 +1,6 @@
 import { MedusaService } from '@medusajs/framework/utils'
 import ProductSchema from './models/product-schema'
-import { assertFreeDefault } from './validate'
+import { validatePublishableSchema } from './validate'
 
 /**
  * Stores and serves the @gl/constructor ProductSchema per Medusa product.
@@ -14,7 +14,7 @@ class ProductCustomizationModuleService extends MedusaService({ ProductSchema })
    * as the single active (published) schema.
    */
   async publishSchema(productId: string, definition: unknown) {
-    assertFreeDefault(definition)
+    validatePublishableSchema(definition)
 
     const existing = await this.listProductSchemas({ product_id: productId })
     const nextVersion = existing.reduce((max, s) => Math.max(max, s.version), 0) + 1

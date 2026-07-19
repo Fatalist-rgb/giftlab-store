@@ -1,51 +1,60 @@
-import { assertFreeDefault, defaultSelectionPriceDelta } from '../validate'
+import { validatePublishableSchema } from '../validate'
 
-describe('product_customization — free-default legal invariant', () => {
-  const freeSchema = {
-    characterLayers: [{ id: 'body', variants: [{ id: 'blue', priceDelta: 0 }, { id: 'pink', priceDelta: 0 }] }],
-    options: [
-      { id: 'base', default: 'std', values: [{ id: 'std', priceDelta: 0 }, { id: 'premium', priceDelta: 1000 }] },
+// A valid figurine schema (mirror of the storefront demo) — exercises the real engine.
+const validSchema = {
+  id: 'ps_figurine',
+  medusaProductId: 'prod_belly',
+  version: 1,
+  status: 'published',
+  canvasPx: { w: 304, h: 424 },
+  characterLayers: [
+    {
+      id: 'body',
+      zIndex: 10,
+      label: { pl: 'Postać', en: 'Character', uk: 'Персонаж' },
+      variants: [
+        { id: 'blue', label: { pl: 'Niebieski', en: 'Blue', uk: 'Синій' }, assetKey: '/art/body-blue.png', priceDelta: 0 },
+        { id: 'pink', label: { pl: 'Różowy', en: 'Pink', uk: 'Рожевий' }, assetKey: '/art/body-pink.png', priceDelta: 0 },
+      ],
+    },
+  ],
+  faceZone: {
+    bounds: { x: 92, y: 40, w: 120, h: 132 },
+    maskAssetKey: '/art/face-mask.png',
+    minResolutionPx: { w: 900, h: 900 },
+    transforms: ['move', 'scale', 'rotate'],
+    zIndex: 15,
+  },
+  textFields: [
+    { id: 'name', label: { pl: 'Imię', en: 'Name', uk: "Ім'я" }, maxLen: 14, fonts: ['Bricolage Grotesque'], colors: ['#17131A'], placement: 'figure', zIndex: 100 },
+  ],
+  options: [],
+  physical: { heightMm: 110, magneticBacking: true, material: 'acrylic+silicone' },
+  pricingRules: {
+    base: 7900,
+    currency: 'PLN',
+    quantityLadder: [
+      { minQty: 1, unitPrice: 7900 },
+      { minQty: 3, unitPrice: 6500 },
+      { minQty: 6, unitPrice: 4900 },
     ],
-  }
+  },
+  cutContour: { source: 'composite', offsetMm: 3, spotName: 'CutContour' },
+}
 
-  it('accepts a schema whose default selection is free', () => {
-    expect(defaultSelectionPriceDelta(freeSchema)).toBe(0)
-    expect(() => assertFreeDefault(freeSchema)).not.toThrow()
+describe('product_customization — schema validation via @gl/constructor engine', () => {
+  it('accepts a valid schema whose default selection is free', () => {
+    expect(() => validatePublishableSchema(validSchema)).not.toThrow()
   })
 
-  it('rejects a paid default character variant', () => {
-    const paid = {
-      characterLayers: [{ id: 'body', variants: [{ id: 'blue', priceDelta: 500 }] }],
-      options: [],
-    }
-    expect(defaultSelectionPriceDelta(paid)).toBe(500)
-    expect(() => assertFreeDefault(paid)).toThrow(/free/i)
+  it('rejects a paid default character variant (free-default invariant)', () => {
+    const paid = JSON.parse(JSON.stringify(validSchema))
+    paid.characterLayers[0].variants[0].priceDelta = 500 // the default variant now costs extra
+    expect(() => validatePublishableSchema(paid)).toThrow()
   })
 
-  it('rejects a paid default option value', () => {
-    const paid = {
-      characterLayers: [{ id: 'body', variants: [{ id: 'blue', priceDelta: 0 }] }],
-      options: [{ id: 'x', default: 'p', values: [{ id: 'p', priceDelta: 300 }, { id: 'f', priceDelta: 0 }] }],
-    }
-    expect(defaultSelectionPriceDelta(paid)).toBe(300)
-    expect(() => assertFreeDefault(paid)).toThrow()
-  })
-
-  it('treats the first option value as the default when no default id is set', () => {
-    const s = {
-      characterLayers: [{ id: 'body', variants: [{ id: 'b', priceDelta: 0 }] }],
-      options: [{ id: 'x', values: [{ id: 'f', priceDelta: 0 }, { id: 'p', priceDelta: 900 }] }],
-    }
-    expect(defaultSelectionPriceDelta(s)).toBe(0)
-    expect(() => assertFreeDefault(s)).not.toThrow()
-  })
-
-  it('rejects a non-object schema', () => {
-    expect(() => assertFreeDefault(null)).toThrow()
-    expect(() => assertFreeDefault(42)).toThrow()
-  })
-
-  it('requires at least one character layer', () => {
-    expect(() => assertFreeDefault({ characterLayers: [], options: [] })).toThrow(/character layer/i)
+  it('rejects a structurally invalid schema', () => {
+    expect(() => validatePublishableSchema({ nope: true })).toThrow()
+    expect(() => validatePublishableSchema(null)).toThrow()
   })
 })

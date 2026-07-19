@@ -1,0 +1,8 @@
+{
+  "name": "@gl/constructor-vendored",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.cjs",
+  "types": "index.d.ts",
+  "description": "Bundled @gl/constructor logic surface (schema/pricing/legal, zod baked in, no render). Generated — do not edit index.cjs by hand. Regenerate with `pnpm --filter @gl/constructor build:medusa`."
+}
