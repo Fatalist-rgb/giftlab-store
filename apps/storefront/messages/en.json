@@ -18,6 +18,13 @@
     "deferred": "Preview without a photo — upload it in the next step",
     "add": "Add to cart",
     "freeNote": "Every option is free — price depends on quantity only.",
-    "engine": "The preview is rendered by the shared @gl/constructor engine — the same code goes to print."
+    "engine": "The preview is rendered by the shared @gl/constructor engine — the same code goes to print.",
+    "upload": "Upload a face photo",
+    "removing": "Removing the background…",
+    "adjust": "Adjust the face",
+    "scale": "Size",
+    "rotation": "Rotation",
+    "reset": "Recenter",
+    "mockNote": "Demo: the background is removed by the provider on order (client's key wired later)."
   }
 }

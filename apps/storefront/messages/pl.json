@@ -18,6 +18,13 @@
     "deferred": "Podgląd bez zdjęcia — wgraj je w następnym kroku",
     "add": "Dodaj do koszyka",
     "freeNote": "Każda opcja gratis — cena zależy tylko od ilości.",
-    "engine": "Podgląd renderuje wspólny silnik @gl/constructor — ten sam kod pójdzie do druku."
+    "engine": "Podgląd renderuje wspólny silnik @gl/constructor — ten sam kod pójdzie do druku.",
+    "upload": "Wgraj zdjęcie twarzy",
+    "removing": "Zdejmuję tło…",
+    "adjust": "Dopasuj twarz",
+    "scale": "Rozmiar",
+    "rotation": "Obrót",
+    "reset": "Wyśrodkuj",
+    "mockNote": "Demo: tło zdejmuje usługa przy zamówieniu (klucz klienta podłączymy później)."
   }
 }

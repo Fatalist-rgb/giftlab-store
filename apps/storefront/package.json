@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@gl/constructor": "workspace:*",
+    "@gl/cutout": "workspace:*",
     "next": "^15.1.3",
     "next-intl": "^3.26.3",
     "react": "^19.0.0",

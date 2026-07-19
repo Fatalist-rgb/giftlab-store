@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // @gl/constructor ships as TypeScript source — let Next compile it
-  transpilePackages: ['@gl/constructor'],
+  transpilePackages: ['@gl/constructor', '@gl/cutout'],
   webpack: (config) => {
     // the engine uses ESM-style ".js" specifiers that point at ".ts" sources;
     // teach webpack to resolve them (tsc/vitest already do via Bundler resolution)
