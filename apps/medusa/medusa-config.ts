@@ -12,5 +12,9 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
     }
-  }
+  },
+  modules: [
+    // GiftLab custom modules (personalized-figurine domain)
+    { resolve: './src/modules/product_customization' },
+  ],
 })
