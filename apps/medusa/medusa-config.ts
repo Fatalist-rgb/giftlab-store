@@ -19,5 +19,6 @@ module.exports = defineConfig({
     { resolve: './src/modules/personalization' },
     { resolve: './src/modules/price_history' },
     { resolve: './src/modules/content' },
+    { resolve: './src/modules/consent' },
   ],
 })
