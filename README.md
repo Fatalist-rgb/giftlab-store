@@ -61,12 +61,27 @@ pnpm db:local:stop
 
 Connection string (matches `.env.example`): `postgres://giftlab:giftlab@localhost:5432/giftlab`
 
-### Run the apps
+### Run the storefront
 
 ```bash
 pnpm --filter storefront dev        # http://localhost:3000  (live constructor preview)
-cd apps/medusa && npm run dev        # Medusa backend + admin
 ```
+
+### Run the Medusa backend
+
+The backend keeps its own npm install (see the note in the layout above).
+
+```bash
+cd apps/medusa
+cp .env.example .env                 # then set DATABASE_URL / secrets
+npm install
+npx medusa db:migrate                # apply the schema to your database
+npx medusa user -e admin@giftlab.dev -p <password>   # first admin (local dev)
+npm run dev                          # backend :9000, admin at :9000/app
+```
+
+In development Medusa needs no Redis — it falls back to in-memory modules. In production
+set `REDIS_URL` (event bus, cache, workflow engine).
 
 ## Deployment (client-owned accounts)
 
