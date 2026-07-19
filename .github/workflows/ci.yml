@@ -38,4 +38,5 @@ jobs:
           cache: npm
           cache-dependency-path: apps/medusa/package-lock.json
       - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
       - run: npm run test:unit

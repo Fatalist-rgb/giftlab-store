@@ -21,7 +21,8 @@ class ConsentModuleService extends MedusaService({ ConsentRecord }) {
       {
         type: input.type,
         subject_ref: input.subject_ref,
-        categories: input.categories ?? null,
+        // model.json() types as Record<string, unknown>; cookies store an array of categories
+        categories: (input.categories ?? null) as unknown as Record<string, unknown>,
         granted_at: input.granted_at ?? new Date(),
         ip_hash: input.ip_hash ?? null,
         user_agent: input.user_agent ?? null,

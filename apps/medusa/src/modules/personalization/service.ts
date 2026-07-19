@@ -44,7 +44,8 @@ class PersonalizationModuleService extends MedusaService({
         schema_version: input.schema_version,
         character_selections: input.character_selections,
         face_layer: input.face_layer ?? null,
-        text_values: input.text_values ?? [],
+        // model.json() types as Record<string, unknown>; this field holds an array (jsonb keeps it)
+        text_values: (input.text_values ?? []) as unknown as Record<string, unknown>,
         selected_options: input.selected_options ?? {},
         computed_price: input.computed_price,
         photo_status,
