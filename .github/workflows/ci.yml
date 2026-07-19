@@ -21,3 +21,21 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+
+  # Medusa keeps its own npm install (outside the pnpm workspace), so its unit
+  # tests — the legal invariants: free defaults, per-line withdrawal right, Omnibus —
+  # run in a separate job.
+  medusa:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/medusa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: apps/medusa/package-lock.json
+      - run: npm ci
+      - run: npm run test:unit
