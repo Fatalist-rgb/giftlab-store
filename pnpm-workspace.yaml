@@ -1,3 +1,6 @@
 packages:
   - "apps/*"
+  # Medusa manages its own npm install — pnpm's strict linking breaks its module
+  # resolution, so it is intentionally kept out of the pnpm workspace.
+  - "!apps/medusa"
   - "packages/*"
