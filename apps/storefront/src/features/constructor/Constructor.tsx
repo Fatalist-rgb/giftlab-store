@@ -102,6 +102,32 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
   };
   const clearFace = () => setFacePhotoId(null);
 
+  // add-to-cart: persist the design on the backend (engine re-validates, server owns the
+  // price) and build a cart; the cart id is kept for the future cart page
+  const [adding, setAdding] = useState(false);
+  const [added, setAdded] = useState(false);
+  const [addError, setAddError] = useState(false);
+  const addToCart = async () => {
+    setAdding(true);
+    setAdded(false);
+    setAddError(false);
+    try {
+      const res = await fetch('/api/gl/add-to-cart', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ design, cartId: localStorage.getItem('gl_cart_id') }),
+      });
+      const body = (await res.json()) as { cartId?: string };
+      if (!res.ok || !body.cartId) throw new Error('add-to-cart failed');
+      localStorage.setItem('gl_cart_id', body.cartId);
+      setAdded(true);
+    } catch {
+      setAddError(true);
+    } finally {
+      setAdding(false);
+    }
+  };
+
   const design: DesignState = useMemo(
     () => ({
       productSchemaId: schema.id,
@@ -314,9 +340,24 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
           </div>
         </div>
 
-        <button className="mt-4 w-full rounded-2xl border-2 border-ink bg-mandarin py-3 font-display font-bold text-white shadow-offset">
-          {t('add')}
+        <button
+          onClick={addToCart}
+          disabled={adding}
+          data-testid="add-to-cart"
+          className="mt-4 w-full rounded-2xl border-2 border-ink bg-mandarin py-3 font-display font-bold text-white shadow-offset disabled:opacity-60"
+        >
+          {adding ? '…' : t('add')}
         </button>
+        {added && (
+          <p className="mt-3 rounded-xl bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-900" data-testid="added-ok">
+            {t('added')}
+          </p>
+        )}
+        {addError && (
+          <p className="mt-3 rounded-xl bg-red-100 px-4 py-2 text-sm font-semibold text-red-900">
+            {t('addError')}
+          </p>
+        )}
       </div>
     </main>
   );

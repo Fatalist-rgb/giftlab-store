@@ -28,7 +28,9 @@
     "scale": "Size",
     "rotation": "Rotation",
     "reset": "Recenter",
-    "mockNote": "Demo: the background is removed by the provider on order (client's key wired later)."
+    "mockNote": "Demo: the background is removed by the provider on order (client's key wired later).",
+    "added": "Added to cart ✓",
+    "addError": "Could not add — please try again."
   },
   "catalog": {
     "title": "Catalogue",
