@@ -26,7 +26,13 @@ if (r2) {
   console.log(`[render-worker] storage: local disk (${outDir}) — set R2_* to use Cloudflare R2`);
 }
 
-const worker = startRenderWorker({ redisUrl, resolveAssets, storage });
+// completion hook: reports finished packages back to Medusa (flips lines to "ready")
+const hookUrl = process.env.RENDER_HOOK_URL;
+const hookToken = process.env.RENDER_HOOK_TOKEN;
+const completionHook = hookUrl && hookToken ? { url: hookUrl, token: hookToken } : undefined;
+if (!completionHook) console.log('[render-worker] no RENDER_HOOK_URL/TOKEN — packages will not be reported back');
+
+const worker = startRenderWorker({ redisUrl, resolveAssets, storage, completionHook });
 
 worker.on('ready', () => console.log('[render-worker] listening on gl:render'));
 worker.on('failed', (job, err) => console.error('[render-worker] job failed', job?.id, err));

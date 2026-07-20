@@ -28,3 +28,6 @@ Thumbs.db
 .admin-prod*.txt
 .pk-prod.txt
 .railway-token
+
+.vercel
+.render-hook-token.txt
