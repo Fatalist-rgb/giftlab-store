@@ -8,6 +8,21 @@ import { isPersonalized, withdrawalRightFor } from './validate'
 type FaceLayer = { uploaded_photo_id?: string | null; x?: number; y?: number; scale?: number; rotation?: number }
 type TextValue = { field_id: string; value: string; font?: string; color?: string }
 
+export type UploadedPhotoRow = {
+  id: string
+  original_key: string
+  cutout_key: string | null
+  preview_key: string | null
+  mime: string | null
+  width_px: number | null
+  height_px: number | null
+  cutout_status: 'pending' | 'ready' | 'failed'
+  checksum: string | null
+  consent_id: string | null
+  expires_at: Date | null
+  status: 'active' | 'deleted'
+}
+
 /**
  * The personalization domain: customer designs, their uploaded photos, the produced
  * manufacturing packages, and the per-line design/legal snapshot on order lines.
@@ -55,6 +70,28 @@ class PersonalizationModuleService extends MedusaService({
       },
     ])
     return design
+  }
+
+  /**
+   * Typed access to the generated uploaded_photo CRUD. The type generator pluralizes
+   * "Photo" as "Photoes" while the runtime registers "Photos" — these wrappers pin the
+   * runtime name once, typed, so routes never touch the mismatch.
+   */
+  private get photos() {
+    return this as unknown as {
+      createUploadedPhotos(data: Record<string, unknown>[]): Promise<UploadedPhotoRow[]>
+      updateUploadedPhotos(data: Record<string, unknown>[]): Promise<UploadedPhotoRow[]>
+    }
+  }
+
+  async createPhoto(data: Record<string, unknown>): Promise<UploadedPhotoRow> {
+    const [row] = await this.photos.createUploadedPhotos([data])
+    return row
+  }
+
+  async updatePhoto(data: Record<string, unknown> & { id: string }): Promise<UploadedPhotoRow> {
+    const [row] = await this.photos.updateUploadedPhotos([data])
+    return row
   }
 
   /**
