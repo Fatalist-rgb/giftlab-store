@@ -25,7 +25,7 @@ export default async function CatalogPage({ params }: { params: Promise<{ locale
             <li key={p.id} className="rounded-2xl border border-black/10 p-5 transition hover:shadow-md">
               <Link href={`/${locale}/product`} className="block">
                 {p.thumbnail ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- catalogue thumbnails come from Medusa with unknown domains
+                  // plain <img>: catalogue thumbnails come from Medusa with unknown domains
                   <img src={p.thumbnail} alt="" className="mb-4 aspect-[4/3] w-full rounded-xl object-cover" />
                 ) : (
                   <div className="mb-4 flex aspect-[4/3] w-full items-center justify-center rounded-xl bg-black/5 text-4xl">
