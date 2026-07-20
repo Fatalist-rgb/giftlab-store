@@ -1,33 +1,35 @@
+
+
+!.env.example
+# agent tooling (regenerable; see .specify/ + specs/ for tracked SDD)
 # dependencies / build
-node_modules/
-.next/
-dist/
-build/
-out/
-.turbo/
-coverage/
-*.tsbuildinfo
 # env / secrets
+# hosting / agent-local tooling (not product)
+# local prod credentials (never commit)
+# os / logs
+*.log
+*.tsbuildinfo
+.DS_Store
+.admin-prod*.txt
+.agents/
+.awaiting-line.txt
+.claude/
+.claude/settings.local.json
+.claude/skills/brainstorming
 .env
 .env.*
-!.env.example
-# hosting / agent-local tooling (not product)
-.vercel/
-.agents/
-.claude/skills/brainstorming
-.claude/settings.local.json
-# os / logs
-.DS_Store
-Thumbs.db
-*.log
-
-# agent tooling (regenerable; see .specify/ + specs/ for tracked SDD)
-.claude/
-
-# local prod credentials (never commit)
-.admin-prod*.txt
+.next/
 .pk-prod.txt
 .railway-token
-
-.vercel
+.redis-pub.txt
 .render-hook-token.txt
+.schema-cache.json
+.turbo/
+.vercel
+.vercel/
+Thumbs.db
+build/
+coverage/
+dist/
+node_modules/
+out/
