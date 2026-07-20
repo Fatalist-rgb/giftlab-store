@@ -30,6 +30,19 @@ jobs:
     defaults:
       run:
         working-directory: apps/medusa
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: giftlab
+          POSTGRES_PASSWORD: giftlab
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -40,3 +53,5 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run test:unit
+      # contract tests boot the app against a throwaway database on the service container
+      - run: npm run test:integration:http
