@@ -81,7 +81,18 @@ class PersonalizationModuleService extends MedusaService({
     return this as unknown as {
       createUploadedPhotos(data: Record<string, unknown>[]): Promise<UploadedPhotoRow[]>
       updateUploadedPhotos(data: Record<string, unknown>[]): Promise<UploadedPhotoRow[]>
+      listUploadedPhotos(
+        filter: Record<string, unknown>,
+        config?: Record<string, unknown>,
+      ): Promise<UploadedPhotoRow[]>
     }
+  }
+
+  async listPhotos(
+    filter: Record<string, unknown>,
+    config?: Record<string, unknown>,
+  ): Promise<UploadedPhotoRow[]> {
+    return this.photos.listUploadedPhotos(filter, config)
   }
 
   async createPhoto(data: Record<string, unknown>): Promise<UploadedPhotoRow> {
