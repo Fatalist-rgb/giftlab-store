@@ -6,6 +6,7 @@ import {
   renderSceneToCanvas,
   type DesignState,
   type LocalizedText,
+  type ProductSchema,
 } from '@gl/constructor';
 import { createCutoutProvider } from '@gl/cutout';
 import { useLocale, useTranslations } from 'next-intl';
@@ -28,10 +29,11 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 type Adj = { x: number; y: number; scale: number; rotation: number };
 const CENTER: Adj = { x: 0, y: 0, scale: 1, rotation: 0 };
 
-export function Constructor() {
+export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } = {}) {
   const t = useTranslations('product');
   const locale = useLocale();
-  const schema = demoSchema;
+  // Published schema from Medusa when available; the local demo schema is the fallback.
+  const schema = schemaProp ?? demoSchema;
   const bodyLayer = schema.characterLayers[0]!;
 
   const [variantId, setVariantId] = useState(bodyLayer.variants[0]!.id);
