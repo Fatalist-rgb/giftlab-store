@@ -24,7 +24,9 @@ async function storeFetch(path: string, init?: RequestInit): Promise<unknown> {
       'content-type': 'application/json',
       ...(init?.headers ?? {}),
     },
-    cache: 'no-store',
+    // ISR: cache the response and refresh it periodically, so the product/content pages
+    // are fast (CDN-served) yet pick up backend edits within a few minutes
+    next: { revalidate: 300 },
     // a hung backend must not stall the page — fall back to the demo schema instead
     signal: AbortSignal.timeout(5000),
   });

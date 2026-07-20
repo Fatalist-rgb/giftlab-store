@@ -8,13 +8,14 @@ import {
   type LocalizedText,
   type ProductSchema,
 } from '@gl/constructor';
-import { createCutoutProvider } from '@gl/cutout';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { demoSchema, SAMPLE_FACE_KEY, SAMPLE_PHOTO_ID } from '@/lib/schema';
+import { createBrowserCutout } from '@/lib/cutout';
 
 const PREVIEW_SCALE = 1.2;
-const cutout = createCutoutProvider('mock');
+// real in-browser background removal (@imgly); the model loads lazily on first upload
+const cutout = createBrowserCutout();
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {

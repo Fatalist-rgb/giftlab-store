@@ -2,6 +2,9 @@ import { setRequestLocale } from 'next-intl/server';
 import { Constructor } from '@/features/constructor/Constructor';
 import { fetchProductSchema, FIGURINE_PRODUCT_ID } from '@/lib/backend';
 
+// ISR — the page is prebuilt with the live schema and refreshed every 5 minutes
+export const revalidate = 300;
+
 export default async function ProductPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
