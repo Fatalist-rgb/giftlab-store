@@ -23,3 +23,8 @@ Thumbs.db
 
 # agent tooling (regenerable; see .specify/ + specs/ for tracked SDD)
 .claude/
+
+# local prod credentials (never commit)
+.admin-prod*.txt
+.pk-prod.txt
+.railway-token
