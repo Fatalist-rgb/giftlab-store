@@ -1,8 +1,28 @@
-import { createCanvas, loadImage, type Canvas, type Image } from '@napi-rs/canvas';
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createCanvas, loadImage, GlobalFonts, type Canvas, type Image } from '@napi-rs/canvas';
 import type { ProductSchema } from '../schema/types.js';
 import type { Ctx2D, MakeCanvas } from './context.js';
 import { drawScene } from './draw.js';
 import type { Scene } from './types.js';
+
+// Server containers ship no system fonts — without this the text layer silently renders
+// nothing. The brand font (OFL) is bundled with the package and registered once.
+let fontsReady = false;
+function ensureFonts(): void {
+  if (fontsReady) return;
+  fontsReady = true;
+  try {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const ttf = join(here, '..', '..', 'assets', 'fonts', 'BricolageGrotesque.ttf');
+    if (existsSync(ttf)) {
+      GlobalFonts.registerFromPath(ttf, 'Bricolage Grotesque');
+    }
+  } catch {
+    // fall back to whatever fonts the host has
+  }
+}
 
 export interface ServerRenderOptions {
   schema: ProductSchema;
@@ -19,6 +39,7 @@ export interface ServerRenderOptions {
  * cut-contour tracer needs the alpha channel). Deterministic: same input → same pixels.
  */
 export async function renderSceneCanvas(scene: Scene, opts: ServerRenderOptions): Promise<Canvas> {
+  ensureFonts();
   const scale = opts.scale ?? 1;
   const w = Math.max(1, Math.round(opts.schema.canvasPx.w * scale));
   const h = Math.max(1, Math.round(opts.schema.canvasPx.h * scale));

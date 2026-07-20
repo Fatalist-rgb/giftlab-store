@@ -44,6 +44,7 @@ export interface RenderJobPayload {
 export async function enqueueRender(payload: RenderJobPayload): Promise<boolean> {
   const q = renderQueueOrNull()
   if (!q) return false
-  await q.add('render', payload, { jobId: `render:${payload.lineItemId}` }) // idempotent per line
+  // idempotent per line; BullMQ forbids ':' in custom job ids
+  await q.add('render', payload, { jobId: `render-${payload.lineItemId}` })
   return true
 }
