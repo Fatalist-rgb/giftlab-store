@@ -77,9 +77,9 @@ export default async function ({ container }: ExecArgs) {
   const [option] = await fulfillment.listShippingOptions({ name: OPTION_NAME }, { relations: ['rules'] })
   for (const rule of option?.rules ?? []) {
     const raw = String(rule.value ?? '')
-    if (raw.startsWith('"') && raw.endsWith('"')) {
+    if (rule.operator === 'eq' && raw.startsWith('"') && raw.endsWith('"')) {
       await fulfillment.updateShippingOptionRules([
-        { id: rule.id, attribute: rule.attribute, operator: rule.operator, value: raw.slice(1, -1) },
+        { id: rule.id, attribute: rule.attribute, operator: 'eq', value: raw.slice(1, -1) },
       ])
       console.log(`rule normalized: ${rule.attribute} -> ${raw.slice(1, -1)}`)
     }
