@@ -74,12 +74,12 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 
 ### Implementation for User Story 1
 
-- [ ] T032 [US1] `GET /store/gl/products/:handle/schema` (published version + artwork URLs) in `apps/medusa/src/api/store/gl/products/[handle]/schema/route.ts`
+- [x] T032 [US1] `GET /store/gl/products/:handle/schema` (published version + artwork URLs) in `apps/medusa/src/api/store/gl/products/[handle]/schema/route.ts`
 - [ ] T033 [US1] `POST /uploads/sign` + `POST /uploads/:id/finalize` (presigned PUT; `sharp`+`heic-convert` HEIC→raster, EXIF normalize, strip metadata; returns `quality.warning`, never blocks) in `apps/medusa/src/api/store/gl/uploads/`
 - [ ] T034 [US1] `POST/GET /uploads/:id/cutout` — enqueue `gl:cutout`, poll status, store `cutout_key` — in `apps/medusa/src/api/store/gl/uploads/[id]/cutout/route.ts`
 - [ ] T035 [US1] Cutout job processor (calls `packages/cutout` adapter, retries, marks `failed` gracefully) in `apps/render-worker/src/processors/cutout.ts`
-- [ ] T036 [US1] Authoritative `POST /store/gl/price` using `computePrice` + ladder in `apps/medusa/src/api/store/gl/price/route.ts`
-- [ ] T037 [US1] `POST /store/gl/cart/:cartId/line-items` — validate designs, re-check free-default invariant, recompute price, persist DesignStates, attach to Medusa line items (supports multiple designs) in `apps/medusa/src/api/store/gl/cart/`
+- [x] T036 [US1] Authoritative `POST /store/gl/price` using `computePrice` + ladder in `apps/medusa/src/api/store/gl/price/route.ts`
+- [x] T037 [US1] `POST /store/gl/cart/:cartId/line-items` — shipped as `POST /store/gl/carts` (cart built from persisted designs; cross-design ladder) — validate designs, re-check free-default invariant, recompute price, persist DesignStates, attach to Medusa line items (supports multiple designs) in `apps/medusa/src/api/store/gl/cart/`
 - [ ] T038 [US1] `GET /store/gl/delivery-estimate` — returns a **date window** with production folded in — in `apps/medusa/src/api/store/gl/delivery-estimate/route.ts`
 - [ ] T039 [P] [US1] Product page shell + lazy-loaded constructor: character pickers (exposed **buttons**, not dropdowns), face upload with progress, live preview in `apps/storefront/src/features/constructor/`
 - [ ] T040 [P] [US1] Cutout UX: honest progress, retry, swap photo, **"order now, send the photo later"** escape hatch in `apps/storefront/src/features/constructor/FaceUpload.tsx`
@@ -89,11 +89,11 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 - [ ] T044 [US1] Cart + checkout UI via Medusa store API, **guest checkout**, in `apps/storefront/src/features/checkout/`
 - [ ] T045 [US1] Configure Medusa payment provider: card + **BLIK as a first-class choice** + Przelewy24 in `apps/medusa/src/modules/payment/`
 - [ ] T046 [US1] InPost Paczkomat delivery option with **in-checkout locker picker** + courier + free-delivery threshold progress in `apps/storefront/src/features/checkout/Delivery.tsx`
-- [ ] T047 [US1] `order.placed` subscriber: freeze DesignStates, snapshot schema version, **compute withdrawal right per line**, record notice version, store promised delivery window, enqueue `gl:render` in `apps/medusa/src/subscribers/order-placed.ts`
+- [x] T047 [US1] `order.placed` subscriber: freeze DesignStates, snapshot schema version, **compute withdrawal right per line**, record notice version, store promised delivery window, enqueue `gl:render` in `apps/medusa/src/subscribers/order-placed.ts`
 - [ ] T048 [US1] Render processor: load design+schema+artwork+cutout → `buildScene`→`renderToCanvas` 300 DPI PNG → `buildCutContour` SVG → PDF (CutContour spot) → `spec.json` + preview → R2 → ProductionPackage + status; `awaiting_photo` when deferred, in `apps/render-worker/src/processors/render.ts`
 - [ ] T049 [US1] `GET /store/gl/orders/:orderId/lines/:lineId/render-status` + `POST .../photo` (attach deferred photo) in `apps/medusa/src/api/store/gl/orders/`
 - [ ] T050 [US1] Order-confirmation email (Medusa notification) in `apps/medusa/src/modules/notification/`
-- [ ] T051 [US1] Seed script: figurine product + published ProductSchema (character variants, ladder, contour) in `apps/medusa/src/scripts/seed-figurine.ts`
+- [x] T051 [US1] Seed script: figurine product + published ProductSchema — shipped as `seed-catalog.ts` (+ `seed-shipping.ts`, `seed-content.ts`)
 
 **Checkpoint**: US1 fully functional and demoable (MVP).
 
