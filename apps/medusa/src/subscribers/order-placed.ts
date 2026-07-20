@@ -34,6 +34,8 @@ export default async function orderPlacedHandler({
         design_state_id: designId,
         schema_version: design.schema_version,
         withdrawal_notice_version: 'v1',
+        order_id: order.id,
+        order_display_id: (order.display_id as number | undefined) ?? null,
       })
       frozen += 1
       logger.info(

@@ -41,10 +41,18 @@ export interface RenderJobPayload {
   assetKeys: string[]
 }
 
-export async function enqueueRender(payload: RenderJobPayload): Promise<boolean> {
+export async function enqueueRender(
+  payload: RenderJobPayload,
+  opts: { forceNew?: boolean } = {},
+): Promise<boolean> {
   const q = renderQueueOrNull()
   if (!q) return false
-  // idempotent per line; BullMQ forbids ':' in custom job ids
-  await q.add('render', payload, { jobId: `render-${payload.lineItemId}` })
+  // stable id = idempotent against a double-fired order event; forceNew = operator
+  // requeue must bypass an existing (e.g. failed) job with the stable id.
+  // BullMQ forbids ':' in custom job ids.
+  const jobId = opts.forceNew
+    ? `render-${payload.lineItemId}-r${Date.now()}`
+    : `render-${payload.lineItemId}`
+  await q.add('render', payload, { jobId })
   return true
 }

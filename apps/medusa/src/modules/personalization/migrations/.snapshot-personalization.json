@@ -306,6 +306,38 @@
           "enumItems": [],
           "mappedType": "text"
         },
+        "order_id": {
+          "name": "order_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "order_display_id": {
+          "name": "order_display_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
         "design_state_id": {
           "name": "design_state_id",
           "type": "text",
@@ -471,6 +503,15 @@
           "primary": false,
           "unique": false,
           "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_order_line_design_medusa_line_item_id_unique\" ON \"order_line_design\" (\"medusa_line_item_id\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_order_line_design_order_id",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_order_line_design_order_id\" ON \"order_line_design\" (\"order_id\") WHERE deleted_at IS NULL"
         },
         {
           "keyName": "IDX_order_line_design_design_state_id",

@@ -37,6 +37,8 @@ export async function enqueueRenderForLine(
     designStateId: string
     /** medusa product id the schema rows are keyed by (line item's product_id) */
     schemaProductId: string
+    /** operator requeue: bypass the stable job id (an old failed job may hold it) */
+    forceNew?: boolean
   },
 ): Promise<EnqueueResult> {
   const personalization: PersonalizationModuleService = container.resolve(PERSONALIZATION_MODULE)
@@ -82,14 +84,17 @@ export async function enqueueRenderForLine(
     photoStatus: engineFace ? 'ready' : 'deferred',
   }
 
-  const queued = await enqueueRender({
-    orderId: input.orderId,
-    orderDisplayId: input.orderDisplayId,
-    lineItemId: input.lineItemId,
-    designStateId: input.designStateId,
-    schema: schemaRow.definition as Record<string, unknown>,
-    design: engineDesign,
-    assetKeys: [...assetKeys],
-  })
+  const queued = await enqueueRender(
+    {
+      orderId: input.orderId,
+      orderDisplayId: input.orderDisplayId,
+      lineItemId: input.lineItemId,
+      designStateId: input.designStateId,
+      schema: schemaRow.definition as Record<string, unknown>,
+      design: engineDesign,
+      assetKeys: [...assetKeys],
+    },
+    { forceNew: input.forceNew },
+  )
   return { ok: true, queued }
 }

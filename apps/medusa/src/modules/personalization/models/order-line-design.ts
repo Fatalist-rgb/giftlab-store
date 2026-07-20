@@ -9,6 +9,9 @@ import { model } from '@medusajs/framework/utils'
 const OrderLineDesign = model.define('order_line_design', {
   id: model.id().primaryKey(),
   medusa_line_item_id: model.text().unique(),
+  // denormalized at freeze time so admin surfaces need no cross-module joins
+  order_id: model.text().index().nullable(),
+  order_display_id: model.number().nullable(),
   design_state_id: model.text().index(),
   schema_version: model.number(),
   production_package_id: model.text().nullable(),

@@ -115,6 +115,8 @@ class PersonalizationModuleService extends MedusaService({
     design_state_id: string
     schema_version: number
     withdrawal_notice_version?: string
+    order_id?: string
+    order_display_id?: number | null
   }) {
     const design = await this.retrieveDesignState(input.design_state_id)
     const right = withdrawalRightFor({
@@ -130,6 +132,8 @@ class PersonalizationModuleService extends MedusaService({
         render_status: design.photo_status === 'deferred' ? 'awaiting_photo' : 'queued',
         withdrawal_right: right,
         withdrawal_notice_version: input.withdrawal_notice_version ?? null,
+        order_id: input.order_id ?? null,
+        order_display_id: input.order_display_id ?? null,
       },
     ])
     return line
