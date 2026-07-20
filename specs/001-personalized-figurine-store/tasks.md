@@ -67,10 +67,10 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 
 ### Tests for User Story 1 ⚠️ (write first, must fail before implementation)
 
-- [ ] T028 [P] [US1] Contract tests for `/store/gl/products/:handle/schema`, `/uploads/sign|finalize|cutout`, `/price`, `/cart/:id/line-items`, `/delivery-estimate`, `/render-status` in `apps/medusa/tests/contract/store-gl.spec.ts`
+- [x] T028 [P] [US1] Contract tests for `/store/gl/products/:handle/schema`, `/uploads/sign|finalize|cutout`, `/price`, `/cart/:id/line-items`, `/delivery-estimate`, `/render-status` in `apps/medusa/tests/contract/store-gl.spec.ts` — покрыто: schema/price/designs + free-default; uploads/delivery-estimate/render-status добавятся с их развитием
 - [x] T029 [P] [US1] Golden-image fidelity test (browser vs server render of a fixed DesignState, pixel tolerance) in `packages/constructor/tests/golden.spec.ts`
 - [ ] T030 [P] [US1] Playwright E2E: character → face upload → cutout → name → options → cart → checkout(BLIK test) → confirmation in `apps/storefront/tests/e2e/design-order.spec.ts`
-- [ ] T031 [P] [US1] Test: **no paid option is pre-selected** and add-to-cart rejects a paid default, in `apps/medusa/tests/contract/free-defaults.spec.ts`
+- [x] T031 [P] [US1] Test: **no paid option is pre-selected** and add-to-cart rejects a paid default, in `apps/medusa/tests/contract/free-defaults.spec.ts`
 
 ### Implementation for User Story 1
 
@@ -113,7 +113,7 @@ to problems.
 
 - [ ] T054 [US2] `GET /admin/gl/orders/:orderId/lines/:lineId/package` (signed R2 URLs; 409 if not ready) in `apps/medusa/src/api/admin/gl/orders/[orderId]/lines/[lineId]/package/route.ts`
 - [ ] T055 [US2] Admin widget: view DesignState + preview + download package + withdrawal flag in `apps/medusa/src/admin/widgets/order-design.tsx`
-- [ ] T056 [US2] `GET /admin/gl/orders/flagged` + admin surface for `render_failed` / `awaiting_photo` in `apps/medusa/src/api/admin/gl/orders/flagged/route.ts`
+- [x] T056 [US2] `GET /admin/gl/orders/flagged` + admin surface for `render_failed` / `awaiting_photo` in `apps/medusa/src/api/admin/gl/orders/flagged/route.ts`
 - [ ] T057 [US2] `PATCH /admin/gl/products/:id/schema` — publish new immutable version, reject paid defaults, snapshot price to PriceHistory, in `apps/medusa/src/api/admin/gl/products/[id]/schema/route.ts`
 - [ ] T058 [US2] `GET /admin/gl/orders/export?format=csv|xlsx` (order + fulfilment + design summary + withdrawal flag) in `apps/medusa/src/api/admin/gl/orders/export/route.ts`
 
