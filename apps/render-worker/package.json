@@ -7,7 +7,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src tests",
     "test": "vitest run",
-    "start": "tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "render:sample": "tsx src/render-sample.ts"
   },
   "dependencies": {
     "@gl/config": "workspace:*",

@@ -2,28 +2,37 @@ import type { DesignState, ProductSchema } from '@gl/constructor';
 import { Worker, type Job } from 'bullmq';
 import IORedis from 'ioredis';
 import { buildProductionPackage } from './package/build.js';
+import type { PackageStorage } from './storage/types.js';
 
 export interface RenderJobData {
   orderLineId: string;
   schema: ProductSchema;
   design: DesignState;
-  /** in production these are R2 keys, resolved to bytes before rendering */
+  /** asset keys the renderer needs: artwork, face mask, and the customer's cutout */
   assetKeys: string[];
 }
 
+/** Resolves asset keys to bytes — local disk in development, R2 in production. */
+export type AssetResolver = (keys: string[]) => Promise<Map<string, Uint8Array>>;
+
+export interface RenderWorkerOptions {
+  redisUrl: string;
+  resolveAssets: AssetResolver;
+  storage: PackageStorage;
+}
+
 /**
- * BullMQ consumer of the `gl:render` queue. The rendering core (buildProductionPackage) is
- * fully wired; the two seams still blocked on the client's Cloudflare credentials are
- * fetching artwork/cutout bytes from R2 and storing the finished package back to R2.
+ * BullMQ consumer of the `gl:render` queue. Assets and storage are injected as ports, so
+ * the same worker runs against local disk in development and Cloudflare R2 in production —
+ * only the adapters change, never this code.
  */
-export function startRenderWorker(redisUrl: string): Worker<RenderJobData> {
-  const connection = new IORedis(redisUrl, { maxRetriesPerRequest: null });
+export function startRenderWorker(opts: RenderWorkerOptions): Worker<RenderJobData> {
+  const connection = new IORedis(opts.redisUrl, { maxRetriesPerRequest: null });
 
   return new Worker<RenderJobData>(
     'gl:render',
     async (job: Job<RenderJobData>) => {
-      // TODO(client-R2): resolve job.data.assetKeys -> bytes from Cloudflare R2
-      const assetBytes = new Map<string, Uint8Array>();
+      const assetBytes = await opts.resolveAssets(job.data.assetKeys);
 
       const pkg = await buildProductionPackage({
         schema: job.data.schema,
@@ -31,11 +40,18 @@ export function startRenderWorker(redisUrl: string): Worker<RenderJobData> {
         assetBytes,
       });
 
-      // TODO(client-R2): upload pkg.printPng / cutSvg / previewPng / specJson to R2 and
-      // persist a ProductionPackage row against the order line.
+      const prefix = `orders/${job.data.orderLineId}`;
+      const stored = await Promise.all([
+        opts.storage.put(`${prefix}/print.png`, pkg.printPng, 'image/png'),
+        opts.storage.put(`${prefix}/cut.svg`, pkg.cutSvg, 'image/svg+xml'),
+        opts.storage.put(`${prefix}/preview.png`, pkg.previewPng, 'image/png'),
+        opts.storage.put(`${prefix}/spec.json`, pkg.specJson, 'application/json'),
+      ]);
+
+      // TODO(medusa): persist a ProductionPackage row against the order line with these keys
       return {
         orderLineId: job.data.orderLineId,
-        printBytes: pkg.printPng.length,
+        stored: stored.map((o) => ({ key: o.key, bytes: o.bytes })),
         withdrawalRight: pkg.meta.withdrawalRight,
       };
     },

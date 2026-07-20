@@ -14,7 +14,7 @@ class ProductCustomizationModuleService extends MedusaService({ ProductSchema })
    * as the single active (published) schema.
    */
   async publishSchema(productId: string, definition: unknown) {
-    validatePublishableSchema(definition)
+    const parsed = validatePublishableSchema(definition)
 
     const existing = await this.listProductSchemas({ product_id: productId })
     const nextVersion = existing.reduce((max, s) => Math.max(max, s.version), 0) + 1
@@ -31,7 +31,9 @@ class ProductCustomizationModuleService extends MedusaService({ ProductSchema })
         product_id: productId,
         version: nextVersion,
         status: 'published',
-        definition: definition as Record<string, unknown>,
+        // keep the document's own `version` in step with the row version, so an order
+        // referencing schema_version resolves to exactly this document
+        definition: { ...parsed, version: nextVersion } as unknown as Record<string, unknown>,
         published_at: new Date(),
       },
     ])

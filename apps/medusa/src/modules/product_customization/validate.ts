@@ -1,4 +1,4 @@
-import { parseProductSchema, FreeDefaultViolation } from '../../lib/gl-constructor'
+import { parseProductSchema, FreeDefaultViolation, type ProductSchema } from '../../lib/gl-constructor'
 
 /**
  * Validate a publishable ProductSchema with the shared @gl/constructor engine — the
@@ -7,8 +7,8 @@ import { parseProductSchema, FreeDefaultViolation } from '../../lib/gl-construct
  * so it is rejected at publication). Throws `ZodError` on shape problems and
  * `FreeDefaultViolation` when the default selection is not free.
  */
-export function validatePublishableSchema(definition: unknown): void {
-  parseProductSchema(definition)
+export function validatePublishableSchema(definition: unknown): ProductSchema {
+  return parseProductSchema(definition)
 }
 
 export { FreeDefaultViolation }
