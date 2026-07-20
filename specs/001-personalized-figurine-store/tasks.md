@@ -86,7 +86,7 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 - [ ] T041 [P] [US1] **Clickable step tabs in one block** (Postać · Zdjęcie · Imię · Ilość) — any tab reachable, completed steps marked, «Wstecz/Dalej» nav, live preview stays visible outside the block; live price via the **quantity ladder** (every option free) in `apps/storefront/src/features/constructor/StepTabs.tsx`
 - [ ] T042 [P] [US1] Quantity ladder UI — configure **several different designs** in one order in `apps/storefront/src/features/constructor/BulkLadder.tsx`
 - [ ] T043 [US1] Mobile sticky buy element as a **drawer that completes add-to-cart in place** (never scroll-to-section) in `apps/storefront/src/features/constructor/StickyBuy.tsx`
-- [ ] T044 [US1] Cart + checkout UI via Medusa store API, **guest checkout**, in `apps/storefront/src/features/checkout/`
+- [x] T044 [US1] Cart + checkout UI via Medusa store API, **guest checkout**, in `apps/storefront/src/features/checkout/`
 - [ ] T045 [US1] Configure Medusa payment provider: card + **BLIK as a first-class choice** + Przelewy24 in `apps/medusa/src/modules/payment/`
 - [ ] T046 [US1] InPost Paczkomat delivery option with **in-checkout locker picker** + courier + free-delivery threshold progress in `apps/storefront/src/features/checkout/Delivery.tsx`
 - [x] T047 [US1] `order.placed` subscriber: freeze DesignStates, snapshot schema version, **compute withdrawal right per line**, record notice version, store promised delivery window, enqueue `gl:render` in `apps/medusa/src/subscribers/order-placed.ts`
