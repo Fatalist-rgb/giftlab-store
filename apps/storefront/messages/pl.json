@@ -36,5 +36,32 @@
     "title": "Katalog",
     "empty": "Katalog jest chwilowo pusty — zajrzyj wkrótce.",
     "customize": "Personalizuj"
+  },
+  "cart": {
+    "title": "Koszyk",
+    "loading": "Ładowanie…",
+    "personalized": "personalizowana",
+    "deliveryTitle": "Dostawa",
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "address": "Ulica i numer",
+    "postal": "Kod pocztowy",
+    "city": "Miasto",
+    "phone": "Telefon (opcjonalnie)",
+    "items": "Produkty",
+    "shipping": "Dostawa",
+    "shippingCourier": "Kurier — 15,99 zł",
+    "withdrawalNotice": "Produkty personalizowane (ze zdjęciem lub imieniem) są wykonywane na indywidualne zamówienie i nie podlegają zwrotowi w ramach 14-dniowego prawa odstąpienia (art. 38 pkt 3 ustawy o prawach konsumenta). Pozycje standardowe zachowują pełne prawo zwrotu.",
+    "placeOrder": "Zamawiam i płacę",
+    "paymentNote": "Płatności BLIK / Przelewy24 zostaną włączone wraz z kontem sprzedawcy; obecnie zamówienie testowe.",
+    "error": "Nie udało się złożyć zamówienia. Sprawdź dane i spróbuj ponownie.",
+    "orderBadge": "Dziękujemy!",
+    "orderTitle": "Zamówienie #{number} przyjęte",
+    "orderSub": "Suma: {total}. Potwierdzenie wysłaliśmy na {email}.",
+    "orderAgain": "Zaprojektuj kolejną",
+    "emptyTitle": "Koszyk jest pusty",
+    "emptySub": "Zaprojektuj swoją figurkę i dodaj ją do koszyka.",
+    "emptyCta": "Do konstruktora",
+    "goToCart": "Przejdź do koszyka →"
   }
 }

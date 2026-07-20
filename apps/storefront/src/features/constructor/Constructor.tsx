@@ -10,6 +10,7 @@ import {
 } from '@gl/constructor';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from '@/i18n/navigation';
 import { demoSchema, SAMPLE_FACE_KEY, SAMPLE_PHOTO_ID } from '@/lib/schema';
 import { createBrowserCutout } from '@/lib/cutout';
 import { uploadPhotoWithCutout } from '@/lib/uploads';
@@ -33,6 +34,7 @@ const CENTER: Adj = { x: 0, y: 0, scale: 1, rotation: 0 };
 
 export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } = {}) {
   const t = useTranslations('product');
+  const tCart = useTranslations('cart');
   const locale = useLocale();
   // Published schema from Medusa when available; the local demo schema is the fallback.
   const schema = schemaProp ?? demoSchema;
@@ -360,7 +362,10 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
         </button>
         {added && (
           <p className="mt-3 rounded-xl bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-900" data-testid="added-ok">
-            {t('added')}
+            {t('added')}{' '}
+            <Link href="/cart" className="underline underline-offset-2">
+              {tCart('goToCart')}
+            </Link>
           </p>
         )}
         {addError && (

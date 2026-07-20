@@ -36,5 +36,32 @@
     "title": "Catalogue",
     "empty": "The catalogue is temporarily empty — check back soon.",
     "customize": "Customize"
+  },
+  "cart": {
+    "title": "Cart",
+    "loading": "Loading…",
+    "personalized": "personalized",
+    "deliveryTitle": "Delivery",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "address": "Street and number",
+    "postal": "Postal code",
+    "city": "City",
+    "phone": "Phone (optional)",
+    "items": "Items",
+    "shipping": "Shipping",
+    "shippingCourier": "Courier — 15.99 zł",
+    "withdrawalNotice": "Personalized items (with a photo or a name) are made to order and are excluded from the 14-day right of withdrawal (art. 38(3) of the Polish Consumer Rights Act). Standard items keep the full right of return.",
+    "placeOrder": "Place order & pay",
+    "paymentNote": "BLIK / Przelewy24 payments will be enabled with the merchant account; orders are test-mode for now.",
+    "error": "Could not place the order. Check the details and try again.",
+    "orderBadge": "Thank you!",
+    "orderTitle": "Order #{number} received",
+    "orderSub": "Total: {total}. A confirmation was sent to {email}.",
+    "orderAgain": "Design another one",
+    "emptyTitle": "Your cart is empty",
+    "emptySub": "Design your figurine and add it to the cart.",
+    "emptyCta": "Open the constructor",
+    "goToCart": "Go to cart →"
   }
 }
