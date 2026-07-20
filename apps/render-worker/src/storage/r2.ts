@@ -13,12 +13,17 @@ export interface R2Config {
   bucket: string;
   /** optional public base URL, when a bucket is exposed for customer-facing previews */
   publicBase?: string;
+  /** R2 jurisdiction ("eu" keeps the data in the EU — RODO); affects the endpoint host */
+  jurisdiction?: string;
 }
 
 export function createR2Client(cfg: R2Config): S3Client {
+  const host = cfg.jurisdiction
+    ? `${cfg.accountId}.${cfg.jurisdiction}.r2.cloudflarestorage.com`
+    : `${cfg.accountId}.r2.cloudflarestorage.com`;
   return new S3Client({
     region: 'auto',
-    endpoint: `https://${cfg.accountId}.r2.cloudflarestorage.com`,
+    endpoint: `https://${host}`,
     credentials: { accessKeyId: cfg.accessKeyId, secretAccessKey: cfg.secretAccessKey },
   });
 }
@@ -48,5 +53,6 @@ export function r2ConfigFromEnv(env: NodeJS.ProcessEnv = process.env): R2Config 
     secretAccessKey: R2_SECRET_ACCESS_KEY,
     bucket: env.R2_BUCKET ?? 'giftlab',
     publicBase: env.R2_PUBLIC_BASE,
+    jurisdiction: env.R2_JURISDICTION || undefined,
   };
 }
