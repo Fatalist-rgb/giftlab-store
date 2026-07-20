@@ -1,8 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
-import { PRODUCT_CUSTOMIZATION_MODULE } from '../../../../modules/product_customization'
-import type ProductCustomizationModuleService from '../../../../modules/product_customization/service'
 import { PERSONALIZATION_MODULE } from '../../../../modules/personalization'
 import type PersonalizationModuleService from '../../../../modules/personalization/service'
+import { resolveActiveSchema } from '../resolve-schema'
 import {
   parseProductSchema,
   parseDesignState,
@@ -25,8 +24,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     return res.status(400).json({ message: 'productId and a design object are required' })
   }
 
-  const schemas: ProductCustomizationModuleService = req.scope.resolve(PRODUCT_CUSTOMIZATION_MODULE)
-  const active = await schemas.getActiveSchema(productId)
+  const active = await resolveActiveSchema(req.scope, productId)
   if (!active) {
     return res.status(404).json({ message: `no published schema for product ${productId}` })
   }
@@ -57,6 +55,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       : null,
     text_values: validated.textValues.map((t) => ({ field_id: t.fieldId, value: t.value })),
     selected_options: validated.selectedOptions,
+    quantity: validated.quantity,
     computed_price: price.total,
     photo_status: validated.photoStatus,
   })

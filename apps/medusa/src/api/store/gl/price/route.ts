@@ -1,7 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
-import { PRODUCT_CUSTOMIZATION_MODULE } from '../../../../modules/product_customization'
-import type ProductCustomizationModuleService from '../../../../modules/product_customization/service'
 import { parseProductSchema, computePrice, type DesignState } from '@gl/constructor-vendored'
+import { resolveActiveSchema } from '../resolve-schema'
 
 type PriceRequestDesign = {
   quantity?: number
@@ -25,8 +24,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     return res.status(400).json({ message: 'productId and a non-empty designs[] are required' })
   }
 
-  const svc: ProductCustomizationModuleService = req.scope.resolve(PRODUCT_CUSTOMIZATION_MODULE)
-  const active = await svc.getActiveSchema(productId)
+  const active = await resolveActiveSchema(req.scope, productId)
   if (!active) {
     return res.status(404).json({ message: `no published schema for product ${productId}` })
   }

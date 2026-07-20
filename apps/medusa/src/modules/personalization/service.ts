@@ -28,6 +28,7 @@ class PersonalizationModuleService extends MedusaService({
     face_layer?: FaceLayer | null
     text_values?: TextValue[]
     selected_options?: Record<string, string>
+    quantity?: number
     computed_price: number
     photo_status?: 'ready' | 'deferred' | 'processing' | 'failed'
   }) {
@@ -47,6 +48,7 @@ class PersonalizationModuleService extends MedusaService({
         // model.json() types as Record<string, unknown>; this field holds an array (jsonb keeps it)
         text_values: (input.text_values ?? []) as unknown as Record<string, unknown>,
         selected_options: input.selected_options ?? {},
+        quantity: Math.max(1, input.quantity ?? 1),
         computed_price: input.computed_price,
         photo_status,
         is_personalized: personalized,

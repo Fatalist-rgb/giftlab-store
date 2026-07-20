@@ -118,6 +118,22 @@
           "enumItems": [],
           "mappedType": "json"
         },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "1",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
         "photo_status": {
           "name": "photo_status",
           "type": "text",
