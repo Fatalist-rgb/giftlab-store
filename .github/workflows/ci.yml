@@ -55,3 +55,9 @@ jobs:
       - run: npm run test:unit
       # contract tests boot the app against a throwaway database on the service container
       - run: npm run test:integration:http
+        env:
+          DB_USERNAME: giftlab
+          DB_PASSWORD: giftlab
+          DB_HOST: localhost
+          JWT_SECRET: test-secret
+          COOKIE_SECRET: test-secret
