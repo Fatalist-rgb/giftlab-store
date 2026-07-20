@@ -50,3 +50,24 @@ export async function fetchProductSchema(productId: string): Promise<ProductSche
     return null;
   }
 }
+
+export interface ContentPage {
+  slug: string;
+  locale: string;
+  title: string;
+  body: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
+}
+
+/** An admin-editable content/legal page for a locale (backend falls back to Polish). */
+export async function fetchContentPage(slug: string, locale: string): Promise<ContentPage | null> {
+  if (!backendConfigured) return null;
+  try {
+    return (await storeFetch(
+      `/store/gl/content/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+    )) as ContentPage;
+  } catch {
+    return null;
+  }
+}
