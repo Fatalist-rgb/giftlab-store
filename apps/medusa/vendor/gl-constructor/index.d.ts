@@ -69,6 +69,8 @@ export function safeParseProductSchema(
   input: unknown,
 ): { ok: true; schema: ProductSchema } | { ok: false; errors: string[] }
 export function defaultSelectionPriceDelta(schema: ProductSchema): number
+export function parseDesignState(input: unknown, schema: ProductSchema): DesignState
+export function crossCheck(design: DesignState, schema: ProductSchema): string[]
 export function computePrice(schema: ProductSchema, designs: DesignState[]): PriceBreakdown
 export function unitPriceForQuantity(
   rules: ProductSchema['pricingRules'],
