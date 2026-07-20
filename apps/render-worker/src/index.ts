@@ -34,7 +34,7 @@ if (!completionHook) console.log('[render-worker] no RENDER_HOOK_URL/TOKEN — p
 
 const worker = startRenderWorker({ redisUrl, resolveAssets, storage, completionHook });
 
-worker.on('ready', () => console.log('[render-worker] listening on gl:render'));
+worker.on('ready', () => console.log('[render-worker] listening on gl-render'));
 worker.on('failed', (job, err) => console.error('[render-worker] job failed', job?.id, err));
 
 const shutdown = async () => {

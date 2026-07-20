@@ -6,7 +6,7 @@ import { Queue } from 'bullmq'
  * skipped with a log line instead of hanging — orders still freeze their designs and the
  * job can be re-queued later from the admin.
  */
-export const RENDER_QUEUE = 'gl:render'
+export const RENDER_QUEUE = 'gl-render'
 
 let queue: Queue | null = null
 

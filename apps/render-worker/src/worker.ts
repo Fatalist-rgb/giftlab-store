@@ -38,7 +38,7 @@ export function startRenderWorker(opts: RenderWorkerOptions): Worker<RenderJobDa
   const connection = new IORedis(opts.redisUrl, { maxRetriesPerRequest: null });
 
   return new Worker<RenderJobData>(
-    'gl:render',
+    'gl-render',
     async (job: Job<RenderJobData>) => {
       // the payload crossed a queue — re-validate with the engine before rendering
       const schema = parseProductSchema(job.data.schema);

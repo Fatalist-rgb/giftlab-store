@@ -1,0 +1,17 @@
+# Worker deploys from the repo root (pnpm workspace); keep the upload lean.
+node_modules
+**/node_modules
+**/.medusa
+**/out
+**/.next
+**/dist
+.git
+apps/medusa
+specs
+.specify
+*.env
+.env*
+!.env.example
+.admin-prod*.txt
+.pk-*.txt
+.render-hook-token.txt
