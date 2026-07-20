@@ -1,5 +1,8 @@
 {
-  "nav": { "shop": "Shop", "how": "How it works" },
+  "nav": {
+    "shop": "Shop",
+    "how": "How it works"
+  },
   "home": {
     "badge": "Belly figurine",
     "title": "Your face on an acrylic figurine",
@@ -26,5 +29,10 @@
     "rotation": "Rotation",
     "reset": "Recenter",
     "mockNote": "Demo: the background is removed by the provider on order (client's key wired later)."
+  },
+  "catalog": {
+    "title": "Catalogue",
+    "empty": "The catalogue is temporarily empty — check back soon.",
+    "customize": "Customize"
   }
 }

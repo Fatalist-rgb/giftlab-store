@@ -1,5 +1,8 @@
 {
-  "nav": { "shop": "Sklep", "how": "Jak to działa" },
+  "nav": {
+    "shop": "Sklep",
+    "how": "Jak to działa"
+  },
   "home": {
     "badge": "Figurka z brzuszkiem",
     "title": "Twoja twarz na akrylowej figurce",
@@ -26,5 +29,10 @@
     "rotation": "Obrót",
     "reset": "Wyśrodkuj",
     "mockNote": "Demo: tło zdejmuje usługa przy zamówieniu (klucz klienta podłączymy później)."
+  },
+  "catalog": {
+    "title": "Katalog",
+    "empty": "Katalog jest chwilowo pusty — zajrzyj wkrótce.",
+    "customize": "Personalizuj"
   }
 }

@@ -73,3 +73,25 @@ export async function fetchContentPage(slug: string, locale: string): Promise<Co
     return null;
   }
 }
+
+export interface CatalogProduct {
+  id: string;
+  title: string;
+  handle: string;
+  description: string | null;
+  thumbnail: string | null;
+}
+
+/** Published products from the standard Medusa store API (empty when backend is off). */
+export async function fetchCatalog(): Promise<CatalogProduct[]> {
+  if (!backendConfigured) return [];
+  try {
+    const data = (await storeFetch(`/store/products?limit=50&fields=id,title,handle,description,thumbnail`)) as {
+      products?: CatalogProduct[];
+    };
+    return data.products ?? [];
+  } catch (err) {
+    console.warn(`[storefront] catalog unavailable: ${(err as Error).message}`);
+    return [];
+  }
+}
