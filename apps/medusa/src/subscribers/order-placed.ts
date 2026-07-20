@@ -62,9 +62,13 @@ export default async function orderPlacedHandler({
       // render job — only when the photo side is settled (deferred waits for the photo)
       if (line.render_status !== 'queued') continue
 
-      const schemaRow = await schemas.getActiveSchema(design.product_schema_id)
+      // schema rows are keyed by the MEDUSA product id (the line item carries it);
+      // design.product_schema_id is the engine document id and is only a fallback
+      const schemaProductId =
+        ((item as unknown as { product_id?: string | null }).product_id ?? design.product_schema_id) as string
+      const schemaRow = await schemas.getActiveSchema(schemaProductId)
       if (!schemaRow) {
-        logger.warn(`[gl] order ${order.id}: no active schema ${design.product_schema_id} — render skipped`)
+        logger.warn(`[gl] order ${order.id}: no active schema for ${schemaProductId} — render skipped`)
         continue
       }
       const schemaDoc = schemaRow.definition as SchemaDoc
