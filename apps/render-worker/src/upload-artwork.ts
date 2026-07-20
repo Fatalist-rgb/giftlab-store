@@ -30,7 +30,8 @@ async function main() {
 
   for (const file of files) {
     const bytes = await readFile(join(artDir, file));
-    const stored = await storage.put(`art/${file}`, new Uint8Array(bytes), MIME[extname(file).toLowerCase()]);
+    const mime = MIME[extname(file).toLowerCase()] ?? 'application/octet-stream';
+    const stored = await storage.put(`art/${file}`, new Uint8Array(bytes), mime);
     console.log(`  art/${file} — ${(stored.bytes / 1024).toFixed(1)} KB`);
   }
   console.log(`uploaded ${files.length} artwork files to "${cfg.bucket}"`);
