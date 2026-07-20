@@ -48,7 +48,7 @@ fidelity + pricing + legal keystone shared by storefront and worker.
 - [x] T021 [P] Custom module `price-history` (entity + snapshot on price change) — shipped as `price_history` (Omnibus 30-day lowest)
 <!-- Backend modules live under apps/medusa/src/modules/{product_customization,personalization,price_history,content,consent}. Each has a migration and either a unit test (legal invariants: free-default, per-line withdrawal, Omnibus) or a verified smoke; Medusa unit tests run in CI. -->
 
-- [ ] T022 R2 storage helper (presigned PUT/GET, SSE, artwork + photo + package buckets/prefixes) in `apps/medusa/src/lib/r2.ts`
+- [x] T022 R2 storage helper (presigned PUT/GET, SSE, artwork + photo + package buckets/prefixes) in `apps/medusa/src/lib/r2.ts`
 - [ ] T023 [P] BullMQ queue + ioredis helper (`gl:render`, `gl:cutout`) in `apps/medusa/src/lib/queue.ts`
 - [x] T024 Scaffold Next.js 15 storefront in `apps/storefront` (Tailwind, shadcn/ui, Medusa JS client) per plan.md
 - [x] T025 Configure `next-intl` `[locale]` routing (pl/en/uk) + hreflang + locale switch in `apps/storefront/src/app/[locale]/` and `apps/storefront/src/i18n/`
@@ -75,8 +75,8 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 ### Implementation for User Story 1
 
 - [x] T032 [US1] `GET /store/gl/products/:handle/schema` (published version + artwork URLs) in `apps/medusa/src/api/store/gl/products/[handle]/schema/route.ts`
-- [ ] T033 [US1] `POST /uploads/sign` + `POST /uploads/:id/finalize` (presigned PUT; `sharp`+`heic-convert` HEIC→raster, EXIF normalize, strip metadata; returns `quality.warning`, never blocks) in `apps/medusa/src/api/store/gl/uploads/`
-- [ ] T034 [US1] `POST/GET /uploads/:id/cutout` — enqueue `gl:cutout`, poll status, store `cutout_key` — in `apps/medusa/src/api/store/gl/uploads/[id]/cutout/route.ts`
+- [x] T033 [US1] `POST /uploads/sign` + `POST /uploads/:id/finalize` (presigned PUT; `sharp`+`heic-convert` HEIC→raster, EXIF normalize, strip metadata; returns `quality.warning`, never blocks) in `apps/medusa/src/api/store/gl/uploads/`
+- [x] T034 [US1] uploads/:id status route; cutout produced in the customer browser (@imgly) and stored via presigned PUT — server-side cutout queue deferred until a paid provider key exists
 - [ ] T035 [US1] Cutout job processor (calls `packages/cutout` adapter, retries, marks `failed` gracefully) in `apps/render-worker/src/processors/cutout.ts`
 - [x] T036 [US1] Authoritative `POST /store/gl/price` using `computePrice` + ladder in `apps/medusa/src/api/store/gl/price/route.ts`
 - [x] T037 [US1] `POST /store/gl/cart/:cartId/line-items` — shipped as `POST /store/gl/carts` (cart built from persisted designs; cross-design ladder) — validate designs, re-check free-default invariant, recompute price, persist DesignStates, attach to Medusa line items (supports multiple designs) in `apps/medusa/src/api/store/gl/cart/`
