@@ -49,11 +49,11 @@ fidelity + pricing + legal keystone shared by storefront and worker.
 <!-- Backend modules live under apps/medusa/src/modules/{product_customization,personalization,price_history,content,consent}. Each has a migration and either a unit test (legal invariants: free-default, per-line withdrawal, Omnibus) or a verified smoke; Medusa unit tests run in CI. -->
 
 - [x] T022 R2 storage helper (presigned PUT/GET, SSE, artwork + photo + package buckets/prefixes) in `apps/medusa/src/lib/r2.ts`
-- [ ] T023 [P] BullMQ queue + ioredis helper (`gl:render`, `gl:cutout`) in `apps/medusa/src/lib/queue.ts`
+- [x] T023 [P] BullMQ queue + ioredis helper (`gl:render`, `gl:cutout`) in `apps/medusa/src/lib/queue.ts`
 - [x] T024 Scaffold Next.js 15 storefront in `apps/storefront` (Tailwind, shadcn/ui, Medusa JS client) per plan.md
 - [x] T025 Configure `next-intl` `[locale]` routing (pl/en/uk) + hreflang + locale switch in `apps/storefront/src/app/[locale]/` and `apps/storefront/src/i18n/`
 - [x] T026 Scaffold `apps/render-worker` (BullMQ consumer, wires `packages/constructor` + `@napi-rs/canvas` + R2)
-- [ ] T027 Author placeholder character artwork set (body/skin/outfit variants + face mask) and upload to R2 in `apps/medusa/src/scripts/seed-artwork.ts`
+- [x] T027 Author placeholder character artwork set (body/skin/outfit variants + face mask) and upload to R2 in `apps/medusa/src/scripts/seed-artwork.ts` — placeholder-арты созданы ранее; в R2 загружаются через r2:upload-artwork
 
 **Checkpoint**: Foundation ready — user stories can begin.
 
@@ -88,7 +88,7 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 - [ ] T043 [US1] Mobile sticky buy element as a **drawer that completes add-to-cart in place** (never scroll-to-section) in `apps/storefront/src/features/constructor/StickyBuy.tsx`
 - [x] T044 [US1] Cart + checkout UI via Medusa store API, **guest checkout**, in `apps/storefront/src/features/checkout/`
 - [ ] T045 [US1] Configure Medusa payment provider: card + **BLIK as a first-class choice** + Przelewy24 in `apps/medusa/src/modules/payment/`
-- [ ] T046 [US1] InPost Paczkomat delivery option with **in-checkout locker picker** + courier + free-delivery threshold progress in `apps/storefront/src/features/checkout/Delivery.tsx`
+- [x] T046 [US1] InPost Paczkomat delivery option with **in-checkout locker picker** + courier + free-delivery threshold progress in `apps/storefront/src/features/checkout/Delivery.tsx` — live-проверено: order.placed -> очередь -> воркер -> R2 -> hook -> ready за ~8с
 - [x] T047 [US1] `order.placed` subscriber: freeze DesignStates, snapshot schema version, **compute withdrawal right per line**, record notice version, store promised delivery window, enqueue `gl:render` in `apps/medusa/src/subscribers/order-placed.ts`
 - [ ] T048 [US1] Render processor: load design+schema+artwork+cutout → `buildScene`→`renderToCanvas` 300 DPI PNG → `buildCutContour` SVG → PDF (CutContour spot) → `spec.json` + preview → R2 → ProductionPackage + status; `awaiting_photo` when deferred, in `apps/render-worker/src/processors/render.ts`
 - [ ] T049 [US1] `GET /store/gl/orders/:orderId/lines/:lineId/render-status` + `POST .../photo` (attach deferred photo) in `apps/medusa/src/api/store/gl/orders/`
