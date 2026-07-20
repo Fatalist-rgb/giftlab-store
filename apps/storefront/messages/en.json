@@ -28,9 +28,9 @@
     "scale": "Size",
     "rotation": "Rotation",
     "reset": "Recenter",
-    "mockNote": "Demo: the background is removed by the provider on order (client's key wired later).",
     "added": "Added to cart ✓",
-    "addError": "Could not add — please try again."
+    "addError": "Could not add — please try again.",
+    "photoConsent": "By uploading a photo you consent to its processing to fulfil your order (GDPR). The background is removed on your device."
   },
   "catalog": {
     "title": "Catalogue",

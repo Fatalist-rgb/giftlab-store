@@ -12,6 +12,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { demoSchema, SAMPLE_FACE_KEY, SAMPLE_PHOTO_ID } from '@/lib/schema';
 import { createBrowserCutout } from '@/lib/cutout';
+import { uploadPhotoWithCutout } from '@/lib/uploads';
 
 const PREVIEW_SCALE = 1.2;
 // real in-browser background removal (@imgly); the model loads lazily on first upload
@@ -73,7 +74,7 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
     };
   }, [schema]);
 
-  // upload -> background removal (adapter) -> face asset
+  // upload -> background removal in the browser -> face asset -> photo to R2 (async)
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -86,10 +87,19 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
         const blob = new Blob([res.imageBytes as unknown as BlobPart], { type: res.mime ?? 'image/png' });
         const url = URL.createObjectURL(blob);
         const img = await loadImage(url);
+        // preview immediately under a local id; swap to the real upload id once stored
         assetsRef.current.set('upload', img);
         setFacePhotoId('upload');
         setAdj(CENTER);
         setAssetVersion((v) => v + 1);
+
+        // persist to R2 in the background (uploading a photo = consent by action; the
+        // consent line next to the button says so — FR-032)
+        void uploadPhotoWithCutout(file, blob, true).then((stored) => {
+          if (!stored) return; // keep the local preview; the order can defer the photo
+          assetsRef.current.set(stored.uploadId, img);
+          setFacePhotoId((current) => (current === 'upload' ? stored.uploadId : current));
+        });
       }
     } finally {
       setBusy(false);
@@ -244,7 +254,7 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
             )}
           </div>
           {!facePhotoId && <p className="mt-2 text-xs opacity-55">{t('deferred')}</p>}
-          <p className="mt-2 text-xs opacity-45">{t('mockNote')}</p>
+          <p className="mt-2 text-xs opacity-45">{t('photoConsent')}</p>
         </div>
 
         {/* adjust (only with a face) */}

@@ -28,9 +28,9 @@
     "scale": "Rozmiar",
     "rotation": "Obrót",
     "reset": "Wyśrodkuj",
-    "mockNote": "Demo: tło zdejmuje usługa przy zamówieniu (klucz klienta podłączymy później).",
     "added": "Dodano do koszyka ✓",
-    "addError": "Nie udało się dodać — spróbuj ponownie."
+    "addError": "Nie udało się dodać — spróbuj ponownie.",
+    "photoConsent": "Przesyłając zdjęcie, wyrażasz zgodę na jego przetwarzanie w celu realizacji zamówienia (RODO). Tło usuwamy na Twoim urządzeniu."
   },
   "catalog": {
     "title": "Katalog",
