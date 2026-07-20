@@ -1,4 +1,4 @@
-import { computeWithdrawalRight, type WithdrawalVerdict } from '../../lib/gl-constructor'
+import { computeWithdrawalRight, type WithdrawalVerdict } from '@gl/constructor-vendored'
 
 /**
  * Per-line legal logic, delegated to the shared @gl/constructor engine so the storefront

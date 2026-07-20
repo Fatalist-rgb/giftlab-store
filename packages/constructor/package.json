@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src tests",
     "test": "vitest run",
-    "build:medusa": "esbuild src/logic.ts --bundle --platform=node --format=cjs --outfile=../../apps/medusa/src/lib/gl-constructor/index.cjs"
+    "build:medusa": "esbuild src/logic.ts --bundle --platform=node --format=cjs --outfile=../../apps/medusa/vendor/gl-constructor/index.cjs"
   },
   "dependencies": {
     "zod": "^3.23.8"

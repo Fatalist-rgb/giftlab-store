@@ -1,4 +1,4 @@
-import { parseProductSchema, FreeDefaultViolation, type ProductSchema } from '../../lib/gl-constructor'
+import { parseProductSchema, FreeDefaultViolation, type ProductSchema } from '@gl/constructor-vendored'
 
 /**
  * Validate a publishable ProductSchema with the shared @gl/constructor engine — the

@@ -1,7 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
 import { PRODUCT_CUSTOMIZATION_MODULE } from '../../../../modules/product_customization'
 import type ProductCustomizationModuleService from '../../../../modules/product_customization/service'
-import { parseProductSchema, computePrice, type DesignState } from '../../../../lib/gl-constructor'
+import { parseProductSchema, computePrice, type DesignState } from '@gl/constructor-vendored'
 
 type PriceRequestDesign = {
   quantity?: number
