@@ -111,11 +111,11 @@ to problems.
 
 ### Implementation for User Story 2
 
-- [ ] T054 [US2] `GET /admin/gl/orders/:orderId/lines/:lineId/package` (signed R2 URLs; 409 if not ready) in `apps/medusa/src/api/admin/gl/orders/[orderId]/lines/[lineId]/package/route.ts`
+- [x] T054 [US2] `GET /admin/gl/orders/:orderId/lines/:lineId/package` (signed R2 URLs; 409 if not ready) in `apps/medusa/src/api/admin/gl/orders/[orderId]/lines/[lineId]/package/route.ts`
 - [ ] T055 [US2] Admin widget: view DesignState + preview + download package + withdrawal flag in `apps/medusa/src/admin/widgets/order-design.tsx`
 - [x] T056 [US2] `GET /admin/gl/orders/flagged` + admin surface for `render_failed` / `awaiting_photo` in `apps/medusa/src/api/admin/gl/orders/flagged/route.ts`
-- [ ] T057 [US2] `PATCH /admin/gl/products/:id/schema` — publish new immutable version, reject paid defaults, snapshot price to PriceHistory, in `apps/medusa/src/api/admin/gl/products/[id]/schema/route.ts`
-- [ ] T058 [US2] `GET /admin/gl/orders/export?format=csv|xlsx` (order + fulfilment + design summary + withdrawal flag) in `apps/medusa/src/api/admin/gl/orders/export/route.ts`
+- [x] T057 [US2] `PATCH /admin/gl/products/:id/schema` — publish new immutable version, reject paid defaults, snapshot price to PriceHistory, in `apps/medusa/src/api/admin/gl/products/[id]/schema/route.ts`
+- [x] T058 [US2] `GET /admin/gl/orders/export?format=csv|xlsx` (order + fulfilment + design summary + withdrawal flag) in `apps/medusa/src/api/admin/gl/orders/export/route.ts`
 
 **Checkpoint**: US1 + US2 both work independently.
 
