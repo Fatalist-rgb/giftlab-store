@@ -62,6 +62,20 @@ export async function presignPut(key: string, contentType: string, ttlSeconds = 
   )
 }
 
+/** Presigned GET for operator downloads (production packages) — short-lived. */
+export async function presignGet(key: string, ttlSeconds = 900, downloadName?: string): Promise<string> {
+  const { client, env } = r2Client()
+  return getSignedUrl(
+    client,
+    new GetObjectCommand({
+      Bucket: env.bucket,
+      Key: key.replace(/^\//, ''),
+      ResponseContentDisposition: downloadName ? `attachment; filename="${downloadName}"` : undefined,
+    }),
+    { expiresIn: ttlSeconds },
+  )
+}
+
 export async function headObject(key: string) {
   const { client, env } = r2Client()
   try {

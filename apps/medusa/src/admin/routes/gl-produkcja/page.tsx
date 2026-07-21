@@ -60,9 +60,18 @@ const ProdukcjaPage = () => {
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <Heading level="h1">Produkcja — problemy</Heading>
-        <Button size="small" variant="secondary" onClick={load}>
-          Odśwież
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="small"
+            variant="secondary"
+            onClick={() => window.open("/admin/gl/orders/export", "_blank", "noopener")}
+          >
+            Eksport CSV
+          </Button>
+          <Button size="small" variant="secondary" onClick={load}>
+            Odśwież
+          </Button>
+        </div>
       </div>
       {lines === null ? (
         <div className="px-6 py-8">

@@ -1,5 +1,5 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
-import { Badge, Container, Heading, Text } from "@medusajs/ui"
+import { Badge, Button, Container, Heading, Text, toast } from "@medusajs/ui"
 import { useEffect, useState } from "react"
 import type { DetailWidgetProps, AdminOrder } from "@medusajs/framework/types"
 
@@ -40,6 +40,21 @@ const renderTone: Record<string, "green" | "orange" | "red" | "grey" | "blue"> =
 const OrderDesignWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const [lines, setLines] = useState<DesignLine[] | null>(null)
   const [failed, setFailed] = useState(false)
+
+  // fetch a short-lived signed URL for one artifact and open it (T054)
+  const download = async (lineItemId: string, kind: "printPng" | "cutSvg" | "specJson") => {
+    try {
+      const res = await fetch(`/admin/gl/orders/${data.id}/lines/${lineItemId}/package`, {
+        credentials: "include",
+      })
+      const body = (await res.json()) as { urls?: Record<string, string | null>; message?: string }
+      const url = body.urls?.[kind]
+      if (!res.ok || !url) throw new Error(body.message || "package not ready")
+      window.open(url, "_blank", "noopener")
+    } catch (e) {
+      toast.error("Pobieranie nie powiodło się", { description: (e as Error).message })
+    }
+  }
 
   useEffect(() => {
     fetch(`/admin/gl/orders/${data.id}/design`, { credentials: "include" })
@@ -83,9 +98,20 @@ const OrderDesignWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
               </Text>
             )}
             {line.package?.printPngKey && (
-              <Text size="small" className="text-ui-fg-subtle mt-1 font-mono">
-                R2: {line.package.printPngKey} · {line.package.cutSvgKey ?? "—"} ({line.package.dpi ?? 300} DPI)
-              </Text>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <Button size="small" variant="secondary" onClick={() => download(line.lineItemId, "printPng")}>
+                  Druk (PNG)
+                </Button>
+                <Button size="small" variant="secondary" onClick={() => download(line.lineItemId, "cutSvg")}>
+                  Cięcie (SVG)
+                </Button>
+                <Button size="small" variant="secondary" onClick={() => download(line.lineItemId, "specJson")}>
+                  Spec (JSON)
+                </Button>
+                <Text size="small" className="text-ui-fg-subtle">
+                  {line.package.dpi ?? 300} DPI
+                </Text>
+              </div>
             )}
           </div>
         ))
