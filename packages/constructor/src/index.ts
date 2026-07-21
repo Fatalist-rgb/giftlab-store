@@ -17,6 +17,7 @@ export * from './render/types.js';
 export { buildScene } from './render/scene.js';
 export * from './render/context.js';
 export { drawScene, type DrawOptions } from './render/draw.js';
+export { faceAutoFit, type AutoFit, type AutoFitInput, type FaceBox } from './render/auto-fit.js';
 export { renderSceneToCanvas, type BrowserRenderOptions } from './render/browser.js';
 
 // pricing

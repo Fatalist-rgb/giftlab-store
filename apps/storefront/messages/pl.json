@@ -67,6 +67,7 @@
     "swapPhoto": "Zmień zdjęcie",
     "modelDownload": "Pobieranie modelu… {mb} MB",
     "cutoutError": "Nie udało się wyciąć tła.",
+    "multiFace": "Na zdjęciu powinna być tylko jedna osoba. Wybierz zdjęcie, na którym jest jedna osoba.",
     "retry": "Spróbuj ponownie",
     "pieces": "{count} szt."
   },
@@ -75,7 +76,7 @@
     "empty": "Katalog jest chwilowo pusty — zajrzyj wkrótce.",
     "customize": "Personalizuj",
     "ladderHint": "od {price} zł/szt. przy {qty}+",
-    "variants": "{count} warianty do wyboru"
+    "variants": "{count, plural, one {# wariant} few {# warianty} many {# wariantów} other {# wariantu}} do wyboru"
   },
   "cart": {
     "title": "Koszyk",

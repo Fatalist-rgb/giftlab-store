@@ -67,6 +67,7 @@
     "swapPhoto": "Change photo",
     "modelDownload": "Downloading model… {mb} MB",
     "cutoutError": "Background removal failed.",
+    "multiFace": "The photo should show only one person. Please choose a photo with a single person.",
     "retry": "Try again",
     "pieces": "{count} pcs"
   },
@@ -75,7 +76,7 @@
     "empty": "The catalogue is temporarily empty — check back soon.",
     "customize": "Customize",
     "ladderHint": "from {price} zł/pc at {qty}+",
-    "variants": "{count} variants to pick"
+    "variants": "{count, plural, one {# variant} other {# variants}} to pick"
   },
   "cart": {
     "title": "Cart",

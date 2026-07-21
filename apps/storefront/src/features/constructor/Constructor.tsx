@@ -3,6 +3,7 @@
 import {
   buildScene,
   computePrice,
+  faceAutoFit,
   renderSceneToCanvas,
   type DesignState,
   type LocalizedText,
@@ -13,6 +14,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { demoSchema, SAMPLE_FACE_KEY, SAMPLE_PHOTO_ID } from '@/lib/schema';
 import { createBrowserCutout } from '@/lib/cutout';
+import { scanFaces, warmFaceDetector } from '@/lib/face-detect';
 import { uploadPhotoWithCutout } from '@/lib/uploads';
 import { track } from '@/lib/analytics';
 
@@ -48,7 +50,9 @@ type CutProgress =
   | { stage: 'idle' }
   | { stage: 'model'; mb: number }
   | { stage: 'cut'; pct: number }
-  | { stage: 'error' };
+  | { stage: 'error' }
+  // the photo shows more than one person — a figurine carries exactly one face
+  | { stage: 'multiface'; count: number };
 
 export function Constructor({
   schema: schemaProp,
@@ -106,6 +110,11 @@ export function Constructor({
     track('constructor_open', { step: 'open' });
   }, []);
 
+  // pre-warm the face detector while the customer is still picking a file
+  useEffect(() => {
+    if (step === 'photo') warmFaceDetector();
+  }, [step]);
+
   // artwork + mask + sample face, once
   useEffect(() => {
     let alive = true;
@@ -128,12 +137,21 @@ export function Constructor({
     };
   }, [schema]);
 
-  // upload -> browser cutout (with progress) -> face asset -> photo to R2 (async)
+  // upload -> face guard -> browser cutout (with progress) -> face asset -> photo to R2 (async)
   const processFile = async (file: File) => {
     const target = active;
     retryFileRef.current = file;
     setProgress({ stage: 'cut', pct: 0 });
     try {
+      // one figurine = one face: photos with several people are rejected up front
+      // (fail-open: scan is null when the detector/model is unavailable)
+      const scan = await scanFaces(file);
+      if (scan && scan.count > 1) {
+        track('face_multi_rejected', { step: 'cutout', faces: scan.count });
+        setProgress({ stage: 'multiface', count: scan.count });
+        return;
+      }
+
       const bytes = new Uint8Array(await file.arrayBuffer());
       const res = await cutout.removeBackground({ imageBytes: bytes, mime: file.type || 'image/png' });
       if (!res.ok || !res.imageBytes) {
@@ -146,7 +164,21 @@ export function Constructor({
       const img = await loadImage(URL.createObjectURL(blob));
       const localId = `upload-${target}-${Date.now()}`;
       assetsRef.current.set(localId, img);
-      patchSlot({ facePhotoId: localId, adj: CENTER }, target);
+      // with a detected face, start with the whole head centred in the zone;
+      // cover-fit centring (CENTER) otherwise — e.g. pets, drawings
+      const initialAdj =
+        scan?.box != null
+          ? faceAutoFit({
+              imgW: scan.imgW,
+              imgH: scan.imgH,
+              faceBox: scan.box,
+              zoneW: schema.faceZone.bounds.w,
+              zoneH: schema.faceZone.bounds.h,
+              minScale: 0.6,
+              maxScale: 2.6,
+            })
+          : CENTER;
+      patchSlot({ facePhotoId: localId, adj: initialAdj }, target);
       setAssetVersion((v) => v + 1);
       setProgress({ stage: 'idle' });
 
@@ -419,6 +451,11 @@ export function Constructor({
                   <button onClick={retryCutout} className="font-bold underline underline-offset-2">
                     {t('retry')}
                   </button>
+                </div>
+              )}
+              {progress.stage === 'multiface' && (
+                <div className="mt-2 rounded-xl bg-red-100 px-3 py-2 text-sm text-red-900" data-testid="multiface-error">
+                  {t('multiFace')}
                 </div>
               )}
               {!slot.facePhotoId && <p className="mt-2 text-xs opacity-55">{t('deferred')}</p>}
