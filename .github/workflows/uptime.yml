@@ -1,0 +1,29 @@
+name: Uptime
+
+# Zero-account uptime monitor: every 30 minutes ping the production endpoints; a
+# failing run makes GitHub email the repo watchers. Replace with a dedicated monitor
+# (e.g. Better Stack / UptimeRobot) when the client picks one.
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Backend /health
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" -m 20 https://backend-production-8e23.up.railway.app/health)
+          echo "backend /health -> $code"
+          [ "$code" = "200" ]
+      - name: Storefront home
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" -m 20 https://giftlab-storefront.vercel.app/pl)
+          echo "storefront /pl -> $code"
+          [ "$code" = "200" ]
+      - name: Store API (schema)
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" -m 20 "https://giftlab-storefront.vercel.app/api/gl/delivery-estimate")
+          echo "delivery-estimate -> $code"
+          [ "$code" = "200" ]
