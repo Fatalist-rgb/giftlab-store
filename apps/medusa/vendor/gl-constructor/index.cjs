@@ -32,6 +32,7 @@ __export(logic_exports, {
   cutContourZ: () => cutContourZ,
   defaultSelectionPriceDelta: () => defaultSelectionPriceDelta,
   designStateZ: () => designStateZ,
+  faceAutoFit: () => faceAutoFit,
   faceLayerZ: () => faceLayerZ,
   faceZoneZ: () => faceZoneZ,
   localizedTextZ: () => localizedTextZ,
@@ -4368,6 +4369,28 @@ function assessPhoto(photo, schema) {
   return { ok: true };
 }
 
+// src/render/auto-fit.ts
+var HEAD_FACTOR = 1.9;
+var HEAD_ZONE_FILL = 0.8;
+var HEAD_RISE = 0.18;
+function faceAutoFit(input) {
+  const { imgW, imgH, faceBox, zoneW, zoneH } = input;
+  const minScale = input.minScale ?? 0.6;
+  const maxScale = input.maxScale ?? 2.6;
+  const cover = Math.max(zoneW / imgW, zoneH / imgH);
+  const headH = faceBox.h * HEAD_FACTOR;
+  const targetTotal = zoneH * HEAD_ZONE_FILL / headH;
+  const scale = clamp(targetTotal / cover, minScale, maxScale);
+  const total = cover * scale;
+  const headCx = faceBox.x + faceBox.w / 2;
+  const headCy = faceBox.y + faceBox.h / 2 - faceBox.h * HEAD_RISE;
+  const x = -(headCx - imgW / 2) * total;
+  const y = -(headCy - imgH / 2) * total;
+  return { x: round2(x), y: round2(y), scale: round2(scale), rotation: 0 };
+}
+var clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+var round2 = (v) => Math.round(v * 100) / 100;
+
 // src/contour/index.ts
 function buildCutContour(schema, scene) {
   const sourceAssetKeys = scene.nodes.filter((n) => n.kind === "image").map((n) => n.assetKey);
@@ -4392,6 +4415,7 @@ function buildCutContour(schema, scene) {
   cutContourZ,
   defaultSelectionPriceDelta,
   designStateZ,
+  faceAutoFit,
   faceLayerZ,
   faceZoneZ,
   localizedTextZ,

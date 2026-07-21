@@ -34,6 +34,9 @@ export { computeWithdrawalRight, type WithdrawalVerdict } from './legal/withdraw
 // quality
 export { assessPhoto, type PhotoInput, type PhotoAssessment } from './quality/index.js';
 
+// face placement (pure math — no canvas; lives in render/ next to the fit consumer)
+export { faceAutoFit, type AutoFit, type AutoFitInput, type FaceBox } from './render/auto-fit.js';
+
 // contour
 export { buildCutContour, type CutPath } from './contour/index.js';
 

@@ -177,6 +177,7 @@
     "attachCta": "Wgraj zdjęcie",
     "attaching": "Wgrywanie…",
     "attachError": "Nie udało się wgrać zdjęcia. Spróbuj ponownie.",
-    "photoConsent": "Przesyłając zdjęcie, wyrażasz zgodę na jego przetwarzanie w celu realizacji zamówienia (RODO)."
+    "photoConsent": "Przesyłając zdjęcie, wyrażasz zgodę na jego przetwarzanie w celu realizacji zamówienia (RODO).",
+    "multiFace": "Na zdjęciu powinna być tylko jedna osoba. Wybierz zdjęcie, na którym jest jedna osoba."
   }
 }

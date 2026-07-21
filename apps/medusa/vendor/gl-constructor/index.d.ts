@@ -84,3 +84,26 @@ export class FreeDefaultViolation extends ConstructorError {
   readonly delta: number
 }
 export class DesignStateInvalid extends ConstructorError {}
+
+export interface FaceBox {
+  x: number
+  y: number
+  w: number
+  h: number
+}
+export interface AutoFitInput {
+  imgW: number
+  imgH: number
+  faceBox: FaceBox
+  zoneW: number
+  zoneH: number
+  minScale?: number
+  maxScale?: number
+}
+export interface AutoFit {
+  x: number
+  y: number
+  scale: number
+  rotation: 0
+}
+export function faceAutoFit(input: AutoFitInput): AutoFit

@@ -177,6 +177,7 @@
     "attachCta": "Upload photo",
     "attaching": "Uploading…",
     "attachError": "Could not upload the photo. Please try again.",
-    "photoConsent": "By uploading a photo you consent to its processing to fulfil your order (GDPR)."
+    "photoConsent": "By uploading a photo you consent to its processing to fulfil your order (GDPR).",
+    "multiFace": "The photo should show only one person. Please choose a photo with a single person."
   }
 }

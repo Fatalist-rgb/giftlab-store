@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { createBrowserCutout } from '@/lib/cutout';
+import { scanFaces, warmFaceDetector } from '@/lib/face-detect';
 import { uploadPhotoWithCutout } from '@/lib/uploads';
 
 type Line = {
@@ -57,6 +58,7 @@ export function OrderStatus({ orderId }: { orderId: string }) {
 
   const pickPhoto = (lineItemId: string) => {
     targetLineRef.current = lineItemId;
+    warmFaceDetector(); // model loads while the customer browses for a file
     fileRef.current?.click();
   };
 
@@ -68,6 +70,12 @@ export function OrderStatus({ orderId }: { orderId: string }) {
     setBusyLine(lineItemId);
     setError(null);
     try {
+      // one figurine = one face — same guard as the constructor (null = detector off, fail-open)
+      const scan = await scanFaces(file);
+      if (scan && scan.count > 1) {
+        setError(t('multiFace'));
+        return;
+      }
       const bytes = new Uint8Array(await file.arrayBuffer());
       const cut = await cutoutRef.current.removeBackground({ imageBytes: bytes, mime: file.type || 'image/png' });
       if (!cut.ok || !cut.imageBytes) throw new Error('cutout failed');
@@ -77,7 +85,13 @@ export function OrderStatus({ orderId }: { orderId: string }) {
       const attach = await fetch('/api/gl/attach-photo', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ orderId, lineItemId, uploadId: stored.uploadId }),
+        body: JSON.stringify({
+          orderId,
+          lineItemId,
+          uploadId: stored.uploadId,
+          // detected face box lets the backend centre the whole head in the zone
+          faceBox: scan?.box ? { ...scan.box, imgW: scan.imgW, imgH: scan.imgH } : undefined,
+        }),
       });
       if (!attach.ok) throw new Error('attach failed');
       load();
