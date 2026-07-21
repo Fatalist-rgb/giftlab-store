@@ -4,6 +4,7 @@ import type { IOrderModuleService } from '@medusajs/framework/types'
 import { PERSONALIZATION_MODULE } from '../modules/personalization'
 import type PersonalizationModuleService from '../modules/personalization/service'
 import { enqueueRenderForLine } from '../lib/render-jobs'
+import { WITHDRAWAL_NOTICE_VERSION } from '../lib/legal'
 
 /**
  * The purchase-time freeze + render kickoff (FR-029/FR-030, Principle II, SC-002).
@@ -33,7 +34,7 @@ export default async function orderPlacedHandler({
         medusa_line_item_id: item.id,
         design_state_id: designId,
         schema_version: design.schema_version,
-        withdrawal_notice_version: 'v1',
+        withdrawal_notice_version: WITHDRAWAL_NOTICE_VERSION,
         order_id: order.id,
         order_display_id: (order.display_id as number | undefined) ?? null,
       })
