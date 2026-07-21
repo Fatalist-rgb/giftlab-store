@@ -80,6 +80,5 @@ export function track(event: string, props: Record<string, unknown> = {}): void 
   if (!consent?.analytics) return;
   const w = window as unknown as { gtag?: (...a: unknown[]) => void };
   if (GA_ID && w.gtag) w.gtag('event', event, props);
-  // eslint-disable-next-line no-console
   else console.debug('[gl:event]', event, props); // visible in dev until a GA id exists
 }
