@@ -92,7 +92,7 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 - [x] T047 [US1] `order.placed` subscriber: freeze DesignStates, snapshot schema version, **compute withdrawal right per line**, record notice version, store promised delivery window, enqueue `gl:render` in `apps/medusa/src/subscribers/order-placed.ts`
 - [ ] T048 [US1] Render processor: load design+schema+artwork+cutout → `buildScene`→`renderToCanvas` 300 DPI PNG → `buildCutContour` SVG → PDF (CutContour spot) → `spec.json` + preview → R2 → ProductionPackage + status; `awaiting_photo` when deferred, in `apps/render-worker/src/processors/render.ts`
 - [x] T049 [US1] `GET /store/gl/orders/:orderId/lines/:lineId/render-status` + `POST .../photo` (attach deferred photo) in `apps/medusa/src/api/store/gl/orders/`
-- [ ] T050 [US1] Order-confirmation email (Medusa notification) in `apps/medusa/src/modules/notification/`
+- [x] T050 [US1] Order-confirmation email (Medusa notification) in `apps/medusa/src/modules/notification/`
 - [x] T051 [US1] Seed script: figurine product + published ProductSchema — shipped as `seed-catalog.ts` (+ `seed-shipping.ts`, `seed-content.ts`)
 
 **Checkpoint**: US1 fully functional and demoable (MVP).
@@ -137,7 +137,7 @@ payment; legal pages localized + editable; photos private + deletable.
 - [x] T061 [P] [US3] Cookie-consent manager + GTM gated loader (GA4 + Meta Pixel only post-consent; basis art. 399 PKE) in `apps/storefront/src/lib/analytics/`
 - [ ] T062 [P] [US3] SEO: per-page metadata, `sitemap.xml`, `robots.txt`, canonical + hreflang in `apps/storefront/src/lib/seo.ts`
 - [ ] T063 [P] [US3] `ContentPage` module + admin editing + localized rendering (regulamin/privacy/cookies/zwroty/dostawa/kontakt) — **no ODR link** — in `apps/medusa/src/modules/content-page/` and `apps/storefront/src/app/[locale]/(content)/`
-- [ ] T064 [US3] `GET /store/gl/legal/withdrawal-notice` + checkout block rendering the notice **beside the pay button**, paired with the guarantee in `apps/storefront/src/features/checkout/WithdrawalNotice.tsx`
+- [x] T064 [US3] `GET /store/gl/legal/withdrawal-notice` + checkout block rendering the notice **beside the pay button**, paired with the guarantee in `apps/storefront/src/features/checkout/WithdrawalNotice.tsx`
 - [ ] T065 [US3] Guarantee presentation (design approval before production; remake/refund; no return shipping) on PDP + checkout in `apps/storefront/src/components/Guarantee.tsx`
 - [ ] T066 [P] [US3] `Review` module + PDP reviews with **verified-buyer marking** + verification-method disclosure + summary distribution in `apps/medusa/src/modules/review/` and `apps/storefront/src/features/reviews/`
 - [x] T067 [P] [US3] RODO: 60-day photo retention job + deletion-request endpoint + private-access enforcement in `apps/medusa/src/jobs/photo-retention.ts` and `apps/medusa/src/api/store/gl/photos/`
