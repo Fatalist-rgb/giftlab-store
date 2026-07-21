@@ -91,7 +91,9 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
       const res = await cutout.removeBackground({ imageBytes: bytes, mime: file.type || 'image/png' });
+      if (!res.ok) track('cutout_failed', { step: 'cutout' });
       if (res.ok && res.imageBytes) {
+        track('face_uploaded', { step: 'cutout' });
         const blob = new Blob([res.imageBytes as unknown as BlobPart], { type: res.mime ?? 'image/png' });
         const url = URL.createObjectURL(blob);
         const img = await loadImage(url);
@@ -230,7 +232,10 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
             {bodyLayer.variants.map((v) => (
               <button
                 key={v.id}
-                onClick={() => setVariantId(v.id)}
+                onClick={() => {
+                  setVariantId(v.id);
+                  track('character_chosen', { step: 'character', variant: v.id });
+                }}
                 aria-pressed={variantId === v.id}
                 className={`rounded-xl border-2 border-ink px-4 py-2 text-sm font-bold ${
                   variantId === v.id ? 'bg-lime shadow-offset-sm' : 'bg-white'
@@ -312,6 +317,7 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
             value={name}
             maxLength={14}
             onChange={(e) => setName(e.target.value)}
+            onBlur={() => name.trim() && track('name_entered', { step: 'name' })}
             placeholder={t('namePlaceholder')}
             className="mt-2 h-12 w-full rounded-xl border-2 border-ink px-3 text-base font-semibold outline-none"
           />

@@ -134,7 +134,7 @@ payment; legal pages localized + editable; photos private + deletable.
 
 ### Implementation for User Story 3
 
-- [ ] T061 [P] [US3] Cookie-consent manager + GTM gated loader (GA4 + Meta Pixel only post-consent; basis art. 399 PKE) in `apps/storefront/src/lib/analytics/`
+- [x] T061 [P] [US3] Cookie-consent manager + GTM gated loader (GA4 + Meta Pixel only post-consent; basis art. 399 PKE) in `apps/storefront/src/lib/analytics/`
 - [ ] T062 [P] [US3] SEO: per-page metadata, `sitemap.xml`, `robots.txt`, canonical + hreflang in `apps/storefront/src/lib/seo.ts`
 - [ ] T063 [P] [US3] `ContentPage` module + admin editing + localized rendering (regulamin/privacy/cookies/zwroty/dostawa/kontakt) — **no ODR link** — in `apps/medusa/src/modules/content-page/` and `apps/storefront/src/app/[locale]/(content)/`
 - [ ] T064 [US3] `GET /store/gl/legal/withdrawal-notice` + checkout block rendering the notice **beside the pay button**, paired with the guarantee in `apps/storefront/src/features/checkout/WithdrawalNotice.tsx`
@@ -145,7 +145,7 @@ payment; legal pages localized + editable; photos private + deletable.
 - [ ] T069 [US3] Seller identity block (company, PL address, NIP, contact) in footer + Kontakt in `apps/storefront/src/components/Footer.tsx`
 - [ ] T070 [P] [US3] Upload-free **ad entry pages** (`(ads)` route group) — constructor opens on explicit action — in `apps/storefront/src/app/[locale]/(ads)/`
 - [ ] T071 [P] [US3] RUM (`web-vitals`) reporting segmented by UA/referrer + **filter ad-platform preload bots** from analytics in `apps/storefront/src/lib/rum.ts`
-- [ ] T071a [US3] **Constructor funnel instrumentation** (SC-004): consent-gated events for each step — open → character chosen → face uploaded → cutout ready/failed/deferred → name → options → add-to-cart — each carrying the step id, so abandonment is attributable to a specific step, in `apps/storefront/src/features/constructor/telemetry.ts`
+- [x] T071a [US3] **Constructor funnel instrumentation** (SC-004): consent-gated events for each step — open → character chosen → face uploaded → cutout ready/failed/deferred → name → options → add-to-cart — each carrying the step id, so abandonment is attributable to a specific step, in `apps/storefront/src/features/constructor/telemetry.ts` — события: open, character_chosen, face_uploaded/cutout_failed, name_entered, add_to_cart (все гейтятся согласием)
 - [ ] T071b [US3] Constructor completion-rate report (starts vs add-to-cart, drop-off per step) surfaced in the admin in `apps/medusa/src/admin/widgets/constructor-funnel.tsx`
 
 **Checkpoint**: All user stories independently functional.
