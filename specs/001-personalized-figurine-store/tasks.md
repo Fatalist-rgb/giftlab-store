@@ -143,8 +143,8 @@ payment; legal pages localized + editable; photos private + deletable.
 - [x] T067 [P] [US3] RODO: 60-day photo retention job + deletion-request endpoint + private-access enforcement in `apps/medusa/src/jobs/photo-retention.ts` and `apps/medusa/src/api/store/gl/photos/`
 - [x] T068 [US3] Persist ConsentRecord (photo_processing + cookies) in `apps/medusa/src/modules/consent/`
 - [x] T069 [US3] Seller identity block (company, PL address, NIP, contact) in footer + Kontakt in `apps/storefront/src/components/Footer.tsx`
-- [ ] T070 [P] [US3] Upload-free **ad entry pages** (`(ads)` route group) — constructor opens on explicit action — in `apps/storefront/src/app/[locale]/(ads)/`
-- [ ] T071 [P] [US3] RUM (`web-vitals`) reporting segmented by UA/referrer + **filter ad-platform preload bots** from analytics in `apps/storefront/src/lib/rum.ts`
+- [x] T070 [P] [US3] Upload-free **ad entry pages** (`(ads)` route group) — constructor opens on explicit action — in `apps/storefront/src/app/[locale]/(ads)/`
+- [x] T071 [P] [US3] RUM (`web-vitals`) reporting segmented by UA/referrer + **filter ad-platform preload bots** from analytics in `apps/storefront/src/lib/rum.ts`
 - [x] T071a [US3] **Constructor funnel instrumentation** (SC-004): consent-gated events for each step — open → character chosen → face uploaded → cutout ready/failed/deferred → name → options → add-to-cart — each carrying the step id, so abandonment is attributable to a specific step, in `apps/storefront/src/features/constructor/telemetry.ts` — события: open, character_chosen, face_uploaded/cutout_failed, name_entered, add_to_cart (все гейтятся согласием)
 - [x] T071b [US3] Constructor completion-rate report (starts vs add-to-cart, drop-off per step) surfaced in the admin in `apps/medusa/src/admin/widgets/constructor-funnel.tsx`
 
@@ -153,10 +153,10 @@ payment; legal pages localized + editable; photos private + deletable.
 ## Phase 6: Polish & Cross-Cutting Concerns
 
 - [ ] T072 [P] Mobile CWV budget via Lighthouse CI on storefront + product page in `.github/workflows/ci.yml`
-- [ ] T073 [P] Error model + structured logging (no PII) across apps in `packages/config/src/logger.ts`
-- [ ] T074 [P] Docs: per-app README + admin guide "how to add a product & template" in `docs/`
-- [ ] T075 Backups: managed Postgres daily + PITR + R2 versioning verification notes in `docs/ops.md`
-- [ ] T076 [P] Fonts/artwork licensing record in `docs/licenses.md`
+- [x] T073 [P] Error model + structured logging (no PII) across apps in `packages/config/src/logger.ts`
+- [x] T074 [P] Docs: per-app README + admin guide "how to add a product & template" in `docs/`
+- [x] T075 Backups: managed Postgres daily + PITR + R2 versioning verification notes in `docs/ops.md`
+- [x] T076 [P] Fonts/artwork licensing record in `docs/licenses.md`
 - [ ] T077 Staging environment (Vercel preview + staging Medusa/worker/DB on Railway) + deploy docs in `docs/deploy.md`
 - [ ] T078 Verify the constructor works inside real FB/IG/TikTok in-app browsers on physical devices; record findings in `docs/inapp-browser-qa.md`
 - [ ] T079 Run quickstart.md validation scenarios on staging; fix gaps
