@@ -139,7 +139,7 @@ payment; legal pages localized + editable; photos private + deletable.
 - [ ] T063 [P] [US3] `ContentPage` module + admin editing + localized rendering (regulamin/privacy/cookies/zwroty/dostawa/kontakt) — **no ODR link** — in `apps/medusa/src/modules/content-page/` and `apps/storefront/src/app/[locale]/(content)/`
 - [x] T064 [US3] `GET /store/gl/legal/withdrawal-notice` + checkout block rendering the notice **beside the pay button**, paired with the guarantee in `apps/storefront/src/features/checkout/WithdrawalNotice.tsx`
 - [ ] T065 [US3] Guarantee presentation (design approval before production; remake/refund; no return shipping) on PDP + checkout in `apps/storefront/src/components/Guarantee.tsx`
-- [ ] T066 [P] [US3] `Review` module + PDP reviews with **verified-buyer marking** + verification-method disclosure + summary distribution in `apps/medusa/src/modules/review/` and `apps/storefront/src/features/reviews/`
+- [x] T066 [P] [US3] `Review` module + PDP reviews with **verified-buyer marking** + verification-method disclosure + summary distribution in `apps/medusa/src/modules/review/` and `apps/storefront/src/features/reviews/`
 - [x] T067 [P] [US3] RODO: 60-day photo retention job + deletion-request endpoint + private-access enforcement in `apps/medusa/src/jobs/photo-retention.ts` and `apps/medusa/src/api/store/gl/photos/`
 - [x] T068 [US3] Persist ConsentRecord (photo_processing + cookies) in `apps/medusa/src/modules/consent/`
 - [ ] T069 [US3] Seller identity block (company, PL address, NIP, contact) in footer + Kontakt in `apps/storefront/src/components/Footer.tsx`
