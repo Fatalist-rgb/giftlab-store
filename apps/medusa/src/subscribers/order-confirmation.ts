@@ -2,6 +2,7 @@ import type { SubscriberArgs, SubscriberConfig } from '@medusajs/framework'
 import { Modules } from '@medusajs/framework/utils'
 import type { INotificationModuleService } from '@medusajs/framework/types'
 import { WITHDRAWAL_NOTICE_TEXT, WITHDRAWAL_NOTICE_VERSION } from '../lib/legal'
+import { renderConfirmationHtml, renderConfirmationText } from '../lib/email-templates'
 
 /**
  * Order confirmation email (T050). Sends through the notification module, so the
@@ -45,6 +46,17 @@ export default async function orderConfirmationHandler({
   )
 
   const notice = WITHDRAWAL_NOTICE_TEXT.pl // store speaks Polish first; locale-aware later
+  const siteUrl = process.env.STOREFRONT_URL ?? 'https://giftlab-storefront.vercel.app'
+  const confirmation = {
+    display_id: (order.display_id as number | undefined) ?? null,
+    items,
+    item_total: itemTotal,
+    shipping_total: shipping,
+    total: itemTotal + shipping,
+    currency: (order.currency_code ?? 'pln').toUpperCase(),
+    notice,
+    orderUrl: `${siteUrl}/pl/order/${order.id}`,
+  }
   try {
     await notifications.createNotifications([
       {
@@ -52,13 +64,11 @@ export default async function orderConfirmationHandler({
         channel: 'email',
         template: 'order-confirmation',
         data: {
-          display_id: order.display_id ?? null,
-          item_total: itemTotal,
-          shipping_total: shipping,
-          total: itemTotal + shipping,
-          currency: (order.currency_code ?? 'pln').toUpperCase(),
-          items,
-          withdrawal_notice: { version: WITHDRAWAL_NOTICE_VERSION, ...notice },
+          subject: `GiftLab — zamówienie${confirmation.display_id ? ` #${confirmation.display_id}` : ''} przyjęte`,
+          html: renderConfirmationHtml(confirmation),
+          text: renderConfirmationText(confirmation),
+          withdrawal_notice_version: WITHDRAWAL_NOTICE_VERSION,
+          ...confirmation,
         },
       },
     ])

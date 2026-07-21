@@ -1,6 +1,11 @@
 import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
 import { Modules } from '@medusajs/framework/utils'
-import type { IProductModuleService, IRegionModuleService, ISalesChannelModuleService } from '@medusajs/framework/types'
+import type {
+  ICartModuleService,
+  IProductModuleService,
+  IRegionModuleService,
+  ISalesChannelModuleService,
+} from '@medusajs/framework/types'
 import { createCartWorkflow } from '@medusajs/medusa/core-flows'
 import { PRODUCT_CUSTOMIZATION_MODULE } from '../../../../modules/product_customization'
 import type ProductCustomizationModuleService from '../../../../modules/product_customization/service'
@@ -21,10 +26,37 @@ import {
  * subscriber later freezes onto the order line. Body: { productId, designIds: string[], email? }.
  */
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
-  const body = (req.body ?? {}) as { productId?: string; designIds?: string[]; email?: string }
-  const { productId, designIds, email } = body
+  const body = (req.body ?? {}) as {
+    productId?: string
+    designIds?: string[]
+    email?: string
+    cartId?: string
+  }
+  const { productId, email } = body
+  let designIds = body.designIds ?? []
   if (!productId || !Array.isArray(designIds) || designIds.length === 0) {
     return res.status(400).json({ message: 'productId and a non-empty designIds[] are required' })
+  }
+
+  // MERGE: an open cart's designs join the new ones, and the whole set is repriced —
+  // the ladder must span the full order, so existing lines cannot keep an old unit
+  // price. Rebuilding the cart is the correct move, not appending. The old cart is
+  // simply abandoned (harmless).
+  let carriedEmail: string | null = null
+  if (body.cartId) {
+    try {
+      const carts: ICartModuleService = req.scope.resolve(Modules.CART)
+      const old = await carts.retrieveCart(body.cartId, { relations: ['items'] })
+      if (!old.completed_at) {
+        const oldIds = (old.items ?? [])
+          .map((i) => (i.metadata as Record<string, unknown> | null)?.design_id)
+          .filter((x): x is string => typeof x === 'string')
+        designIds = [...new Set([...oldIds, ...designIds])]
+        carriedEmail = old.email ?? null
+      }
+    } catch {
+      /* unknown/gone cart — proceed with the new designs only */
+    }
   }
 
   // resolve the product (id or handle) with its variant
@@ -85,7 +117,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     input: {
       region_id: region.id,
       sales_channel_id: channel?.id,
-      email: email ?? undefined,
+      email: email ?? carriedEmail ?? undefined,
       currency_code: 'pln',
       items,
     },

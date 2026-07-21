@@ -44,12 +44,21 @@ medusaIntegrationTestRunner({
       beforeAll(async () => {
         const container = getContainer()
 
-        // a product the schema hangs off (resolved by id or handle)
+        // a product the schema hangs off (resolved by id or handle), with a made-to-order
+        // variant + PLN region + sales channel so the cart routes work in the bare test DB
         const products = container.resolve(Modules.PRODUCT)
         const [product] = await products.createProducts([
           { title: 'Figurka IT', handle: 'figurka-it', status: 'published' },
         ])
         handle = product.handle as string
+        await products.createProductVariants([
+          { product_id: product.id, title: 'Std', sku: 'FIG-IT-STD', manage_inventory: false },
+        ])
+        const regions = container.resolve(Modules.REGION)
+        await regions.createRegions([{ name: 'Polska IT', currency_code: 'pln', countries: ['pl'] }])
+        const channels = container.resolve(Modules.SALES_CHANNEL)
+        const existing = await channels.listSalesChannels({}, { take: 1 })
+        if (!existing.length) await channels.createSalesChannels([{ name: 'IT Channel' }])
 
         const schemas: ProductCustomizationModuleService = container.resolve(PRODUCT_CUSTOMIZATION_MODULE)
         await schemas.publishSchema(product.id, { ...schemaDoc, medusaProductId: product.id })
@@ -119,6 +128,34 @@ medusaIntegrationTestRunner({
         expect(res.data.designId).toBeTruthy()
         expect(res.data.withdrawalRight).toBe('excluded') // named -> personalized
         expect(res.data.price.total).toBe(15800) // qty2 -> 7900 each
+      })
+
+      it('cart merge: a second add joins the open cart and reprices the whole ladder', async () => {
+        const mkDesign = (body: string, qty: number) => ({
+          productSchemaId: 'ps_it', schemaVersion: 1,
+          characterSelections: { body }, faceLayer: null,
+          textValues: [{ fieldId: 'name', value: 'M' }], selectedOptions: {},
+          quantity: qty, photoStatus: 'deferred',
+        })
+        const d1 = await api.post('/store/gl/designs', { productId: handle, design: mkDesign('blue', 2) }, { headers })
+        const cart1 = await api.post(
+          '/store/gl/carts',
+          { productId: handle, designIds: [d1.data.designId] },
+          { headers },
+        )
+        expect(cart1.data.ladderUnitGrosz).toBe(7900) // 2 szt -> base tier
+
+        const d2 = await api.post('/store/gl/designs', { productId: handle, design: mkDesign('pink', 1) }, { headers })
+        const cart2 = await api.post(
+          '/store/gl/carts',
+          { productId: handle, designIds: [d2.data.designId], cartId: cart1.data.cartId },
+          { headers },
+        )
+        // merged: 2+1 = 3 szt -> mid tier for EVERY line, in a fresh cart
+        expect(cart2.data.totalQuantity).toBe(3)
+        expect(cart2.data.ladderUnitGrosz).toBe(6500)
+        expect(cart2.data.cartId).not.toBe(cart1.data.cartId)
+        expect(cart2.data.lines).toHaveLength(2)
       })
 
       it('withdrawal semantics for a face product (T060 contract side)', async () => {
