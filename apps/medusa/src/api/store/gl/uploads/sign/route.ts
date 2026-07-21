@@ -2,6 +2,7 @@ import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
 import { PERSONALIZATION_MODULE } from '../../../../../modules/personalization'
 import type PersonalizationModuleService from '../../../../../modules/personalization/service'
 import { presignPut, r2Configured } from '../../../../../lib/r2'
+import { clientIp, rateLimit } from '../../../../../lib/rate-limit'
 
 const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'])
 
@@ -15,6 +16,10 @@ const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/he
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   if (!r2Configured()) {
     return res.status(503).json({ message: 'photo storage is not configured' })
+  }
+  // R2 operations cost money — blunt scripted abuse (30 signed uploads / hour / IP)
+  if (!rateLimit(`sign:${clientIp(req)}`, 30, 60 * 60 * 1000)) {
+    return res.status(429).json({ message: 'too many uploads, try later' })
   }
   const body = (req.body ?? {}) as { mime?: string; withCutout?: boolean }
   const mime = (body.mime ?? '').toLowerCase()

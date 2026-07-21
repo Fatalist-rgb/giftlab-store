@@ -76,7 +76,8 @@
     "emptySub": "Design your figurine and add it to the cart.",
     "emptyCta": "Open the constructor",
     "goToCart": "Go to cart →",
-    "deliveryWindow": "Estimated delivery"
+    "deliveryWindow": "Estimated delivery",
+    "trackOrder": "Track order →"
   },
   "cookies": {
     "title": "Cookies & privacy",
@@ -132,5 +133,22 @@
     "magnet": "11 cm, acrylic + magnet included. From 3 pcs — 65 zł each.",
     "cta": "Design yours →",
     "ctaNote": "You add the photo in the next step — nothing uploads by itself."
+  },
+  "order": {
+    "title": "Order #{number}",
+    "sub": "Production status of your figurines. The page refreshes itself.",
+    "loading": "Loading…",
+    "notFound": "Order not found.",
+    "status_ready": "ready for print ✓",
+    "status_queued": "queued…",
+    "status_processing": "in production…",
+    "status_awaiting_photo": "waiting for a photo",
+    "status_failed": "issue — we are on it",
+    "status_unknown": "—",
+    "needsPhoto": "This figurine waits for your photo. Upload it here — we remove the background automatically and start production.",
+    "attachCta": "Upload photo",
+    "attaching": "Uploading…",
+    "attachError": "Could not upload the photo. Please try again.",
+    "photoConsent": "By uploading a photo you consent to its processing to fulfil your order (GDPR)."
   }
 }

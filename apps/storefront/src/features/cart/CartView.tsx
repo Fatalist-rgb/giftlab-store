@@ -21,7 +21,7 @@ type Cart = {
   completed: boolean;
   items: CartItem[];
 };
-type OrderResult = { displayId: number; total: number; currency: string; email: string };
+type OrderResult = { orderId: string; displayId: number; total: number; currency: string; email: string };
 
 const money = (v: number, currency: string) =>
   new Intl.NumberFormat('pl-PL', { style: 'currency', currency: currency.toUpperCase() }).format(v);
@@ -111,9 +111,18 @@ export function CartView() {
         <p className="mt-4 text-lg opacity-75">
           {t('orderSub', { total: money(order.total, order.currency), email: order.email })}
         </p>
-        <Link href="/product" className="mt-8 inline-block rounded-2xl border-2 border-ink bg-mandarin px-6 py-3 font-display font-bold text-white shadow-offset">
-          {t('orderAgain')}
-        </Link>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link
+            href={`/order/${order.orderId}`}
+            data-testid="track-order"
+            className="inline-block rounded-2xl border-2 border-ink bg-white px-6 py-3 font-display font-bold shadow-offset"
+          >
+            {t('trackOrder')}
+          </Link>
+          <Link href="/product" className="inline-block rounded-2xl border-2 border-ink bg-mandarin px-6 py-3 font-display font-bold text-white shadow-offset">
+            {t('orderAgain')}
+          </Link>
+        </div>
       </main>
     );
   }

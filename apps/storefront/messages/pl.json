@@ -76,7 +76,8 @@
     "emptySub": "Zaprojektuj swoją figurkę i dodaj ją do koszyka.",
     "emptyCta": "Do konstruktora",
     "goToCart": "Przejdź do koszyka →",
-    "deliveryWindow": "Przewidywana dostawa"
+    "deliveryWindow": "Przewidywana dostawa",
+    "trackOrder": "Śledź zamówienie →"
   },
   "cookies": {
     "title": "Ciasteczka i prywatność",
@@ -132,5 +133,22 @@
     "magnet": "11 cm, akryl + magnes w zestawie. Od 3 szt. — 65 zł/szt.",
     "cta": "Zaprojektuj swoją →",
     "ctaNote": "Zdjęcie dodasz w następnym kroku — nic nie wgrywa się samo."
+  },
+  "order": {
+    "title": "Zamówienie #{number}",
+    "sub": "Status produkcji Twoich figurek. Strona odświeża się sama.",
+    "loading": "Ładowanie…",
+    "notFound": "Nie znaleziono zamówienia.",
+    "status_ready": "gotowa do druku ✓",
+    "status_queued": "w kolejce…",
+    "status_processing": "w produkcji…",
+    "status_awaiting_photo": "czeka na zdjęcie",
+    "status_failed": "problem — zajmiemy się tym",
+    "status_unknown": "—",
+    "needsPhoto": "Ta figurka czeka na Twoje zdjęcie. Wgraj je tutaj — tło usuniemy automatycznie i ruszymy z produkcją.",
+    "attachCta": "Wgraj zdjęcie",
+    "attaching": "Wgrywanie…",
+    "attachError": "Nie udało się wgrać zdjęcia. Spróbuj ponownie.",
+    "photoConsent": "Przesyłając zdjęcie, wyrażasz zgodę na jego przetwarzanie w celu realizacji zamówienia (RODO)."
   }
 }

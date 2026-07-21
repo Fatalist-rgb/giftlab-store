@@ -5,6 +5,7 @@ import { REVIEW_MODULE } from '../../../../modules/review'
 import type ReviewModuleService from '../../../../modules/review/service'
 import { PERSONALIZATION_MODULE } from '../../../../modules/personalization'
 import type PersonalizationModuleService from '../../../../modules/personalization/service'
+import { clientIp, rateLimit } from '../../../../lib/rate-limit'
 
 async function resolveProductId(scope: MedusaRequest['scope'], idOrHandle: string): Promise<string | null> {
   const products: IProductModuleService = scope.resolve(Modules.PRODUCT)
@@ -62,6 +63,11 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   if (!body.productId || !body.rating || !body.body || !body.authorName) {
     return res.status(400).json({ message: 'productId, rating, body and authorName are required' })
   }
+  // spam guard: 5 submissions / hour / IP
+  if (!rateLimit(`review:${clientIp(req)}`, 5, 60 * 60 * 1000)) {
+    return res.status(429).json({ message: 'too many reviews, try later' })
+  }
+
   const productId = await resolveProductId(req.scope, body.productId)
   if (!productId) return res.status(404).json({ message: 'product not found' })
 
