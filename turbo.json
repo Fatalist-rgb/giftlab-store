@@ -1,5 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "MEDUSA_BACKEND_URL",
+    "MEDUSA_PUBLISHABLE_KEY",
+    "MEDUSA_FIGURINE_PRODUCT_ID",
+    "NEXT_PUBLIC_SITE_URL",
+    "NEXT_PUBLIC_GA_ID"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
