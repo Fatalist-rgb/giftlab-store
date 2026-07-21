@@ -7,6 +7,19 @@ import { fetchProductSchema, FIGURINE_PRODUCT_ID } from '@/lib/backend';
 // ISR — the page is prebuilt with the live schema and refreshed every 5 minutes
 export const revalidate = 300;
 
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return {
+    title: 'Figurka z brzuszkiem — zaprojektuj swoją',
+    description:
+      'Wgraj zdjęcie, wybierz postać, dodaj imię. Podgląd na żywo — drukujemy dokładnie to, co widzisz. 79 zł, od 3 szt. taniej.',
+    alternates: {
+      canonical: `/${locale}/product`,
+      languages: { pl: '/pl/product', en: '/en/product', uk: '/uk/product', 'x-default': '/pl/product' },
+    },
+  };
+}
+
 export default async function ProductPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
