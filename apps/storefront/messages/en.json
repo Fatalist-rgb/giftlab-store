@@ -62,7 +62,8 @@
     "emptyTitle": "Your cart is empty",
     "emptySub": "Design your figurine and add it to the cart.",
     "emptyCta": "Open the constructor",
-    "goToCart": "Go to cart →"
+    "goToCart": "Go to cart →",
+    "deliveryWindow": "Estimated delivery"
   },
   "cookies": {
     "title": "Cookies & privacy",
@@ -92,5 +93,21 @@
     "submit": "Submit review",
     "thanks": "Thank you! Your review will appear after moderation.",
     "error": "Could not submit. Please try again."
+  },
+  "guarantee": {
+    "title": "Our guarantee",
+    "approve": "You see the exact preview before production — we print exactly what you approve.",
+    "remake": "Production defect? We remake the figurine or refund you.",
+    "shipping": "Complaints without return shipping at your cost."
+  },
+  "footer": {
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies",
+    "returns": "Returns & complaints",
+    "delivery": "Delivery",
+    "contact": "Contact",
+    "company": "[Seller details — to be filled after registration:\ncompany name, address, VAT ID, e-mail, phone]",
+    "rights": "All rights reserved"
   }
 }

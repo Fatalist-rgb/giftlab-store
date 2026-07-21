@@ -5,14 +5,32 @@ import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { CookieConsent } from '@/features/consent/CookieConsent';
+import { Footer } from '@/components/Footer';
 import '../globals.css';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return { title: 'GiftLab', description: 'Personalized acrylic figurines' };
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://giftlab-storefront.vercel.app';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  // canonical + hreflang for every localized page (T062)
+  return {
+    metadataBase: new URL(SITE),
+    title: { default: 'GiftLab — figurki personalizowane', template: '%s · GiftLab' },
+    description:
+      'Figurka z Twoją twarzą i imieniem. Zaprojektuj w 2 minuty — my wydrukujemy i dostarczymy.',
+    alternates: {
+      canonical: `/${locale}`,
+      languages: { pl: '/pl', en: '/en', uk: '/uk', 'x-default': '/pl' },
+    },
+  };
 }
 
 export default async function LocaleLayout({
@@ -69,6 +87,7 @@ export default async function LocaleLayout({
             </nav>
           </header>
           {children}
+          <Footer />
           <CookieConsent />
         </NextIntlClientProvider>
       </body>

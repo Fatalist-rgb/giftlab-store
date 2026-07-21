@@ -121,6 +121,30 @@ medusaIntegrationTestRunner({
         expect(res.data.price.total).toBe(15800) // qty2 -> 7900 each
       })
 
+      it('withdrawal semantics for a face product (T060 contract side)', async () => {
+        // For THIS product every orderable design is personalized: a face (excluded), a
+        // name (excluded) or a deferred photo (excluded — made-to-order commitment).
+        // The contradictory "ready but no face" state is rejected by the engine, so a
+        // non-personalized line cannot be manufactured here. The applies-branch of the
+        // per-line computation is pinned by unit tests (withdrawal.unit.spec).
+        const res = await api
+          .post(
+            '/store/gl/designs',
+            {
+              productId: handle,
+              design: {
+                productSchemaId: 'ps_it', schemaVersion: 1,
+                characterSelections: { body: 'blue' },
+                faceLayer: null, textValues: [], selectedOptions: {},
+                quantity: 1, photoStatus: 'ready',
+              },
+            },
+            { headers },
+          )
+          .catch((e: { response: { status: number } }) => e.response)
+        expect(res.status).toBe(422)
+      })
+
       it('POST designs rejects an unknown variant -> 422', async () => {
         const res = await api
           .post(

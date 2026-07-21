@@ -62,7 +62,8 @@
     "emptyTitle": "Koszyk jest pusty",
     "emptySub": "Zaprojektuj swoją figurkę i dodaj ją do koszyka.",
     "emptyCta": "Do konstruktora",
-    "goToCart": "Przejdź do koszyka →"
+    "goToCart": "Przejdź do koszyka →",
+    "deliveryWindow": "Przewidywana dostawa"
   },
   "cookies": {
     "title": "Ciasteczka i prywatność",
@@ -92,5 +93,21 @@
     "submit": "Wyślij opinię",
     "thanks": "Dziękujemy! Opinia pojawi się po moderacji.",
     "error": "Nie udało się wysłać. Spróbuj ponownie."
+  },
+  "guarantee": {
+    "title": "Nasza gwarancja",
+    "approve": "Zobaczysz dokładny podgląd przed produkcją — drukujemy dokładnie to, co zatwierdzisz.",
+    "remake": "Wada produkcyjna? Wykonamy figurkę ponownie albo zwrócimy pieniądze.",
+    "shipping": "Reklamacje bez odsyłania na Twój koszt."
+  },
+  "footer": {
+    "terms": "Regulamin",
+    "privacy": "Prywatność",
+    "cookies": "Cookies",
+    "returns": "Zwroty i reklamacje",
+    "delivery": "Dostawa",
+    "contact": "Kontakt",
+    "company": "[Dane sprzedawcy — do uzupełnienia po rejestracji:\nnazwa spółki, adres, NIP, e-mail, telefon]",
+    "rights": "Wszystkie prawa zastrzeżone"
   }
 }

@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Link } from '@/i18n/navigation';
+import { Guarantee } from '@/components/Guarantee';
 
 type CartItem = {
   id: string;
@@ -46,6 +47,14 @@ export function CartView() {
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [phone, setPhone] = useState('');
+  const [delivery, setDelivery] = useState<{ from: string; to: string } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/gl/delivery-estimate')
+      .then(async (r) => (r.ok ? await r.json() : null))
+      .then((d) => d && setDelivery(d))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const id = localStorage.getItem('gl_cart_id');
@@ -166,7 +175,18 @@ export function CartView() {
             <span>{t('shipping')}</span>
             <span>{t('shippingCourier')}</span>
           </div>
+          {delivery && (
+            <div className="flex justify-between text-sm opacity-70" data-testid="delivery-window">
+              <span>{t('deliveryWindow')}</span>
+              <span>
+                {new Date(delivery.from).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })} –{' '}
+                {new Date(delivery.to).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })}
+              </span>
+            </div>
+          )}
         </div>
+
+        <Guarantee compact />
 
         {/* withdrawal notice beside the pay button — FR-030 */}
         <p className="text-xs leading-relaxed opacity-60" data-testid="withdrawal-notice">

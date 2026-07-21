@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { Constructor } from '@/features/constructor/Constructor';
 import { Reviews } from '@/features/reviews/Reviews';
+import { Guarantee } from '@/components/Guarantee';
 import { fetchProductSchema, FIGURINE_PRODUCT_ID } from '@/lib/backend';
 
 // ISR — the page is prebuilt with the live schema and refreshed every 5 minutes
@@ -17,6 +18,9 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
   return (
     <>
       <Constructor schema={schema ?? undefined} />
+      <div className="mx-auto max-w-2xl px-5 pt-2">
+        <Guarantee />
+      </div>
       <Reviews />
     </>
   );
