@@ -14,6 +14,7 @@ import { Link } from '@/i18n/navigation';
 import { demoSchema, SAMPLE_FACE_KEY, SAMPLE_PHOTO_ID } from '@/lib/schema';
 import { createBrowserCutout } from '@/lib/cutout';
 import { uploadPhotoWithCutout } from '@/lib/uploads';
+import { track } from '@/lib/analytics';
 
 const PREVIEW_SCALE = 1.2;
 // real in-browser background removal (@imgly); the model loads lazily on first upload
@@ -53,6 +54,11 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
   const [assetsReady, setAssetsReady] = useState(false);
   const [assetVersion, setAssetVersion] = useState(0);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // funnel (T071a): constructor opened — dropped silently without analytics consent
+  useEffect(() => {
+    track('constructor_open', { step: 'open' });
+  }, []);
 
   // load body variants + mask + the built-in sample face, once
   useEffect(() => {
@@ -133,6 +139,7 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
       if (!res.ok || !body.cartId) throw new Error('add-to-cart failed');
       localStorage.setItem('gl_cart_id', body.cartId);
       setAdded(true);
+      track('add_to_cart', { step: 'add-to-cart', quantity, personalized: Boolean(facePhotoId || name.trim()) });
     } catch {
       setAddError(true);
     } finally {

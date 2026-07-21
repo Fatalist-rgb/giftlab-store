@@ -63,5 +63,17 @@
     "emptySub": "Zaprojektuj swoją figurkę i dodaj ją do koszyka.",
     "emptyCta": "Do konstruktora",
     "goToCart": "Przejdź do koszyka →"
+  },
+  "cookies": {
+    "title": "Ciasteczka i prywatność",
+    "body": "Używamy niezbędnych plików cookie, aby sklep działał. Analitykę i marketing włączymy tylko za Twoją zgodą — nic nie śledzimy, dopóki nie zdecydujesz.",
+    "more": "Polityka cookies",
+    "necessary": "Niezbędne (zawsze aktywne)",
+    "analytics": "Analityka — pomaga ulepszać sklep",
+    "marketing": "Marketing — mierzenie reklam",
+    "necessaryOnly": "Tylko niezbędne",
+    "acceptAll": "Akceptuję wszystkie",
+    "save": "Zapisz wybór",
+    "settings": "Ustawienia szczegółowe"
   }
 }

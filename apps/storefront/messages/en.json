@@ -63,5 +63,17 @@
     "emptySub": "Design your figurine and add it to the cart.",
     "emptyCta": "Open the constructor",
     "goToCart": "Go to cart →"
+  },
+  "cookies": {
+    "title": "Cookies & privacy",
+    "body": "We use essential cookies to make the store work. Analytics and marketing run only with your consent — nothing is tracked until you decide.",
+    "more": "Cookie policy",
+    "necessary": "Essential (always on)",
+    "analytics": "Analytics — helps us improve the store",
+    "marketing": "Marketing — ad measurement",
+    "necessaryOnly": "Essential only",
+    "acceptAll": "Accept all",
+    "save": "Save choice",
+    "settings": "Detailed settings"
   }
 }

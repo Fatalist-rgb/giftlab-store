@@ -4,6 +4,7 @@ import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server
 import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
+import { CookieConsent } from '@/features/consent/CookieConsent';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -68,6 +69,7 @@ export default async function LocaleLayout({
             </nav>
           </header>
           {children}
+          <CookieConsent />
         </NextIntlClientProvider>
       </body>
     </html>
