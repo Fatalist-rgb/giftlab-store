@@ -75,5 +75,22 @@
     "acceptAll": "Accept all",
     "save": "Save choice",
     "settings": "Detailed settings"
+  },
+  "reviews": {
+    "title": "Customer reviews",
+    "count": "{count} reviews",
+    "empty": "No reviews yet — be the first!",
+    "verificationNote": "How we verify reviews: the “verified purchase” badge is granted only to reviews whose author provided an order number and e-mail matching our order records for this product. Other reviews are published without the badge. All reviews are moderated (spam and profanity); we never alter their content or ratings.",
+    "verified": "✓ verified purchase",
+    "write": "Write a review",
+    "yourRating": "Your rating",
+    "bodyPlaceholder": "How do you like the figurine?",
+    "name": "Name",
+    "emailOptional": "E-mail (for purchase verification)",
+    "orderOptional": "Order no. (optional)",
+    "verifyHint": "Provide the e-mail and order number to get the verified-purchase badge.",
+    "submit": "Submit review",
+    "thanks": "Thank you! Your review will appear after moderation.",
+    "error": "Could not submit. Please try again."
   }
 }

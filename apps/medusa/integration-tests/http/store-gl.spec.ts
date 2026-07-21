@@ -2,6 +2,8 @@ import { medusaIntegrationTestRunner } from '@medusajs/test-utils'
 import { Modules } from '@medusajs/framework/utils'
 import { PRODUCT_CUSTOMIZATION_MODULE } from '../../src/modules/product_customization'
 import type ProductCustomizationModuleService from '../../src/modules/product_customization/service'
+import { REVIEW_MODULE } from '../../src/modules/review'
+import type ReviewModuleService from '../../src/modules/review/service'
 
 jest.setTimeout(120_000)
 
@@ -144,6 +146,41 @@ medusaIntegrationTestRunner({
         const paid = JSON.parse(JSON.stringify(schemaDoc))
         paid.characterLayers[0].variants[0].priceDelta = 500
         await expect(schemas.publishSchema('prod_it_paid', paid)).rejects.toThrow()
+      })
+
+      it('reviews: submit lands pending, moderation publishes into the list (T066)', async () => {
+        const submit = await api.post(
+          '/store/gl/reviews',
+          { productId: handle, rating: 5, body: 'Świetna figurka, dziecko zachwycone!', authorName: 'Ola' },
+          { headers },
+        )
+        expect(submit.status).toBe(201)
+        expect(submit.data.status).toBe('pending')
+        expect(submit.data.verifiedBuyer).toBe(false) // no order claimed
+
+        // pending is invisible on the storefront
+        const before = await api.get(`/store/gl/reviews?productId=${handle}`, { headers })
+        expect(before.data.summary.count).toBe(0)
+
+        // moderate -> published -> visible with a correct summary
+        const container = getContainer()
+        const reviews: ReviewModuleService = container.resolve(REVIEW_MODULE)
+        await reviews.moderate(submit.data.reviewId, 'published')
+
+        const after = await api.get(`/store/gl/reviews?productId=${handle}`, { headers })
+        expect(after.data.summary).toMatchObject({ count: 1, average: 5 })
+        expect(after.data.reviews[0]).toMatchObject({ author: 'Ola', rating: 5, verifiedBuyer: false })
+      })
+
+      it('reviews: an out-of-range rating is rejected -> 422', async () => {
+        const res = await api
+          .post(
+            '/store/gl/reviews',
+            { productId: handle, rating: 7, body: 'zbyt entuzjastycznie', authorName: 'Bot' },
+            { headers },
+          )
+          .catch((e: { response: { status: number } }) => e.response)
+        expect(res.status).toBe(422)
       })
 
       it('re-publishing bumps the version and archives the previous one (T057 semantics)', async () => {

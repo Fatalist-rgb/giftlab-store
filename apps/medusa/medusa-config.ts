@@ -20,6 +20,7 @@ module.exports = defineConfig({
     { resolve: './src/modules/price_history' },
     { resolve: './src/modules/content' },
     { resolve: './src/modules/consent' },
+    { resolve: './src/modules/review' },
     // Notifications: the local provider logs emails until the client's mail service
     // (SMTP/Resend) exists — then only this provider entry changes, not the senders.
     {

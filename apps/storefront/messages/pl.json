@@ -75,5 +75,22 @@
     "acceptAll": "Akceptuję wszystkie",
     "save": "Zapisz wybór",
     "settings": "Ustawienia szczegółowe"
+  },
+  "reviews": {
+    "title": "Opinie klientów",
+    "count": "{count} opinii",
+    "empty": "Jeszcze nie ma opinii — bądź pierwszy!",
+    "verificationNote": "Jak weryfikujemy opinie: znaczek „zweryfikowany zakup” otrzymują wyłącznie opinie, których autor podał numer zamówienia i adres e-mail zgodne z naszą bazą zamówień tego produktu. Pozostałe opinie publikujemy bez tego oznaczenia. Wszystkie opinie przechodzą moderację (spam i wulgaryzmy), nie zmieniamy ich treści ani ocen.",
+    "verified": "✓ zweryfikowany zakup",
+    "write": "Napisz opinię",
+    "yourRating": "Twoja ocena",
+    "bodyPlaceholder": "Jak podoba się figurka?",
+    "name": "Imię",
+    "emailOptional": "E-mail (do weryfikacji zakupu)",
+    "orderOptional": "Nr zamówienia (opcjonalnie)",
+    "verifyHint": "Podaj e-mail i numer zamówienia, aby otrzymać znaczek zweryfikowanego zakupu.",
+    "submit": "Wyślij opinię",
+    "thanks": "Dziękujemy! Opinia pojawi się po moderacji.",
+    "error": "Nie udało się wysłać. Spróbuj ponownie."
   }
 }
