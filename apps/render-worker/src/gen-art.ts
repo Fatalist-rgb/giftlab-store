@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { createCanvas, type SKRSContext2D } from '@napi-rs/canvas';
+import { createCanvas, type Canvas, type SKRSContext2D } from '@napi-rs/canvas';
 
 /**
  * Placeholder character artwork for the catalog (ORIGINAL drawings — reference-site
@@ -18,7 +18,7 @@ function base() {
   const x = c.getContext('2d');
   return { c, x };
 }
-function save(name: string, c: ReturnType<typeof createCanvas>) {
+function save(name: string, c: Canvas) {
   writeFileSync(join(OUT, name), c.toBuffer('image/png'));
   console.log('  art/' + name);
 }
