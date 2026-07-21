@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { CookieConsent } from '@/features/consent/CookieConsent';
 import { Footer } from '@/components/Footer';
+import { Rum } from '@/features/rum/Rum';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -89,6 +90,7 @@ export default async function LocaleLayout({
           {children}
           <Footer />
           <CookieConsent />
+          <Rum />
         </NextIntlClientProvider>
       </body>
     </html>

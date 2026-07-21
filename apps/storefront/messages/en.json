@@ -122,5 +122,15 @@
     "contact": "Contact",
     "company": "[Seller details — to be filled after registration:\ncompany name, address, VAT ID, e-mail, phone]",
     "rights": "All rights reserved"
+  },
+  "ads": {
+    "badge": "A gift that stays",
+    "title": "A figurine with your face and name",
+    "sub": "Upload a photo — we remove the background automatically. You see the exact preview before anything is printed.",
+    "preview": "1:1 preview before production — we print what you approve.",
+    "speed": "Ready in 2–4 business days, courier 1–2 days.",
+    "magnet": "11 cm, acrylic + magnet included. From 3 pcs — 65 zł each.",
+    "cta": "Design yours →",
+    "ctaNote": "You add the photo in the next step — nothing uploads by itself."
   }
 }

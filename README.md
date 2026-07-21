@@ -83,6 +83,12 @@ npm run dev                          # backend :9000, admin at :9000/app
 In development Medusa needs no Redis — it falls back to in-memory modules. In production
 set `REDIS_URL` (event bus, cache, workflow engine).
 
+## Docs
+
+- [`docs/admin-guide.md`](docs/admin-guide.md) — обслуга sklepu (zamówienia, produkcja, opinie, treści) po polsku
+- [`docs/ops.md`](docs/ops.md) — backups, monitoring, typowe incydenty, sekrety
+- [`docs/licenses.md`](docs/licenses.md) — licencje czcionek/grafik + действия перед стартом
+
 ## Deployment (client-owned accounts)
 
 Storefront → Vercel · Backend + Postgres/Redis → Railway · Files (photos, print packages)

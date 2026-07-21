@@ -122,5 +122,15 @@
     "contact": "Kontakt",
     "company": "[Dane sprzedawcy — do uzupełnienia po rejestracji:\nnazwa spółki, adres, NIP, e-mail, telefon]",
     "rights": "Wszystkie prawa zastrzeżone"
+  },
+  "ads": {
+    "badge": "Prezent, który zostaje",
+    "title": "Figurka z Twoją twarzą i imieniem",
+    "sub": "Wgraj zdjęcie — tło usuniemy automatycznie. Zobaczysz dokładny podgląd, zanim cokolwiek wydrukujemy.",
+    "preview": "Podgląd 1:1 przed produkcją — drukujemy to, co zatwierdzisz.",
+    "speed": "Gotowa w 2–4 dni robocze, kurier 1–2 dni.",
+    "magnet": "11 cm, akryl + magnes w zestawie. Od 3 szt. — 65 zł/szt.",
+    "cta": "Zaprojektuj swoją →",
+    "ctaNote": "Zdjęcie dodasz w następnym kroku — nic nie wgrywa się samo."
   }
 }
