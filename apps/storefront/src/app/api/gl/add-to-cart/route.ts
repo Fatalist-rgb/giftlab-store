@@ -14,7 +14,12 @@ export async function POST(req: NextRequest) {
   if (!BASE || !KEY) {
     return NextResponse.json({ message: 'backend is not configured' }, { status: 503 });
   }
-  const payload = (await req.json()) as { design?: unknown; designs?: unknown[]; cartId?: string | null };
+  const payload = (await req.json()) as {
+    design?: unknown;
+    designs?: unknown[];
+    cartId?: string | null;
+    productId?: string;
+  };
   // several different designs in one order (T042); the single-design shape stays accepted
   const designs = Array.isArray(payload.designs)
     ? payload.designs
@@ -24,6 +29,11 @@ export async function POST(req: NextRequest) {
   if (!designs.length || designs.some((d) => !d || typeof d !== 'object')) {
     return NextResponse.json({ message: 'design(s) required' }, { status: 400 });
   }
+  // catalog products send their handle; anything but a plain handle/id falls back to the flagship
+  const product =
+    typeof payload.productId === 'string' && /^[a-z0-9_-]{1,80}$/.test(payload.productId)
+      ? payload.productId
+      : PRODUCT;
 
   const headers = {
     'content-type': 'application/json',
@@ -36,7 +46,7 @@ export async function POST(req: NextRequest) {
     const dRes = await fetch(`${BASE}/store/gl/designs`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ productId: PRODUCT, design }),
+      body: JSON.stringify({ productId: product, design }),
       signal: AbortSignal.timeout(10000),
     });
     const dBody = (await dRes.json()) as { designId?: string; message?: string; detail?: string };
@@ -53,7 +63,7 @@ export async function POST(req: NextRequest) {
   const cRes = await fetch(`${BASE}/store/gl/carts`, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ productId: PRODUCT, designIds, cartId: payload.cartId ?? undefined }),
+    body: JSON.stringify({ productId: product, designIds, cartId: payload.cartId ?? undefined }),
     signal: AbortSignal.timeout(15000),
   });
   const cBody = (await cRes.json()) as Record<string, unknown>;

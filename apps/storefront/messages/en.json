@@ -1,7 +1,8 @@
 {
   "nav": {
     "shop": "Shop",
-    "how": "How it works"
+    "how": "How it works",
+    "catalog": "Catalogue"
   },
   "home": {
     "badge": "Belly figurine",
@@ -72,7 +73,9 @@
   "catalog": {
     "title": "Catalogue",
     "empty": "The catalogue is temporarily empty — check back soon.",
-    "customize": "Customize"
+    "customize": "Customize",
+    "ladderHint": "from {price} zł/pc at {qty}+",
+    "variants": "{count} variants to pick"
   },
   "cart": {
     "title": "Cart",

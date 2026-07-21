@@ -77,19 +77,30 @@ export async function fetchContentPage(slug: string, locale: string): Promise<Co
 export interface CatalogProduct {
   id: string;
   title: string;
-  handle: string;
+  handle: string | null;
   description: string | null;
+  basePriceGrosz: number | null;
+  ladder: Array<{ minQty: number; unitPrice: number }>;
   thumbnail: string | null;
+  variantCount: number;
 }
 
-/** Published products from the standard Medusa store API (empty when backend is off). */
-export async function fetchCatalog(): Promise<CatalogProduct[]> {
+export interface CatalogCategory {
+  id: string;
+  name: string;
+  description: string | null;
+  products: CatalogProduct[];
+}
+
+/**
+ * The GL catalogue: active categories with orderable products (published schema =
+ * price authority). Empty when the backend is off — the page shows its empty state.
+ */
+export async function fetchCatalog(): Promise<CatalogCategory[]> {
   if (!backendConfigured) return [];
   try {
-    const data = (await storeFetch(`/store/products?limit=50&fields=id,title,handle,description,thumbnail`)) as {
-      products?: CatalogProduct[];
-    };
-    return data.products ?? [];
+    const data = (await storeFetch(`/store/gl/catalog`)) as { categories?: CatalogCategory[] };
+    return data.categories ?? [];
   } catch (err) {
     console.warn(`[storefront] catalog unavailable: ${(err as Error).message}`);
     return [];

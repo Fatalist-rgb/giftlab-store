@@ -19,6 +19,9 @@
 .env
 .env.*
 .next/
+.cart-local.txt
+.last-order.txt
+.pk-local.txt
 .pk-prod.txt
 .railway-token
 .redis-pub.txt

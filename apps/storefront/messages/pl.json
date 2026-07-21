@@ -1,6 +1,7 @@
 {
   "nav": {
     "shop": "Sklep",
+    "catalog": "Katalog",
     "how": "Jak to działa"
   },
   "home": {
@@ -72,7 +73,9 @@
   "catalog": {
     "title": "Katalog",
     "empty": "Katalog jest chwilowo pusty — zajrzyj wkrótce.",
-    "customize": "Personalizuj"
+    "customize": "Personalizuj",
+    "ladderHint": "od {price} zł/szt. przy {qty}+",
+    "variants": "{count} warianty do wyboru"
   },
   "cart": {
     "title": "Koszyk",

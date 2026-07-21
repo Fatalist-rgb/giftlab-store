@@ -50,7 +50,10 @@ type CutProgress =
   | { stage: 'cut'; pct: number }
   | { stage: 'error' };
 
-export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } = {}) {
+export function Constructor({
+  schema: schemaProp,
+  productId,
+}: { schema?: ProductSchema; productId?: string } = {}) {
   const t = useTranslations('product');
   const tCart = useTranslations('cart');
   const locale = useLocale();
@@ -200,7 +203,7 @@ export function Constructor({ schema: schemaProp }: { schema?: ProductSchema } =
       const res = await fetch('/api/gl/add-to-cart', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ designs, cartId: localStorage.getItem('gl_cart_id') }),
+        body: JSON.stringify({ designs, cartId: localStorage.getItem('gl_cart_id'), productId }),
       });
       const body = (await res.json()) as { cartId?: string };
       if (!res.ok || !body.cartId) throw new Error('add-to-cart failed');

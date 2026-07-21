@@ -91,6 +91,23 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     return res.status(404).json({ message: `designs not found: ${missing.join(', ')}` })
   }
 
+  // one cart = one product type for now: every line resolves to THIS product's variant
+  // and the ladder is per-schema. Designs of another product (merged from an old cart
+  // after the customer switched catalogue items) are dropped from the merge, not mixed.
+  const foreign = designs.filter((d) => d.product_schema_id !== schema.id)
+  if (foreign.length) {
+    const foreignIds = new Set(foreign.map((d) => d.id))
+    const kept = designs.filter((d) => !foreignIds.has(d.id))
+    if (!kept.length) {
+      return res.status(409).json({
+        message: `designs belong to another product (schema ${foreign[0]!.product_schema_id}); cross-product carts are not supported yet`,
+      })
+    }
+    designIds = kept.map((d) => d.id)
+    designs.length = 0
+    designs.push(...kept)
+  }
+
   // ladder price from the TOTAL quantity across designs; per-line deltas on top
   const totalQty = designs.reduce((s, d) => s + Math.max(1, d.quantity ?? 1), 0)
   const { unitPrice: ladderUnit } = unitPriceForQuantity(schema.pricingRules, totalQty)

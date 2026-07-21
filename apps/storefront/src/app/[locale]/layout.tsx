@@ -71,6 +71,9 @@ export default async function LocaleLayout({
               <Link href="/product" className="hover:text-mandarin">
                 {t('shop')}
               </Link>
+              <Link href="/catalog" className="hover:text-mandarin">
+                {t('catalog')}
+              </Link>
               <div className="flex items-center gap-1 rounded-full border-2 border-ink p-0.5">
                 {routing.locales.map((l) => (
                   <Link

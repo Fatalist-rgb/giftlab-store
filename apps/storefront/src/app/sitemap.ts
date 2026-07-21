@@ -3,7 +3,22 @@ import type { MetadataRoute } from 'next';
 /** Sitemap (T062): every locale variant of the public pages, with hreflang alternates. */
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://giftlab-storefront.vercel.app';
 const LOCALES = ['pl', 'en', 'uk'] as const;
-const PATHS = ['', '/product', '/catalog', '/cart', '/info/regulamin', '/info/privacy', '/info/cookies', '/info/zwroty', '/info/dostawa', '/info/kontakt'];
+const PATHS = [
+  '',
+  '/product',
+  '/catalog',
+  // catalogue products (kept in sync with seed-categories.ts; the flagship lives at /product)
+  '/product/figurka-superbohater',
+  '/product/figurka-pupil',
+  '/product/figurka-swiateczna',
+  '/cart',
+  '/info/regulamin',
+  '/info/privacy',
+  '/info/cookies',
+  '/info/zwroty',
+  '/info/dostawa',
+  '/info/kontakt',
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return PATHS.flatMap((path) =>
