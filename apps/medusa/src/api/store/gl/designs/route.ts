@@ -2,6 +2,7 @@ import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
 import { PERSONALIZATION_MODULE } from '../../../../modules/personalization'
 import type PersonalizationModuleService from '../../../../modules/personalization/service'
 import { resolveActiveSchema } from '../resolve-schema'
+import { clientIp, rateLimit } from '../../../../lib/rate-limit'
 import {
   parseProductSchema,
   parseDesignState,
@@ -18,6 +19,10 @@ import {
  * server-side, and the design is stored. Body: { productId, design }.
  */
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
+  // designs persist rows — blunt scripted flooding (60/hour covers 6-slot orders easily)
+  if (!rateLimit(`designs:${clientIp(req)}`, 60, 60 * 60 * 1000)) {
+    return res.status(429).json({ message: 'too many requests, try later' })
+  }
   const body = (req.body ?? {}) as { productId?: string; design?: unknown }
   const { productId, design } = body
   if (!productId || !design || typeof design !== 'object') {

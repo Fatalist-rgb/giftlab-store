@@ -10,7 +10,10 @@ import type PersonalizationModuleService from '../../../../../modules/personaliz
  * friendly: UTF-8 BOM + semicolon separator (Polish locale default).
  */
 const esc = (v: unknown): string => {
-  const s = v === null || v === undefined ? '' : String(v)
+  let s = v === null || v === undefined ? '' : String(v)
+  // formula-injection guard: Excel executes cells starting with = + - @ or tab —
+  // customer-controlled fields (name, email, selections) must never become formulas
+  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`
   return /[;"\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
 }
 

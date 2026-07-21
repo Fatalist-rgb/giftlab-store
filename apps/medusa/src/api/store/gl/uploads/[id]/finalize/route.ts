@@ -6,6 +6,7 @@ import type PersonalizationModuleService from '../../../../../../modules/persona
 import { CONSENT_MODULE } from '../../../../../../modules/consent'
 import type ConsentModuleService from '../../../../../../modules/consent/service'
 import { getObjectBytes, headObject, putObject } from '../../../../../../lib/r2'
+import { clientIp, rateLimit } from '../../../../../../lib/rate-limit'
 
 const MAX_BYTES = 25 * 1024 * 1024 // 25 MB cap for a phone photo
 const MAX_EDGE_PX = 4000 // plenty for a 300 DPI face zone; caps storage and render cost
@@ -26,6 +27,10 @@ const isHeic = (bytes: Uint8Array) => {
  * Body: { consent: true, subjectRef? }.
  */
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
+  // sharp normalization is CPU-heavy — same budget as signing
+  if (!rateLimit(`finalize:${clientIp(req)}`, 30, 60 * 60 * 1000)) {
+    return res.status(429).json({ message: 'too many requests, try later' })
+  }
   const { id } = req.params
   const body = (req.body ?? {}) as { consent?: boolean; subjectRef?: string }
   if (body.consent !== true) {

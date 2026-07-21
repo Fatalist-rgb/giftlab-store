@@ -27,6 +27,10 @@
 
 ## Monitoring
 
+- **Uptime:** GitHub Actions (.github/workflows/uptime.yml) pinguje prod co 30 min;
+  padnięty check = e-mail od GitHuba do obserwujących repo. Docelowo: dedykowany monitor
+  (Better Stack / UptimeRobot) na koncie właściciela + Sentry na błędy frontu (konto klienta).
+
 - Railway healthcheck restartuje backend przy padzie (`ON_FAILURE`, 3 próby).
 - Kolejka: strona **Produkcja** w adminie pokazuje linie `zablokowane` (job zgubiony)
   — to pierwszy sygnał problemu z workerem/Redisem.

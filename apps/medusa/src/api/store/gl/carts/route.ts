@@ -17,6 +17,7 @@ import {
   selectionDelta,
   type DesignState,
 } from '@gl/constructor-vendored'
+import { clientIp, rateLimit } from '../../../../lib/rate-limit'
 
 /**
  * POST /store/gl/carts — build a cart from persisted designs. The server recomputes the
@@ -26,6 +27,9 @@ import {
  * subscriber later freezes onto the order line. Body: { productId, designIds: string[], email? }.
  */
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
+  if (!rateLimit(`carts:${clientIp(req)}`, 30, 60 * 60 * 1000)) {
+    return res.status(429).json({ message: 'too many requests, try later' })
+  }
   const body = (req.body ?? {}) as {
     productId?: string
     designIds?: string[]

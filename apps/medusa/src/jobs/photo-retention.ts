@@ -52,6 +52,36 @@ export default async function photoRetentionJob(container: MedusaContainer) {
     }
   }
   logger.info(`[gl] photo-retention: deleted ${deleted}/${expired.length} expired photos`)
+
+  // orphans: signed but never finalized (no expires_at) — nothing was uploaded or the
+  // customer abandoned the flow; after 7 days the row (and any stray objects) go
+  const orphanCutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  const orphans = await personalization.listPhotos(
+    { status: 'active', expires_at: null, created_at: { $lt: orphanCutoff } },
+    { take: 200 },
+  )
+  let cleaned = 0
+  for (const photo of orphans) {
+    const keys = [photo.original_key, photo.cutout_key, photo.preview_key].filter(
+      (k): k is string => Boolean(k && k !== 'pending'),
+    )
+    try {
+      for (const key of keys) {
+        await client.send(new DeleteObjectCommand({ Bucket: env.bucket, Key: key.replace(/^\//, '') }))
+      }
+      await personalization.updatePhoto({
+        id: photo.id,
+        status: 'deleted',
+        original_key: 'deleted',
+        cutout_key: null,
+        preview_key: null,
+      })
+      cleaned += 1
+    } catch (e) {
+      logger.warn(`[gl] photo-retention: orphan ${photo.id} failed — ${(e as Error).message}`)
+    }
+  }
+  if (orphans.length) logger.info(`[gl] photo-retention: cleaned ${cleaned}/${orphans.length} orphan uploads`)
 }
 
 export const config = {

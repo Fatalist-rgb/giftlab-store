@@ -1,6 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
 import { CONSENT_MODULE } from '../../../../modules/consent'
 import type ConsentModuleService from '../../../../modules/consent/service'
+import { clientIp, rateLimit } from '../../../../lib/rate-limit'
 
 const ALLOWED = new Set(['analytics', 'marketing'])
 
@@ -10,6 +11,9 @@ const ALLOWED = new Set(['analytics', 'marketing'])
  * Body: { subjectRef, categories: string[] }.
  */
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
+  if (!rateLimit(`consent:${clientIp(req)}`, 10, 60 * 60 * 1000)) {
+    return res.status(429).json({ message: 'too many requests, try later' })
+  }
   const body = (req.body ?? {}) as { subjectRef?: string; categories?: string[] }
   if (!body.subjectRef || typeof body.subjectRef !== 'string' || body.subjectRef.length > 128) {
     return res.status(400).json({ message: 'subjectRef is required' })

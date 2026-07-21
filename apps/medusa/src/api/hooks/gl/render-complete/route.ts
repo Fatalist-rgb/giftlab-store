@@ -1,6 +1,14 @@
 import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
+import { timingSafeEqual } from 'node:crypto'
 import { PERSONALIZATION_MODULE } from '../../../../modules/personalization'
 import type PersonalizationModuleService from '../../../../modules/personalization/service'
+
+function tokenMatches(given: unknown, expected: string): boolean {
+  if (typeof given !== 'string') return false
+  const a = Buffer.from(given)
+  const b = Buffer.from(expected)
+  return a.length === b.length && timingSafeEqual(a, b)
+}
 
 /**
  * POST /hooks/gl/render-complete — the render worker reports a finished production
@@ -10,7 +18,7 @@ import type PersonalizationModuleService from '../../../../modules/personalizati
  */
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   const expected = process.env.RENDER_HOOK_TOKEN
-  if (!expected || req.headers['x-gl-render-token'] !== expected) {
+  if (!expected || !tokenMatches(req.headers['x-gl-render-token'], expected)) {
     return res.status(401).json({ message: 'bad token' })
   }
 
