@@ -69,7 +69,7 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 
 - [x] T028 [P] [US1] Contract tests for `/store/gl/products/:handle/schema`, `/uploads/sign|finalize|cutout`, `/price`, `/cart/:id/line-items`, `/delivery-estimate`, `/render-status` in `apps/medusa/tests/contract/store-gl.spec.ts` — покрыто: schema/price/designs + free-default; uploads/delivery-estimate/render-status добавятся с их развитием
 - [x] T029 [P] [US1] Golden-image fidelity test (browser vs server render of a fixed DesignState, pixel tolerance) in `packages/constructor/tests/golden.spec.ts`
-- [ ] T030 [P] [US1] Playwright E2E: character → face upload → cutout → name → options → cart → checkout(BLIK test) → confirmation in `apps/storefront/tests/e2e/design-order.spec.ts`
+- [x] T030 [P] [US1] Playwright E2E: character → face upload → cutout → name → options → cart → checkout(BLIK test) → confirmation in `apps/storefront/tests/e2e/design-order.spec.ts`
 - [x] T031 [P] [US1] Test: **no paid option is pre-selected** and add-to-cart rejects a paid default, in `apps/medusa/tests/contract/free-defaults.spec.ts`
 
 ### Implementation for User Story 1
@@ -129,7 +129,7 @@ payment; legal pages localized + editable; photos private + deletable.
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T059 [P] [US3] Playwright: consent gating (0 analytics calls pre-consent), locale switch + hreflang, legal pages, withdrawal notice visible at payment, **and no counter/timer resets on reload** (Principle VIII), in `apps/storefront/tests/e2e/compliance.spec.ts`
+- [x] T059 [P] [US3] Playwright: consent gating (0 analytics calls pre-consent), locale switch + hreflang, legal pages, withdrawal notice visible at payment, **and no counter/timer resets on reload** (Principle VIII), in `apps/storefront/tests/e2e/compliance.spec.ts`
 - [ ] T060 [P] [US3] Test: a line with only standard options **retains** the 14-day right; a personalized line is `excluded` in `apps/medusa/tests/contract/withdrawal.spec.ts`
 
 ### Implementation for User Story 3

@@ -22,6 +22,22 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
 
+  # Browser E2E: the buyer journey + consent gating against a production build with
+  # mocked /api/gl (deterministic, no backend needed).
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter storefront build
+      - run: pnpm --filter storefront exec playwright install chromium --with-deps
+      - run: pnpm --filter storefront test:e2e
+
   # Medusa keeps its own npm install (outside the pnpm workspace), so its unit
   # tests — the legal invariants: free defaults, per-line withdrawal right, Omnibus —
   # run in a separate job.
