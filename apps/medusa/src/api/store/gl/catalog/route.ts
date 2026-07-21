@@ -35,7 +35,8 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 
   const categories = await products.listProductCategories(
     { is_active: true },
-    { order: { name: 'ASC' }, take: 50 },
+    // explicit select: the module returns a trimmed DTO by default and `name` is not in it
+    { select: ['id', 'name', 'description'], order: { name: 'ASC' }, take: 50 },
   )
   const all = await products.listProducts(
     { status: ['published'] },

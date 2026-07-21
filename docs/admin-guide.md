@@ -44,6 +44,22 @@ Kluczowe zasady, które system wymusza automatycznie:
   odtwarzalne), a cena bazowa zapisuje się do **historii cen Omnibus** (najniższa cena
   z 30 dni przed obniżką musi być możliwa do pokazania).
 
+## Katalog (kategorie i produkty)
+
+Sklep ma cztery kategorie: **Mama i ciąża** (flagowa figurka z brzuszkiem), **Dzieci**
+(Figurka Superbohater), **Zwierzaki** (Figurka Pupil) i **Święta i okazje** (Figurka
+Świąteczna). Strona `/catalog` buduje się sama z aktywnych kategorii — pokazuje tylko
+produkty, które mają **opublikowany schemat konstruktora** (bez schematu produkt nie
+jest zamawialny i nie wyświetla się).
+
+- Nowy produkt = produkt w Medusa (kategoria, kanał sprzedaży, profil wysyłki)
+  **plus** opublikowany schemat. Wzorzec: `apps/medusa/src/scripts/seed-categories.ts`.
+- Grafiki wariantów to pliki `art/*.png` — obecne są rysunkami poglądowymi do
+  podmiany na docelowe ilustracje (te same nazwy plików, format PNG 304×424).
+- Koszyk obsługuje **jeden typ produktu naraz**: gdy klient przełączy się na inny
+  produkt i doda go do koszyka, poprzednie pozycje innego typu są usuwane, a cena
+  liczy się od łącznej liczby sztuk nowego zestawu.
+
 ## Lejek konstruktora
 
 Na liście zamówień u góry widget **„Lejek konstruktora (30 dni)"**: ile projektów
