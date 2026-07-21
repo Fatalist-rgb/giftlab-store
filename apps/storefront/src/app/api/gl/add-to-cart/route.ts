@@ -14,9 +14,15 @@ export async function POST(req: NextRequest) {
   if (!BASE || !KEY) {
     return NextResponse.json({ message: 'backend is not configured' }, { status: 503 });
   }
-  const { design, cartId } = (await req.json()) as { design?: unknown; cartId?: string | null };
-  if (!design || typeof design !== 'object') {
-    return NextResponse.json({ message: 'design object is required' }, { status: 400 });
+  const payload = (await req.json()) as { design?: unknown; designs?: unknown[]; cartId?: string | null };
+  // several different designs in one order (T042); the single-design shape stays accepted
+  const designs = Array.isArray(payload.designs)
+    ? payload.designs
+    : payload.design
+      ? [payload.design]
+      : [];
+  if (!designs.length || designs.some((d) => !d || typeof d !== 'object')) {
+    return NextResponse.json({ message: 'design(s) required' }, { status: 400 });
   }
 
   const headers = {
@@ -24,32 +30,36 @@ export async function POST(req: NextRequest) {
     'x-publishable-api-key': KEY,
   };
 
-  // 1. persist + validate the design (server-side price authority)
-  const dRes = await fetch(`${BASE}/store/gl/designs`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ productId: PRODUCT, design }),
-    signal: AbortSignal.timeout(10000),
-  });
-  const dBody = (await dRes.json()) as { designId?: string; message?: string; detail?: string };
-  if (!dRes.ok || !dBody.designId) {
-    return NextResponse.json(
-      { message: dBody.message ?? 'design rejected', detail: dBody.detail },
-      { status: dRes.status || 422 },
-    );
+  // 1. persist + validate every design (server-side price authority)
+  const designIds: string[] = [];
+  for (const design of designs) {
+    const dRes = await fetch(`${BASE}/store/gl/designs`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ productId: PRODUCT, design }),
+      signal: AbortSignal.timeout(10000),
+    });
+    const dBody = (await dRes.json()) as { designId?: string; message?: string; detail?: string };
+    if (!dRes.ok || !dBody.designId) {
+      return NextResponse.json(
+        { message: dBody.message ?? 'design rejected', detail: dBody.detail },
+        { status: dRes.status || 422 },
+      );
+    }
+    designIds.push(dBody.designId);
   }
 
-  // 2. cart from the design (cart merging with an existing cart comes with the cart UI)
+  // 2. one cart from all designs — the ladder prices the TOTAL quantity
   const cRes = await fetch(`${BASE}/store/gl/carts`, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ productId: PRODUCT, designIds: [dBody.designId], cartId: cartId ?? undefined }),
-    signal: AbortSignal.timeout(10000),
+    body: JSON.stringify({ productId: PRODUCT, designIds, cartId: payload.cartId ?? undefined }),
+    signal: AbortSignal.timeout(15000),
   });
   const cBody = (await cRes.json()) as Record<string, unknown>;
   if (!cRes.ok) {
     return NextResponse.json({ message: 'cart failed', detail: cBody }, { status: cRes.status });
   }
 
-  return NextResponse.json({ designId: dBody.designId, ...cBody }, { status: 201 });
+  return NextResponse.json({ designIds, ...cBody }, { status: 201 });
 }

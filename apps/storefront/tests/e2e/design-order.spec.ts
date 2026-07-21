@@ -49,16 +49,31 @@ test('design → cart → checkout → confirmation', async ({ page }) => {
   await page.goto('/pl/product');
   await page.getByTestId('consent-necessary').click();
 
-  // pick a different character variant + sample face + name + quantity 2
+  // step 1: character
   await page.getByRole('button', { name: /różowy/i }).click();
+  // step 2: photo (sample face)
+  await page.getByTestId('step-photo').click();
   await page.getByRole('button', { name: /wstaw przykładową|przykładow/i }).click();
+  // step 3: name
+  await page.getByTestId('step-name').click();
   await page.getByPlaceholder(/np\.|imię/i).fill('Zosia');
+  // step 4: quantity 2
+  await page.getByTestId('step-quantity').click();
   await page.getByRole('button', { name: '+', exact: true }).click();
 
-  // live preview canvas rendered
-  await expect(page.locator('canvas')).toBeVisible();
+  // live preview canvas rendered; steps show completion marks
+  await expect(page.locator('canvas').first()).toBeVisible();
+  await expect(page.getByTestId('step-photo')).toContainText('✓');
 
   // price reflects qty 2 at base tier (2 × 79)
+  await expect(page.getByTestId('total-price')).toContainText('158');
+
+  // a SECOND figurine joins the same order — the ladder now spans 3 pcs → 65 zł each
+  await page.getByTestId('add-slot').click();
+  await expect(page.getByTestId('unit-price')).toContainText('65');
+  await expect(page.getByTestId('total-price')).toContainText('195');
+  // back to one figurine for the rest of the flow
+  await page.getByRole('button', { name: /usuń figurkę/i }).click();
   await expect(page.getByTestId('total-price')).toContainText('158');
 
   // add to cart → success + link to the cart

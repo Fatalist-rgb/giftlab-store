@@ -30,7 +30,20 @@
     "reset": "Recenter",
     "added": "Added to cart ✓",
     "addError": "Could not add — please try again.",
-    "photoConsent": "By uploading a photo you consent to its processing to fulfil your order (GDPR). The background is removed on your device."
+    "photoConsent": "By uploading a photo you consent to its processing to fulfil your order (GDPR). The background is removed on your device.",
+    "figurineN": "Figurine {n}",
+    "addFigurine": "+ Add another",
+    "removeFigurine": "Remove figurine",
+    "ladderHint": "The quantity discount counts the TOTAL number of figurines: from 3 pcs — 65 zł each, from 6 pcs — 49 zł each.",
+    "photoStep": "Photo",
+    "back": "Back",
+    "next": "Next",
+    "nameOptional": "The name is optional — the figurine can go without a caption.",
+    "swapPhoto": "Change photo",
+    "modelDownload": "Downloading model… {mb} MB",
+    "cutoutError": "Background removal failed.",
+    "retry": "Try again",
+    "pieces": "{count} pcs"
   },
   "catalog": {
     "title": "Catalogue",

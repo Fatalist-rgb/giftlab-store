@@ -30,7 +30,20 @@
     "reset": "Wyśrodkuj",
     "added": "Dodano do koszyka ✓",
     "addError": "Nie udało się dodać — spróbuj ponownie.",
-    "photoConsent": "Przesyłając zdjęcie, wyrażasz zgodę na jego przetwarzanie w celu realizacji zamówienia (RODO). Tło usuwamy na Twoim urządzeniu."
+    "photoConsent": "Przesyłając zdjęcie, wyrażasz zgodę na jego przetwarzanie w celu realizacji zamówienia (RODO). Tło usuwamy na Twoim urządzeniu.",
+    "figurineN": "Figurka {n}",
+    "addFigurine": "+ Dodaj kolejną",
+    "removeFigurine": "Usuń figurkę",
+    "ladderHint": "Rabat ilościowy liczy się od ŁĄCZNEJ liczby figurek: od 3 szt. — 65 zł/szt., od 6 szt. — 49 zł/szt.",
+    "photoStep": "Zdjęcie",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "nameOptional": "Imię jest opcjonalne — figurka może być bez podpisu.",
+    "swapPhoto": "Zmień zdjęcie",
+    "modelDownload": "Pobieranie modelu… {mb} MB",
+    "cutoutError": "Nie udało się wyciąć tła.",
+    "retry": "Spróbuj ponownie",
+    "pieces": "{count} szt."
   },
   "catalog": {
     "title": "Katalog",
