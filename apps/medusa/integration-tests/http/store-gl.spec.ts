@@ -145,6 +145,25 @@ medusaIntegrationTestRunner({
         paid.characterLayers[0].variants[0].priceDelta = 500
         await expect(schemas.publishSchema('prod_it_paid', paid)).rejects.toThrow()
       })
+
+      it('re-publishing bumps the version and archives the previous one (T057 semantics)', async () => {
+        const container = getContainer()
+        const schemas: ProductCustomizationModuleService = container.resolve(PRODUCT_CUSTOMIZATION_MODULE)
+        const products = container.resolve(Modules.PRODUCT)
+        const [product] = await products.listProducts({ handle })
+
+        const v2 = await schemas.publishSchema(product.id, { ...schemaDoc, medusaProductId: product.id })
+        expect(v2.version).toBe(2)
+        expect(v2.status).toBe('published')
+
+        const active = await schemas.getActiveSchema(product.id)
+        expect(active?.version).toBe(2)
+        // the stored document itself carries the bumped version (order reproducibility)
+        expect((active?.definition as { version: number }).version).toBe(2)
+
+        const all = await schemas.listProductSchemas({ product_id: product.id })
+        expect(all.map((s) => `${s.version}:${s.status}`).sort()).toEqual(['1:archived', '2:published'])
+      })
     })
   },
 })
