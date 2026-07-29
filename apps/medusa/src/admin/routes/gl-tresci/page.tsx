@@ -2,6 +2,7 @@ import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { DocumentText } from "@medusajs/icons"
 import { Button, Container, Heading, Input, Select, Text, Textarea, toast } from "@medusajs/ui"
 import { useCallback, useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 type Page = { id: string; slug: string; locale: string; title: string; body: string; updatedAt: string }
 
@@ -11,6 +12,7 @@ type Page = { id: string; slug: string; locale: string; title: string; body: str
  * en/uk fall back to pl on the storefront until translated here.
  */
 const TresciPage = () => {
+  const { t } = useTranslation()
   const [pages, setPages] = useState<Page[] | null>(null)
   const [slug, setSlug] = useState("regulamin")
   const [locale, setLocale] = useState("pl")
@@ -46,10 +48,10 @@ const TresciPage = () => {
         body: JSON.stringify({ slug, locale, title, body }),
       })
       if (!res.ok) throw new Error(String(res.status))
-      toast.success("Zapisano", { description: `${slug} (${locale})` })
+      toast.success(t("gl.content.saved"), { description: `${slug} (${locale})` })
       load()
     } catch (e) {
-      toast.error("Nie udało się zapisać", { description: (e as Error).message })
+      toast.error(t("gl.content.saveFailed"), { description: (e as Error).message })
     } finally {
       setSaving(false)
     }
@@ -62,9 +64,9 @@ const TresciPage = () => {
   return (
     <Container className="divide-y p-0">
       <div className="px-6 py-4">
-        <Heading level="h1">Treści stron</Heading>
+        <Heading level="h1">{t("gl.content.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">
-          Zmiany są widoczne w sklepie w ciągu kilku minut (cache). Polski jest wersją bazową.
+          {t("gl.content.hint")}
         </Text>
       </div>
       <div className="space-y-3 px-6 py-4">
@@ -94,10 +96,19 @@ const TresciPage = () => {
             </Select.Content>
           </Select>
         </div>
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Tytuł strony" />
-        <Textarea rows={16} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Treść…" />
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder={t("gl.content.titlePlaceholder")}
+        />
+        <Textarea
+          rows={16}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          placeholder={t("gl.content.bodyPlaceholder")}
+        />
         <Button onClick={save} disabled={saving || !title.trim() || !body.trim()}>
-          {saving ? "…" : "Zapisz"}
+          {saving ? "…" : t("gl.content.save")}
         </Button>
       </div>
     </Container>
@@ -105,7 +116,8 @@ const TresciPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Treści",
+  label: "gl.content.nav",
+  translationNs: "translation",
   icon: DocumentText,
 })
 

@@ -3,6 +3,11 @@
 Panel administracyjny: `https://backend-production-8e23.up.railway.app/app`
 (po podpięciu domeny adres się zmieni). Logowanie: e-mail + hasło administratora.
 
+**Język panelu:** Settings → Profile → Edit → *Language*. Dostępne m.in. **Polski**,
+**Українська** i English — wybór zapamiętuje się dla danego konta i tłumaczy zarówno
+panel Medusy, jak i nasze ekrany (Produkcja / Opinie / Treści oraz widgety). Wersja
+ukraińska przewodnika: [admin-guide.uk.md](./admin-guide.uk.md).
+
 ## Codzienna praca z zamówieniami
 
 1. **Orders** — standardowa lista zamówień Medusa. Na stronie zamówienia panel

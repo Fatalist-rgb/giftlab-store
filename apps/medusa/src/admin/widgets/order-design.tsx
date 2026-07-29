@@ -1,6 +1,7 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import { Badge, Button, Container, Heading, Text, toast } from "@medusajs/ui"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { DetailWidgetProps, AdminOrder } from "@medusajs/framework/types"
 
 type DesignLine = {
@@ -38,6 +39,7 @@ const renderTone: Record<string, "green" | "orange" | "red" | "grey" | "blue"> =
  * per-line withdrawal right and the production package state with its R2 keys.
  */
 const OrderDesignWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
+  const { t } = useTranslation()
   const [lines, setLines] = useState<DesignLine[] | null>(null)
   const [failed, setFailed] = useState(false)
 
@@ -52,7 +54,7 @@ const OrderDesignWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
       if (!res.ok || !url) throw new Error(body.message || "package not ready")
       window.open(url, "_blank", "noopener")
     } catch (e) {
-      toast.error("Pobieranie nie powiodło się", { description: (e as Error).message })
+      toast.error(t("gl.order.downloadFailed"), { description: (e as Error).message })
     }
   }
 
@@ -68,25 +70,25 @@ const OrderDesignWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">Personalizacja (GiftLab)</Heading>
+        <Heading level="h2">{t("gl.order.title")}</Heading>
       </div>
       {lines === null ? (
         <div className="px-6 py-4">
-          <Text className="text-ui-fg-subtle">Ładowanie…</Text>
+          <Text className="text-ui-fg-subtle">{t("gl.common.loading")}</Text>
         </div>
       ) : (
         lines.map((line) => (
           <div key={line.lineItemId} className="px-6 py-4">
             <div className="flex flex-wrap items-center gap-2">
-              <Text weight="plus">{line.title ?? "Figurka"}</Text>
+              <Text weight="plus">{line.title ?? t("gl.order.figurine")}</Text>
               <Text className="text-ui-fg-subtle">× {line.quantity}</Text>
               <Badge size="2xsmall" color={renderTone[line.renderStatus] ?? "grey"}>
-                render: {line.renderStatus}
+                {t("gl.order.render", { status: line.renderStatus })}
               </Badge>
               <Badge size="2xsmall" color={line.withdrawalRight === "excluded" ? "purple" : "green"}>
-                {line.withdrawalRight === "excluded" ? "bez prawa zwrotu (art. 38 pkt 3)" : "zwrot 14 dni"}
+                {line.withdrawalRight === "excluded" ? t("gl.order.noWithdrawal") : t("gl.order.withdrawal14")}
               </Badge>
-              <Badge size="2xsmall" color="grey">schema v{line.schemaVersion}</Badge>
+              <Badge size="2xsmall" color="grey">{t("gl.order.schema", { version: line.schemaVersion })}</Badge>
             </div>
             {line.design && (
               <Text size="small" className="text-ui-fg-subtle mt-1">
@@ -94,19 +96,19 @@ const OrderDesignWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
                   .map(([k, v]) => `${k}: ${v}`)
                   .join(", ")}
                 {(line.design.textValues ?? []).map((t) => ` · ${t.field_id}: „${t.value}”`).join("")}
-                {` · zdjęcie: ${line.design.photoStatus ?? "—"}`}
+                {` · ${t("gl.order.photo")}: ${line.design.photoStatus ?? "—"}`}
               </Text>
             )}
             {line.package?.printPngKey && (
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <Button size="small" variant="secondary" onClick={() => download(line.lineItemId, "printPng")}>
-                  Druk (PNG)
+                  {t("gl.order.printPng")}
                 </Button>
                 <Button size="small" variant="secondary" onClick={() => download(line.lineItemId, "cutSvg")}>
-                  Cięcie (SVG)
+                  {t("gl.order.cutSvg")}
                 </Button>
                 <Button size="small" variant="secondary" onClick={() => download(line.lineItemId, "specJson")}>
-                  Spec (JSON)
+                  {t("gl.order.specJson")}
                 </Button>
                 <Text size="small" className="text-ui-fg-subtle">
                   {line.package.dpi ?? 300} DPI

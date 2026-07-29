@@ -2,6 +2,8 @@ import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { ChatBubbleLeftRight } from "@medusajs/icons"
 import { Badge, Button, Container, Heading, Text, toast } from "@medusajs/ui"
 import { useCallback, useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { formatDateTime } from "../../lib/date"
 
 type PendingReview = {
   id: string
@@ -16,6 +18,7 @@ type PendingReview = {
 
 /** Review moderation queue (T066): publish or reject pending submissions. */
 const OpiniePage = () => {
+  const { t, i18n } = useTranslation()
   const [rows, setRows] = useState<PendingReview[] | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
 
@@ -40,10 +43,10 @@ const OpiniePage = () => {
         body: JSON.stringify({ decision }),
       })
       if (!res.ok) throw new Error(String(res.status))
-      toast.success(decision === "published" ? "Opublikowano" : "Odrzucono")
+      toast.success(decision === "published" ? t("gl.reviews.published") : t("gl.reviews.rejected"))
       load()
     } catch (e) {
-      toast.error("Nie udało się", { description: (e as Error).message })
+      toast.error(t("gl.common.failed"), { description: (e as Error).message })
     } finally {
       setBusy(null)
     }
@@ -52,18 +55,18 @@ const OpiniePage = () => {
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h1">Opinie — moderacja</Heading>
+        <Heading level="h1">{t("gl.reviews.title")}</Heading>
         <Button size="small" variant="secondary" onClick={load}>
-          Odśwież
+          {t("gl.common.refresh")}
         </Button>
       </div>
       {rows === null ? (
         <div className="px-6 py-8">
-          <Text className="text-ui-fg-subtle">Ładowanie…</Text>
+          <Text className="text-ui-fg-subtle">{t("gl.common.loading")}</Text>
         </div>
       ) : rows.length === 0 ? (
         <div className="px-6 py-8">
-          <Text className="text-ui-fg-subtle">Brak opinii do moderacji ✓</Text>
+          <Text className="text-ui-fg-subtle">{t("gl.reviews.empty")}</Text>
         </div>
       ) : (
         rows.map((r) => (
@@ -72,21 +75,24 @@ const OpiniePage = () => {
               <Text weight="plus">{r.author}</Text>
               <Badge size="2xsmall" color="orange">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</Badge>
               {r.verifiedBuyer ? (
-                <Badge size="2xsmall" color="green">zweryfikowany zakup{r.orderDisplayId ? ` #${r.orderDisplayId}` : ""}</Badge>
+                <Badge size="2xsmall" color="green">
+                  {t("gl.reviews.verified")}
+                  {r.orderDisplayId ? ` #${r.orderDisplayId}` : ""}
+                </Badge>
               ) : (
-                <Badge size="2xsmall" color="grey">niezweryfikowana</Badge>
+                <Badge size="2xsmall" color="grey">{t("gl.reviews.unverified")}</Badge>
               )}
               <Text size="small" className="text-ui-fg-subtle">
-                {new Date(r.createdAt).toLocaleString("pl-PL")}
+                {formatDateTime(r.createdAt, i18n.language)}
               </Text>
             </div>
             <Text size="small" className="mt-1 whitespace-pre-wrap">{r.body}</Text>
             <div className="mt-2 flex gap-2">
               <Button size="small" variant="secondary" disabled={busy === r.id} onClick={() => moderate(r.id, "published")}>
-                Publikuj
+                {t("gl.reviews.publish")}
               </Button>
               <Button size="small" variant="danger" disabled={busy === r.id} onClick={() => moderate(r.id, "rejected")}>
-                Odrzuć
+                {t("gl.reviews.reject")}
               </Button>
             </div>
           </div>
@@ -97,7 +103,8 @@ const OpiniePage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Opinie",
+  label: "gl.reviews.nav",
+  translationNs: "translation",
   icon: ChatBubbleLeftRight,
 })
 

@@ -1,0 +1,65 @@
+{
+  "gl": {
+    "common": {
+      "loading": "Loading…",
+      "refresh": "Refresh",
+      "failed": "Failed"
+    },
+    "order": {
+      "title": "Personalization (GiftLab)",
+      "figurine": "Figurine",
+      "render": "render: {{status}}",
+      "schema": "schema v{{version}}",
+      "noWithdrawal": "no right of withdrawal (art. 38(3) PL CRA)",
+      "withdrawal14": "14-day return",
+      "photo": "photo",
+      "printPng": "Print (PNG)",
+      "cutSvg": "Cut (SVG)",
+      "specJson": "Spec (JSON)",
+      "downloadFailed": "Download failed"
+    },
+    "funnel": {
+      "title": "Constructor funnel ({{days}} days)",
+      "designs": "Designs (added to cart)",
+      "personalized": "With personalization",
+      "paidLines": "Paid order lines",
+      "conversion": "Cart → purchase conversion"
+    },
+    "production": {
+      "nav": "Production",
+      "title": "Production — issues",
+      "exportCsv": "Export CSV",
+      "allReady": "All production files ready ✓",
+      "colOrder": "Order",
+      "colLine": "Line",
+      "colStatus": "Status",
+      "colCreated": "Created",
+      "awaitingPhoto": "waiting for photo",
+      "stuck": "stuck",
+      "error": "error",
+      "requeue": "Retry render",
+      "requeued": "Render requeued"
+    },
+    "reviews": {
+      "nav": "Reviews",
+      "title": "Reviews — moderation",
+      "empty": "No reviews to moderate ✓",
+      "verified": "verified purchase",
+      "unverified": "unverified",
+      "publish": "Publish",
+      "reject": "Reject",
+      "published": "Published",
+      "rejected": "Rejected"
+    },
+    "content": {
+      "nav": "Content",
+      "title": "Page content",
+      "hint": "Changes reach the shop within a few minutes (cache). Polish is the base version.",
+      "titlePlaceholder": "Page title",
+      "bodyPlaceholder": "Content…",
+      "save": "Save",
+      "saved": "Saved",
+      "saveFailed": "Could not save"
+    }
+  }
+}

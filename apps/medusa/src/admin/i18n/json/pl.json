@@ -1,0 +1,65 @@
+{
+  "gl": {
+    "common": {
+      "loading": "Ładowanie…",
+      "refresh": "Odśwież",
+      "failed": "Nie udało się"
+    },
+    "order": {
+      "title": "Personalizacja (GiftLab)",
+      "figurine": "Figurka",
+      "render": "render: {{status}}",
+      "schema": "schema v{{version}}",
+      "noWithdrawal": "bez prawa zwrotu (art. 38 pkt 3)",
+      "withdrawal14": "zwrot 14 dni",
+      "photo": "zdjęcie",
+      "printPng": "Druk (PNG)",
+      "cutSvg": "Cięcie (SVG)",
+      "specJson": "Spec (JSON)",
+      "downloadFailed": "Pobieranie nie powiodło się"
+    },
+    "funnel": {
+      "title": "Lejek konstruktora ({{days}} dni)",
+      "designs": "Projekty (do koszyka)",
+      "personalized": "Z personalizacją",
+      "paidLines": "Linie opłaconych zamówień",
+      "conversion": "Konwersja koszyk → zakup"
+    },
+    "production": {
+      "nav": "Produkcja",
+      "title": "Produkcja — problemy",
+      "exportCsv": "Eksport CSV",
+      "allReady": "Wszystkie pliki produkcyjne gotowe ✓",
+      "colOrder": "Zamówienie",
+      "colLine": "Linia",
+      "colStatus": "Status",
+      "colCreated": "Utworzono",
+      "awaitingPhoto": "czeka na zdjęcie",
+      "stuck": "zablokowany",
+      "error": "błąd",
+      "requeue": "Ponów render",
+      "requeued": "Render ponowiony"
+    },
+    "reviews": {
+      "nav": "Opinie",
+      "title": "Opinie — moderacja",
+      "empty": "Brak opinii do moderacji ✓",
+      "verified": "zweryfikowany zakup",
+      "unverified": "niezweryfikowana",
+      "publish": "Publikuj",
+      "reject": "Odrzuć",
+      "published": "Opublikowano",
+      "rejected": "Odrzucono"
+    },
+    "content": {
+      "nav": "Treści",
+      "title": "Treści stron",
+      "hint": "Zmiany są widoczne w sklepie w ciągu kilku minut (cache). Polski jest wersją bazową.",
+      "titlePlaceholder": "Tytuł strony",
+      "bodyPlaceholder": "Treść…",
+      "save": "Zapisz",
+      "saved": "Zapisano",
+      "saveFailed": "Nie udało się zapisać"
+    }
+  }
+}
