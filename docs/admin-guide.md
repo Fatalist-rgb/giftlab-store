@@ -8,6 +8,10 @@ Panel administracyjny: `https://backend-production-8e23.up.railway.app/app`
 panel Medusy, jak i nasze ekrany (Produkcja / Opinie / Treści oraz widgety). Wersja
 ukraińska przewodnika: [admin-guide.uk.md](./admin-guide.uk.md).
 
+**Gdy panel pokaże „An error occurred"** zaraz po wdrożeniu nowej wersji — to stara
+karta, otwarta przed deployem. Panel przeładuje się sam; jeśli nie, Ctrl+Shift+R
+(Cmd+Shift+R na Macu). Danych zamówień to nie dotyczy.
+
 ## Codzienna praca z zamówieniami
 
 1. **Orders** — standardowa lista zamówień Medusa. Na stronie zamówienia panel

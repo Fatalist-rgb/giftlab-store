@@ -44,6 +44,7 @@
 | Wszystkie linie wiszą `queued` | worker padł / Redis niedostępny | `railway logs -s render-worker`; redeploy serwisu |
 | Sklep nie pokazuje zmian treści | cache ISR (do 5 min) | odczekać lub redeploy storefrontu |
 | 503 przy wgrywaniu zdjęć | brak/rotacja kluczy R2 na backendzie | Railway variables `R2_*` na serwisie `backend` |
+| Panel admina: „An error occurred while rendering this page" zaraz po deployu | karta była otwarta przed deployem i prosi o stare pliki `/app/assets/*` (deploy zmienia ich nazwy) | odświeżenie strony; panel robi to sam — w `index.html` (hook `admin.vite` w `medusa-config.ts`) siedzi skrypt, który po nieudanym ładowaniu assetu przeładowuje kartę raz na 5 minut |
 
 ## Sekrety — gdzie mieszkają
 
