@@ -28,6 +28,14 @@ karta, otwarta przed deployem. Panel przeładuje się sam; jeśli nie, Ctrl+Shif
    Gdy klient wybrał „wyślę zdjęcie później", linia czeka jako *czeka na zdjęcie* i ruszy
    sama po dograniu zdjęcia przez klienta.
 
+## Zdjęcia bez wyciętego tła
+
+Jeśli przeglądarka klienta nie poradzi sobie z usunięciem tła (stare urządzenie), klient
+może zamówić ze zwykłym zdjęciem. Taka pozycja ma na zamówieniu pomarańczową plakietkę
+**„bez wycinania tła"** — zdjęcie drukuje się w owalnej masce, więc technicznie jest
+poprawne, ale **przed drukiem warto je obejrzeć** (widoczne tło wokół twarzy). W razie
+potrzeby: poprawić plik ręcznie albo poprosić klienta o inne zdjęcie.
+
 ## Opinie
 
 **Opinie** (menu boczne) — kolejka moderacji. Każda opinia czeka na decyzję:

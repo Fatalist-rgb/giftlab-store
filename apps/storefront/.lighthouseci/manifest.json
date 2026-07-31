@@ -1,0 +1,26 @@
+[
+  {
+    "url": "http://localhost:3200/pl",
+    "isRepresentativeRun": true,
+    "htmlPath": "F:\\Freelance\\giftlab-code\\apps\\storefront\\.lighthouseci\\localhost-_pl-2026_07_31_09_33_06.report.html",
+    "jsonPath": "F:\\Freelance\\giftlab-code\\apps\\storefront\\.lighthouseci\\localhost-_pl-2026_07_31_09_33_06.report.json",
+    "summary": {
+      "performance": 0.99,
+      "accessibility": 0.96,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:3200/pl/product",
+    "isRepresentativeRun": true,
+    "htmlPath": "F:\\Freelance\\giftlab-code\\apps\\storefront\\.lighthouseci\\localhost-_pl_product-2026_07_31_09_33_20.report.html",
+    "jsonPath": "F:\\Freelance\\giftlab-code\\apps\\storefront\\.lighthouseci\\localhost-_pl_product-2026_07_31_09_33_20.report.json",
+    "summary": {
+      "performance": 0.97,
+      "accessibility": 0.96,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  }
+]

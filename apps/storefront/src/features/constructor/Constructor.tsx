@@ -341,6 +341,11 @@ export function Constructor({
         <div className="relative rounded-3xl border-2 border-ink bg-cream p-4 shadow-offset">
           <canvas
             ref={canvasRef}
+            // the real pixel size from the very first paint: a bare <canvas> defaults to
+            // 300×150 and jumps to the figure's 304×424 once the renderer sizes it,
+            // which is a visible layout shift on mobile (Lighthouse CLS budget)
+            width={Math.round(schema.canvasPx.w * PREVIEW_SCALE)}
+            height={Math.round(schema.canvasPx.h * PREVIEW_SCALE)}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}

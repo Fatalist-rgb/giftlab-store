@@ -87,7 +87,7 @@ pay by BLIK → confirmation; order stores DesignState; worker produces a packag
 - [x] T042 [P] [US1] Quantity ladder UI — configure **several different designs** in one order in `apps/storefront/src/features/constructor/BulkLadder.tsx`
 - [x] T043 [US1] Mobile sticky buy element as a **drawer that completes add-to-cart in place** (never scroll-to-section) in `apps/storefront/src/features/constructor/StickyBuy.tsx`
 - [x] T044 [US1] Cart + checkout UI via Medusa store API, **guest checkout**, in `apps/storefront/src/features/checkout/`
-- [ ] T045 [US1] Configure Medusa payment provider: card + **BLIK as a first-class choice** + Przelewy24 in `apps/medusa/src/modules/payment/`
+- [x] T045 [US1] Configure Medusa payment provider: card + **BLIK as a first-class choice** + Przelewy24 in `apps/medusa/src/modules/payment/`
 - [x] T046 [US1] InPost Paczkomat delivery option with **in-checkout locker picker** + courier + free-delivery threshold progress in `apps/storefront/src/features/checkout/Delivery.tsx` — live-проверено: order.placed -> очередь -> воркер -> R2 -> hook -> ready за ~8с
 - [x] T047 [US1] `order.placed` subscriber: freeze DesignStates, snapshot schema version, **compute withdrawal right per line**, record notice version, store promised delivery window, enqueue `gl:render` in `apps/medusa/src/subscribers/order-placed.ts`
 - [x] T048 [US1] Render processor: load design+schema+artwork+cutout → `buildScene`→`renderToCanvas` 300 DPI PNG → `buildCutContour` SVG → PDF (CutContour spot) → `spec.json` + preview → R2 → ProductionPackage + status; `awaiting_photo` when deferred, in `apps/render-worker/src/processors/render.ts` — print PNG 300DPI + cut SVG + spec + preview в R2 через worker.ts; PDF со спот-цветом добавится с требованиями типографии
@@ -152,7 +152,7 @@ payment; legal pages localized + editable; photos private + deletable.
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T072 [P] Mobile CWV budget via Lighthouse CI on storefront + product page in `.github/workflows/ci.yml`
+- [x] T072 [P] Mobile CWV budget via Lighthouse CI on storefront + product page in `.github/workflows/ci.yml`
 - [x] T073 [P] Error model + structured logging (no PII) across apps in `packages/config/src/logger.ts`
 - [x] T074 [P] Docs: per-app README + admin guide "how to add a product & template" in `docs/`
 - [x] T075 Backups: managed Postgres daily + PITR + R2 versioning verification notes in `docs/ops.md`
