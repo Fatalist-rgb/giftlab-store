@@ -78,8 +78,12 @@ export function OrderStatus({ orderId }: { orderId: string }) {
       }
       const bytes = new Uint8Array(await file.arrayBuffer());
       const cut = await cutoutRef.current.removeBackground({ imageBytes: bytes, mime: file.type || 'image/png' });
-      if (!cut.ok || !cut.imageBytes) throw new Error('cutout failed');
-      const blob = new Blob([cut.imageBytes as unknown as BlobPart], { type: 'image/png' });
+      // a failed cutout must not block a paid order: send the photo as-is (the face zone
+      // is masked) and let the operator decide — the admin flags such lines
+      const blob =
+        cut.ok && cut.imageBytes
+          ? new Blob([cut.imageBytes as unknown as BlobPart], { type: 'image/png' })
+          : null;
       const stored = await uploadPhotoWithCutout(file, blob, true);
       if (!stored) throw new Error('upload failed');
       const attach = await fetch('/api/gl/attach-photo', {

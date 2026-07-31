@@ -32,7 +32,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     return res.status(429).json({ message: 'too many requests, try later' })
   }
   const { id } = req.params
-  const body = (req.body ?? {}) as { consent?: boolean; subjectRef?: string }
+  const body = (req.body ?? {}) as { consent?: boolean; subjectRef?: string; cutoutSkipped?: boolean }
   if (body.consent !== true) {
     return res.status(400).json({ message: 'photo processing consent is required (FR-032)' })
   }
@@ -73,6 +73,10 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   if (photo.cutout_key) {
     cutoutReady = (await headObject(photo.cutout_key)) !== null
   }
+  // "skipped": the browser could not cut the background out (old device / no WASM) and
+  // the customer chose to continue with the plain photo. Ordering must not dead-end on
+  // a failed cutout — the face zone is masked anyway and the operator gets a warning.
+  const cutoutStatus = cutoutReady ? 'ready' : body.cutoutSkipped === true ? 'skipped' : 'pending'
 
   // RODO: record the processing consent and the retention deadline
   const consent: ConsentModuleService = req.scope.resolve(CONSENT_MODULE)
@@ -88,7 +92,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     mime: 'image/jpeg',
     width_px: normalized.info.width,
     height_px: normalized.info.height,
-    cutout_status: cutoutReady ? 'ready' : 'pending',
+    cutout_status: cutoutStatus,
     checksum: createHash('sha256').update(normalized.data).digest('hex'),
     consent_id: consentRow.id,
     expires_at: expires,
@@ -98,7 +102,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     uploadId: id,
     widthPx: normalized.info.width,
     heightPx: normalized.info.height,
-    cutoutStatus: cutoutReady ? 'ready' : 'pending',
+    cutoutStatus,
     // low resolution warns, never blocks (FR-004)
     qualityWarning: normalized.info.width < 900 || normalized.info.height < 900,
     expiresAt: expires.toISOString(),

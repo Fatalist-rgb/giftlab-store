@@ -61,7 +61,14 @@ export async function enqueueRenderForLine(
     let faceKey: string | null = null
     try {
       const photo = await personalization.retrieveUploadedPhoto(fl.uploaded_photo_id)
-      faceKey = photo.cutout_status === 'ready' && photo.cutout_key ? photo.cutout_key : null
+      if (photo.cutout_status === 'ready' && photo.cutout_key) {
+        faceKey = photo.cutout_key
+      } else if (photo.cutout_status === 'skipped') {
+        // the customer's browser could not remove the background (old device, no WASM).
+        // The face zone is masked anyway, so the original still prints — the operator
+        // sees a "bez wycinania tła" badge on the order and decides before printing.
+        faceKey = photo.original_key ?? null
+      }
     } catch {
       faceKey = null
     }

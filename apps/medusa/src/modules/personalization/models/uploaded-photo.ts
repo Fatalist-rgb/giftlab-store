@@ -13,7 +13,9 @@ const UploadedPhoto = model.define('uploaded_photo', {
   mime: model.text().nullable(),
   width_px: model.number().nullable(),
   height_px: model.number().nullable(),
-  cutout_status: model.enum(['pending', 'ready', 'failed']).default('pending'),
+  // "skipped": the browser could not remove the background and the customer chose to
+  // continue with the plain photo — printable (the face zone is masked), but flagged
+  cutout_status: model.enum(['pending', 'ready', 'failed', 'skipped']).default('pending'),
   checksum: model.text().nullable(), // dedupe / integrity
   consent_id: model.text().nullable(), // -> ConsentRecord (photo processing, FR-032)
   expires_at: model.dateTime().nullable(),

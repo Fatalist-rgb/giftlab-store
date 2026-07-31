@@ -7,14 +7,15 @@
  */
 export async function uploadPhotoWithCutout(
   original: Blob,
-  cutoutPng: Blob,
+  /** null = the browser could not remove the background; the photo is used as-is */
+  cutoutPng: Blob | null,
   consent: boolean,
 ): Promise<{ uploadId: string; qualityWarning: boolean } | null> {
   try {
     const signRes = await fetch('/api/gl/uploads/sign', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ mime: original.type || 'image/jpeg', withCutout: true }),
+      body: JSON.stringify({ mime: original.type || 'image/jpeg', withCutout: cutoutPng !== null }),
     });
     if (!signRes.ok) return null;
     const sign = (await signRes.json()) as {
@@ -30,7 +31,7 @@ export async function uploadPhotoWithCutout(
         body: original,
       }),
     ];
-    if (sign.cutoutPutUrl) {
+    if (sign.cutoutPutUrl && cutoutPng) {
       puts.push(
         fetch(sign.cutoutPutUrl, {
           method: 'PUT',
@@ -45,7 +46,7 @@ export async function uploadPhotoWithCutout(
     const finRes = await fetch(`/api/gl/uploads/${encodeURIComponent(sign.uploadId)}/finalize`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ consent }),
+      body: JSON.stringify({ consent, cutoutSkipped: cutoutPng === null }),
     });
     if (!finRes.ok) return null;
     const fin = (await finRes.json()) as { qualityWarning?: boolean };

@@ -16,7 +16,8 @@
       "printPng": "Друк (PNG)",
       "cutSvg": "Різ (SVG)",
       "specJson": "Специфікація (JSON)",
-      "downloadFailed": "Не вдалося завантажити"
+      "downloadFailed": "Не вдалося завантажити",
+      "noCutout": "без вирізання фону"
     },
     "funnel": {
       "title": "Воронка конструктора ({{days}} днів)",

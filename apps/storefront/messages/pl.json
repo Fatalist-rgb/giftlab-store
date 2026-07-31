@@ -69,7 +69,8 @@
     "cutoutError": "Nie udało się wyciąć tła.",
     "multiFace": "Na zdjęciu powinna być tylko jedna osoba. Wybierz zdjęcie, na którym jest jedna osoba.",
     "retry": "Spróbuj ponownie",
-    "pieces": "{count} szt."
+    "pieces": "{count} szt.",
+    "useWithoutCutout": "Użyj zdjęcia bez wycinania tła"
   },
   "catalog": {
     "title": "Katalog",

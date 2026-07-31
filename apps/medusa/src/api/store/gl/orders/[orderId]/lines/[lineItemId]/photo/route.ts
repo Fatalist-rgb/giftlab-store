@@ -62,7 +62,9 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   } catch {
     return res.status(404).json({ message: 'upload not found' })
   }
-  if (photo.status !== 'active' || photo.cutout_status !== 'ready') {
+  // "skipped" = the browser could not remove the background and the customer continued
+  // anyway; the face zone is masked, so the order proceeds and the operator is warned.
+  if (photo.status !== 'active' || !['ready', 'skipped'].includes(photo.cutout_status ?? '')) {
     return res.status(409).json({ message: `upload cutout is ${photo.cutout_status}` })
   }
 

@@ -69,7 +69,8 @@
     "cutoutError": "Background removal failed.",
     "multiFace": "The photo should show only one person. Please choose a photo with a single person.",
     "retry": "Try again",
-    "pieces": "{count} pcs"
+    "pieces": "{count} pcs",
+    "useWithoutCutout": "Use the photo without removing the background"
   },
   "catalog": {
     "title": "Catalogue",

@@ -29,11 +29,23 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     let design: Record<string, unknown> | null = null
     try {
       const d = await personalization.retrieveDesignState(line.design_state_id)
+      // a photo whose background could not be removed in the browser prints as-is under
+      // the elliptical mask — the operator must see that before sending it to print
+      let cutoutStatus: string | null = null
+      const photoId = (d.face_layer as { uploaded_photo_id?: string } | null)?.uploaded_photo_id
+      if (photoId) {
+        try {
+          cutoutStatus = (await personalization.retrieveUploadedPhoto(photoId)).cutout_status ?? null
+        } catch {
+          cutoutStatus = null
+        }
+      }
       design = {
         characterSelections: d.character_selections,
         textValues: d.text_values,
         quantity: d.quantity,
         photoStatus: d.photo_status,
+        cutoutStatus,
         isPersonalized: d.is_personalized,
       }
     } catch {

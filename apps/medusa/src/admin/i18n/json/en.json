@@ -16,7 +16,8 @@
       "printPng": "Print (PNG)",
       "cutSvg": "Cut (SVG)",
       "specJson": "Spec (JSON)",
-      "downloadFailed": "Download failed"
+      "downloadFailed": "Download failed",
+      "noCutout": "background not removed"
     },
     "funnel": {
       "title": "Constructor funnel ({{days}} days)",

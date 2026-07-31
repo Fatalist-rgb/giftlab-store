@@ -16,7 +16,8 @@
       "printPng": "Druk (PNG)",
       "cutSvg": "Cięcie (SVG)",
       "specJson": "Spec (JSON)",
-      "downloadFailed": "Pobieranie nie powiodło się"
+      "downloadFailed": "Pobieranie nie powiodło się",
+      "noCutout": "bez wycinania tła"
     },
     "funnel": {
       "title": "Lejek konstruktora ({{days}} dni)",

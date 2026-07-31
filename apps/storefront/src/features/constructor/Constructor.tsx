@@ -195,6 +195,36 @@ export function Constructor({
     }
   };
 
+  /**
+   * Background removal can fail for reasons the customer cannot fix (old device, no
+   * WASM, an exotic image). Rather than dead-ending the order we let them continue with
+   * the plain photo: the face zone is masked anyway, the backend marks the upload as
+   * "cutout skipped" and the operator sees a warning before printing.
+   */
+  const useWithoutCutout = async () => {
+    const file = retryFileRef.current;
+    if (!file) return;
+    const target = active;
+    try {
+      const img = await loadImage(URL.createObjectURL(file));
+      const localId = `upload-${target}-${Date.now()}`;
+      assetsRef.current.set(localId, img);
+      patchSlot({ facePhotoId: localId, adj: CENTER }, target);
+      setAssetVersion((v) => v + 1);
+      setProgress({ stage: 'idle' });
+      track('cutout_skipped', { step: 'cutout' });
+      void uploadPhotoWithCutout(file, null, true).then((stored) => {
+        if (!stored) return;
+        assetsRef.current.set(stored.uploadId, img);
+        setSlots((all) =>
+          all.map((s, i) => (i === target && s.facePhotoId === localId ? { ...s, facePhotoId: stored.uploadId } : s)),
+        );
+      });
+    } catch {
+      setProgress({ stage: 'error' });
+    }
+  };
+
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -446,11 +476,20 @@ export function Constructor({
                 )}
               </div>
               {progress.stage === 'error' && (
-                <div className="mt-2 flex items-center gap-2 rounded-xl bg-red-100 px-3 py-2 text-sm text-red-900" data-testid="cutout-error">
+                <div className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-red-100 px-3 py-2 text-sm text-red-900" data-testid="cutout-error">
                   <span>{t('cutoutError')}</span>
                   <button onClick={retryCutout} className="font-bold underline underline-offset-2">
                     {t('retry')}
                   </button>
+                  {retryFileRef.current && (
+                    <button
+                      onClick={() => void useWithoutCutout()}
+                      className="font-bold underline underline-offset-2"
+                      data-testid="use-without-cutout"
+                    >
+                      {t('useWithoutCutout')}
+                    </button>
+                  )}
                 </div>
               )}
               {progress.stage === 'multiface' && (

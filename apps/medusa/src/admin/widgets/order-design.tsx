@@ -16,6 +16,7 @@ type DesignLine = {
     textValues?: Array<{ field_id: string; value: string }>
     quantity?: number
     photoStatus?: string
+    cutoutStatus?: string | null
   } | null
   package: {
     status?: string
@@ -89,6 +90,9 @@ const OrderDesignWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
                 {line.withdrawalRight === "excluded" ? t("gl.order.noWithdrawal") : t("gl.order.withdrawal14")}
               </Badge>
               <Badge size="2xsmall" color="grey">{t("gl.order.schema", { version: line.schemaVersion })}</Badge>
+              {line.design?.cutoutStatus === "skipped" && (
+                <Badge size="2xsmall" color="orange">{t("gl.order.noCutout")}</Badge>
+              )}
             </div>
             {line.design && (
               <Text size="small" className="text-ui-fg-subtle mt-1">
