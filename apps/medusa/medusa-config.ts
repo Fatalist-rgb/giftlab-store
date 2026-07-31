@@ -70,6 +70,25 @@ module.exports = defineConfig({
     { resolve: './src/modules/content' },
     { resolve: './src/modules/consent' },
     { resolve: './src/modules/review' },
+    // Payments: Przelewy24 (BLIK + szybki przelew + karta) is registered ONLY when the
+    // merchant credentials exist, so the shop keeps working on the default provider
+    // until the client's P24 account is live. See src/modules/payment_przelewy24.
+    ...(process.env.P24_MERCHANT_ID && process.env.P24_CRC && process.env.P24_API_KEY
+      ? [
+          {
+            resolve: '@medusajs/medusa/payment',
+            options: {
+              providers: [
+                {
+                  resolve: './src/modules/payment_przelewy24',
+                  id: 'przelewy24',
+                  options: { description: process.env.P24_DESCRIPTION ?? 'GiftLab' },
+                },
+              ],
+            },
+          },
+        ]
+      : []),
     // Notifications: the local provider logs emails until the client's mail service
     // (SMTP/Resend) exists — then only this provider entry changes, not the senders.
     {

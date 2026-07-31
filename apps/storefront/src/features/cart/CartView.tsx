@@ -84,8 +84,14 @@ export function CartView() {
           address: { firstName, lastName, address1, city, postalCode, phone },
         }),
       });
-      const body = (await res.json()) as OrderResult & { message?: string };
+      const body = (await res.json()) as OrderResult & { message?: string; redirectUrl?: string };
       if (!res.ok) throw new Error(body.message || 'checkout failed');
+      if (body.redirectUrl) {
+        // redirect payment (BLIK / przelew / karta): the order is created on return,
+        // so the cart id stays in storage until then
+        window.location.href = body.redirectUrl;
+        return;
+      }
       localStorage.removeItem('gl_cart_id');
       setOrder(body);
     } catch {

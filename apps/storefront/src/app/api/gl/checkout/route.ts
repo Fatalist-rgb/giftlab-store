@@ -72,7 +72,19 @@ export async function POST(req: NextRequest) {
   });
   if (!sm.ok) return NextResponse.json({ message: 'shipping step failed' }, { status: sm.status });
 
-  // 3. payment collection + session (system provider until P24 credentials exist)
+  // 3. payment collection + session. Przelewy24 (BLIK / przelew / karta) is used as soon
+  // as the backend exposes it for this region; until the merchant account exists the
+  // backend only offers the default provider and the flow stays as it is today.
+  const cartRes = await store(`/store/carts/${encodeURIComponent(cartId)}`);
+  const cartBody = (await cartRes.json()) as { cart?: { region_id?: string } };
+  const regionId = cartBody.cart?.region_id;
+  const provRes = await store(
+    `/store/payment-providers${regionId ? `?region_id=${encodeURIComponent(regionId)}` : ''}`,
+  );
+  const provBody = (await provRes.json()) as { payment_providers?: Array<{ id: string }> };
+  const providers = (provBody.payment_providers ?? []).map((p) => p.id);
+  const providerId = providers.find((id) => id.includes('przelewy24')) ?? 'pp_system_default';
+
   const pcRes = await store('/store/payment-collections', {
     method: 'POST',
     body: JSON.stringify({ cart_id: cartId }),
@@ -82,9 +94,20 @@ export async function POST(req: NextRequest) {
   if (!pcId) return NextResponse.json({ message: 'payment collection failed' }, { status: 502 });
   const ps = await store(`/store/payment-collections/${pcId}/payment-sessions`, {
     method: 'POST',
-    body: JSON.stringify({ provider_id: 'pp_system_default' }),
+    body: JSON.stringify({ provider_id: providerId }),
   });
   if (!ps.ok) return NextResponse.json({ message: 'payment session failed' }, { status: ps.status });
+
+  // redirect providers finish elsewhere: hand the URL back and let the browser go there.
+  // The order is created on return, once the provider's webhook authorised the session.
+  const psBody = (await ps.json()) as {
+    payment_collection?: { payment_sessions?: Array<{ data?: { redirectUrl?: string } }> };
+  };
+  const redirectUrl = psBody.payment_collection?.payment_sessions?.find((s) => s.data?.redirectUrl)?.data
+    ?.redirectUrl;
+  if (redirectUrl) {
+    return NextResponse.json({ redirectUrl, cartId });
+  }
 
   // 4. complete
   const doneRes = await store(`/store/carts/${encodeURIComponent(cartId)}/complete`, { method: 'POST' });

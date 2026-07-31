@@ -107,6 +107,15 @@
     "deliveryWindow": "Przewidywana dostawa",
     "trackOrder": "Śledź zamówienie →"
   },
+  "checkoutReturn": {
+    "working": "Potwierdzamy płatność…",
+    "workingSub": "To zajmuje kilka sekund — nie zamykaj tej strony.",
+    "pending": "Płatność jest w trakcie potwierdzania",
+    "pendingSub": "Gdy operator płatności potwierdzi transakcję, wyślemy e-mail z numerem zamówienia. Nie płać ponownie.",
+    "missing": "Nie znaleźliśmy koszyka",
+    "missingSub": "Jeśli płatność została pobrana, napisz do nas — odnajdziemy zamówienie.",
+    "home": "Wróć na stronę główną"
+  },
   "cookies": {
     "title": "Ciasteczka i prywatność",
     "body": "Używamy niezbędnych plików cookie, aby sklep działał. Analitykę i marketing włączymy tylko za Twoją zgodą — nic nie śledzimy, dopóki nie zdecydujesz.",

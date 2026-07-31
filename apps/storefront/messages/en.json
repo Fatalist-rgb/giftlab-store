@@ -107,6 +107,15 @@
     "deliveryWindow": "Estimated delivery",
     "trackOrder": "Track order →"
   },
+  "checkoutReturn": {
+    "working": "Confirming your payment…",
+    "workingSub": "This takes a few seconds — please keep this page open.",
+    "pending": "Payment is still being confirmed",
+    "pendingSub": "As soon as the payment operator confirms the transaction we will e-mail your order number. Please do not pay again.",
+    "missing": "We could not find your cart",
+    "missingSub": "If you were charged, contact us and we will locate the order.",
+    "home": "Back to home"
+  },
   "cookies": {
     "title": "Cookies & privacy",
     "body": "We use essential cookies to make the store work. Analytics and marketing run only with your consent — nothing is tracked until you decide.",
