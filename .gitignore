@@ -38,3 +38,6 @@ node_modules/
 out/
 # MediaPipe wasm runtime — vendored from node_modules by scripts/copy-mediapipe.mjs
 apps/storefront/public/models/face/wasm/
+
+# Lighthouse CI local reports (CI uploads them as artifacts)
+apps/storefront/.lighthouseci/
