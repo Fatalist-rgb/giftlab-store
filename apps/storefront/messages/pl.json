@@ -9,7 +9,6 @@
     "title": "Twoja twarz na akrylowej figurce",
     "sub": "Wybierz postać, dodaj imię i zobacz podgląd na żywo — to, co widzisz, trafia do druku.",
     "cta": "Zaprojektuj figurkę",
-    "artNote": "Grafiki poglądowe — finalne wzory postaci wkrótce.",
     "howTitle": "Jak to działa",
     "s1Title": "Wgraj zdjęcie",
     "s1Body": "Tło znika automatycznie — jeszcze w Twojej przeglądarce, zanim cokolwiek do nas trafi.",
@@ -32,7 +31,10 @@
     "q4Q": "Nie mam teraz zdjęcia — co wtedy?",
     "q4A": "Zamów z opcją „wyślę zdjęcie później\". Po zakupie dostaniesz link do strony zamówienia, gdzie dograsz zdjęcie jednym kliknięciem.",
     "q5Q": "Jak płacę?",
-    "q5A": "BLIK, Przelewy24 i karta — płatności uruchamiamy z kontem sprzedawcy; do tego czasu zamówienia są testowe."
+    "q5A": "BLIK, Przelewy24 i karta — płatności uruchamiamy z kontem sprzedawcy; do tego czasu zamówienia są testowe.",
+    "photoFridgeAlt": "Gotowa figurka z magnesem na lodówce",
+    "photoTableAlt": "Figurka leżąca na blacie — widać grubość akrylu",
+    "photoNote": "Zdjęcia prawdziwych, wysłanych zamówień."
   },
   "product": {
     "title": "Zaprojektuj figurkę",

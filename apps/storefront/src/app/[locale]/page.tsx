@@ -38,19 +38,37 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         >
           {t('cta')}
         </Link>
+        {/* the three poses a customer can pick, in the client's own product art */}
         <div className="mt-10 flex items-end justify-center gap-4" aria-hidden>
-          {['blue', 'pink', 'green'].map((c, i) => (
+          {['stoi', 'stoi-piwo', 'kieszen'].map((c, i) => (
             <Image
               key={c}
               src={`/art/body-${c}.png`}
               alt=""
-              width={128}
-              height={178}
+              width={180}
+              height={330}
               className={`w-24 rounded-2xl border-2 border-ink bg-white p-2 shadow-offset-sm sm:w-32 ${i === 1 ? '-translate-y-3' : ''}`}
             />
           ))}
         </div>
-        <p className="mt-3 text-xs opacity-45">{t('artNote')}</p>
+
+        {/* the finished thing, photographed — the strongest proof the shop can show */}
+        <div className="mx-auto mt-10 grid max-w-2xl grid-cols-2 gap-4">
+          {[
+            { src: '/photos/product-fridge.jpg', alt: t('photoFridgeAlt') },
+            { src: '/photos/product-table.jpg', alt: t('photoTableAlt') },
+          ].map((p) => (
+            <Image
+              key={p.src}
+              src={p.src}
+              alt={p.alt}
+              width={600}
+              height={600}
+              className="aspect-square w-full rounded-2xl border-2 border-ink object-cover shadow-offset-sm"
+            />
+          ))}
+        </div>
+        <p className="mt-3 text-xs opacity-45">{t('photoNote')}</p>
       </section>
 
       {/* how it works */}

@@ -442,9 +442,11 @@ export function Constructor({
         <div className="mt-4 min-h-[190px]">
           {step === 'character' && (
             <div className="flex flex-wrap gap-2">
-              {bodyLayer.variants.map((v) => (
+              {bodyLayer.variants.map((v, vi) => (
                 <button
                   key={v.id}
+                  // stable hook for tests: the labels come from the published schema
+                  data-testid={`variant-${vi}`}
                   onClick={() => {
                     patchSlot({ variantId: v.id });
                     track('character_chosen', { step: 'character', variant: v.id });

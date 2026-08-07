@@ -10,21 +10,21 @@ export const demoSchema: ProductSchema = parseProductSchema({
   medusaProductId: 'prod_belly',
   version: 1,
   status: 'published',
-  canvasPx: { w: 304, h: 424 },
+  canvasPx: { w: 360, h: 660 },
   characterLayers: [
     {
       id: 'body',
       zIndex: 10,
       label: { pl: 'Postać', en: 'Character', uk: 'Персонаж' },
       variants: [
-        { id: 'blue', label: { pl: 'Niebieski', en: 'Blue', uk: 'Синій' }, assetKey: '/art/body-blue.png', priceDelta: 0 },
-        { id: 'green', label: { pl: 'Zielony', en: 'Green', uk: 'Зелений' }, assetKey: '/art/body-green.png', priceDelta: 0 },
-        { id: 'pink', label: { pl: 'Różowy', en: 'Pink', uk: 'Рожевий' }, assetKey: '/art/body-pink.png', priceDelta: 0 },
+        { id: 'stoi', label: { pl: 'Na stojąco', en: 'Standing', uk: 'Стоячи' }, assetKey: '/art/body-stoi.png', priceDelta: 0 },
+        { id: 'piwo', label: { pl: 'Z kuflem piwa', en: 'With a beer', uk: 'З келихом пива' }, assetKey: '/art/body-stoi-piwo.png', priceDelta: 0 },
+        { id: 'kieszen', label: { pl: 'Ręka w kieszeni', en: 'Hand in pocket', uk: 'Рука в кишені' }, assetKey: '/art/body-kieszen.png', priceDelta: 0 },
       ],
     },
   ],
   faceZone: {
-    bounds: { x: 92, y: 40, w: 120, h: 132 },
+    bounds: { x: 84, y: 34, w: 191, h: 214 },
     maskAssetKey: '/art/face-mask.png',
     minResolutionPx: { w: 900, h: 900 },
     transforms: ['move', 'scale', 'rotate'],

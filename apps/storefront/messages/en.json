@@ -9,7 +9,6 @@
     "title": "Your face on an acrylic figurine",
     "sub": "Pick a character, add a name and watch the live preview — what you see is what gets printed.",
     "cta": "Design a figurine",
-    "artNote": "Preview artwork — final character designs coming soon.",
     "howTitle": "How it works",
     "s1Title": "Upload a photo",
     "s1Body": "The background disappears automatically — right in your browser, before anything reaches us.",
@@ -32,7 +31,10 @@
     "q4Q": "I don’t have a photo right now — what then?",
     "q4A": "Order with \"I’ll send the photo later\". After purchase you get a link to your order page where one click adds the photo.",
     "q5Q": "How do I pay?",
-    "q5A": "BLIK, Przelewy24 and card — payments go live with the merchant account; until then orders are test-mode."
+    "q5A": "BLIK, Przelewy24 and card — payments go live with the merchant account; until then orders are test-mode.",
+    "photoFridgeAlt": "A finished figurine held on a fridge by its magnet",
+    "photoTableAlt": "The figurine on a table — you can see the acrylic thickness",
+    "photoNote": "Photos of real, shipped orders."
   },
   "product": {
     "title": "Design a figurine",
