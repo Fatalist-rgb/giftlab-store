@@ -24,7 +24,7 @@ export const demoSchema: ProductSchema = parseProductSchema({
     },
   ],
   faceZone: {
-    bounds: { x: 84, y: 34, w: 191, h: 214 },
+    bounds: { x: 91, y: 17, w: 176, h: 240 },
     maskAssetKey: '/art/face-mask.png',
     minResolutionPx: { w: 900, h: 900 },
     transforms: ['move', 'scale', 'rotate'],

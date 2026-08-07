@@ -33,7 +33,7 @@ const figurineSchema = {
       { id: 'kieszen', label: { pl: 'Ręka w kieszeni', en: 'Hand in pocket', uk: 'Рука в кишені' }, assetKey: '/art/body-kieszen.png', priceDelta: 0 },
     ],
   }],
-  faceZone: { bounds: { x: 84, y: 34, w: 191, h: 214 }, maskAssetKey: '/art/face-mask.png', minResolutionPx: { w: 900, h: 900 }, transforms: ['move', 'scale', 'rotate'], zIndex: 15 },
+  faceZone: { bounds: { x: 91, y: 17, w: 176, h: 240 }, maskAssetKey: '/art/face-mask.png', minResolutionPx: { w: 900, h: 900 }, transforms: ['move', 'scale', 'rotate'], zIndex: 15 },
   textFields: [{ id: 'name', label: { pl: 'Imię', en: 'Name', uk: "Ім'я" }, maxLen: 14, fonts: ['Bricolage Grotesque'], colors: ['#17131A'], placement: 'figure', zIndex: 100 }],
   options: [],
   physical: { heightMm: 110, magneticBacking: true, material: 'acrylic+silicone' },
