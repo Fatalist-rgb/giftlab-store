@@ -46,8 +46,10 @@ export async function buildProductionPackage(opts: BuildOptions): Promise<Produc
   const dpi = opts.dpi ?? 300;
   const scene = buildScene(schema, design);
 
-  // 1. 300 DPI print render — keep the canvas to read its alpha for the cut line
-  const scale = scaleForDpi(schema, dpi);
+  // 1. 300 DPI print render — keep the canvas to read its alpha for the cut line.
+  //    The scale is measured against the SCENE's canvas: each pose is its own photo
+  //    crop, so only the scene knows the pixel space that has to hit 300 DPI.
+  const scale = scaleForDpi(schema, dpi, scene);
   const printCanvas = await renderSceneCanvas(scene, { schema, assetBytes: opts.assetBytes, scale });
   const printPng = printCanvas.toBuffer('image/png');
 

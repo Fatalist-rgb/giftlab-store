@@ -1,6 +1,42 @@
 import type { DesignState } from '../design-state/types.js';
-import type { ProductSchema } from '../schema/types.js';
+import type { ProductSchema, Variant } from '../schema/types.js';
 import { nodeZ, type Scene, type SceneNode } from './types.js';
+
+/**
+ * The character variant the design has selected, per layer. Falls back to the layer's
+ * first variant so a schema change that drops a variant degrades to "the default pose"
+ * instead of an empty figure.
+ */
+function selectedVariants(schema: ProductSchema, design: DesignState): Variant[] {
+  const out: Variant[] = [];
+  for (const layer of schema.characterLayers) {
+    const chosen = design.characterSelections[layer.id];
+    const v = layer.variants.find((x) => x.id === chosen) ?? layer.variants[0];
+    if (v) out.push(v);
+  }
+  return out;
+}
+
+/**
+ * The artwork geometry the scene is authored in.
+ *
+ * A pose is a photograph, not a sprite on a shared grid: standing is 615×1231, lying is
+ * 1445×1083, and the face hole moves with it. Geometry therefore comes from the selected
+ * variant when it declares any, and from the product otherwise. The FIRST layer that
+ * declares geometry wins — there is exactly one body layer today, and a second layer
+ * overriding the canvas out from under the first would be a schema bug, not a feature.
+ */
+export function sceneGeometry(
+  schema: ProductSchema,
+  design: DesignState,
+): { canvas: { w: number; h: number }; faceBounds: ProductSchema['faceZone']['bounds']; namePos?: { x: number; y: number; rot: number } } {
+  const v = selectedVariants(schema, design).find((x) => x.canvasPx ?? x.faceBounds ?? x.namePos);
+  return {
+    canvas: v?.canvasPx ?? schema.canvasPx,
+    faceBounds: v?.faceBounds ?? schema.faceZone.bounds,
+    namePos: v?.namePos,
+  };
+}
 
 /**
  * buildScene is PURE and DETERMINISTIC — no Date.now, no randomness, no I/O. Given the
@@ -11,6 +47,7 @@ import { nodeZ, type Scene, type SceneNode } from './types.js';
  */
 export function buildScene(schema: ProductSchema, design: DesignState): Scene {
   const nodes: SceneNode[] = [];
+  const geo = sceneGeometry(schema, design);
 
   // 1. character artwork — the selected variant of each layer (fallback: first variant)
   for (const layer of schema.characterLayers) {
@@ -27,7 +64,7 @@ export function buildScene(schema: ProductSchema, design: DesignState): Scene {
   nodes.push({
     kind: 'face',
     photoId: face?.uploadedPhotoId ?? null,
-    bounds: schema.faceZone.bounds,
+    bounds: geo.faceBounds,
     maskAssetKey: schema.faceZone.maskAssetKey,
     transform: face
       ? { x: face.x, y: face.y, scale: face.scale, rotation: face.rotation }
@@ -46,11 +83,12 @@ export function buildScene(schema: ProductSchema, design: DesignState): Scene {
       font: tv.font ?? field.fonts[0] ?? 'sans-serif',
       color: tv.color ?? field.colors[0] ?? '#000000',
       placement: field.placement,
+      ...(geo.namePos ? { anchor: geo.namePos } : {}),
       zIndex: field.zIndex,
     });
   }
 
   // stable paint order — ties keep insertion order, so the Scene is fully determined
   nodes.sort((a, b) => nodeZ(a) - nodeZ(b));
-  return { nodes };
+  return { canvas: geo.canvas, nodes };
 }

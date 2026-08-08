@@ -1,64 +1,101 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import { Guarantee } from '@/components/Guarantee';
+import { Accordion } from '@/components/Accordion';
+import { PoseCard } from '@/components/PoseCard';
+import { PayMarks } from '@/components/PayMarks';
 import { Reviews } from '@/features/reviews/Reviews';
+import { POSES, type PoseId } from '@/lib/poses';
+import {
+  ArrowR, Burst, Heart, IcoApprove, IcoBox, IcoChar, IcoClock, IcoCut, IcoName,
+  IcoNoReturn, IcoPay, IcoRefund, IcoTruck, SecHead, Sparkle, Stars,
+} from '@/components/icons';
 
 /**
- * The landing, rebuilt on the design the client approved on the demo.
+ * The landing, section for section as the client approved it on the demo.
  *
- * Two things drive the layout. The hero sells the OBJECT — a photo of the finished
- * magnet beside copy that lists what arrives in the parcel — because a visitor who
- * cannot picture the product does not care that there is a builder behind it. And
- * every section is the same card: 2.5px ink border, hard offset shadow, cream bands
- * to separate them. No gradients, no blur; the whole shop is that one recipe.
+ * Order matters and is not arbitrary: the object first (hero photo), then how it is
+ * made, then proof it exists, then what you can pick, then the price, then other
+ * people, then the promises, then the objections. Anything that asks for money sits
+ * after something that earned it.
+ *
+ * Everything here is a server component. The only interactive piece is the FAQ
+ * accordion, so that is the only thing shipped as client JS.
  */
+
+const OCCASION_PHOTO = [
+  'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=560&q=75&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=560&q=75&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=560&q=75&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1608755728617-aefab37d2edd?w=560&q=75&auto=format&fit=crop',
+];
+
+/* The wall mixes our own photography with three poses, exactly as the design does.
+   The handles and like counts are PLACEHOLDERS until real tagged posts exist — they
+   are strings in the message catalogue so they can be swapped without a deploy. */
+const UGC: { photo?: string; pose?: PoseId; user: string; likes: string; rot: number; viral?: boolean }[] = [
+  { photo: '/photos/real-fridge.webp', user: '@kasia.w', likes: '1,2k', rot: -1.8 },
+  { pose: 'kieszen', user: '@michal_p', likes: '870', rot: 1.5 },
+  { photo: '/photos/real-table.webp', user: '@ola.i.kuba', likes: '3,4k', rot: -1.2, viral: true },
+  { pose: 'lezy', user: '@burek.official', likes: '2,1k', rot: 1.8 },
+  { photo: '/photos/shot-fridge.webp', user: '@lucy.golden', likes: '640', rot: -1.5 },
+  { pose: 'kufel', user: '@gosia.k', likes: '1,5k', rot: 1.2 },
+];
+
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('home');
 
-  const steps = ['s1', 's2', 's3'] as const;
-  const faqs = ['q1', 'q2', 'q3', 'q4', 'q5'] as const;
-  const tiers = [
-    { qty: '1–2', price: '79 zł' },
-    { qty: '3–5', price: '65 zł', hot: true },
-    { qty: '6+', price: '49 zł' },
+  const steps = [IcoChar, IcoCut, IcoName, IcoBox];
+  const stepRot = [-2.2, 1.6, -1.4, 2.2];
+  const stepBg = ['var(--lime)', '#fff', '#fff', 'var(--lime)'];
+  const real = ['/photos/real-faces.webp', '/photos/real-belly.webp', '/photos/real-door.webp'];
+  const realRot = [-1.8, 1.5, -1.2];
+  const tplRot = [-1.6, 1.4, -1.2, 1.8];
+  const gwIco = [IcoApprove, IcoRefund, IcoNoReturn];
+  const bulkRows = [
+    [t('bulk1'), '79 zł', ''],
+    [t('bulk3'), '65 zł', t('bulkEach')],
+    [t('bulk6'), '49 zł', t('bulkEach')],
   ];
-  const real = [
-    { k: 'r1', src: '/photos/real-faces.webp' },
-    { k: 'r2', src: '/photos/real-belly.webp' },
-    { k: 'r3', src: '/photos/real-door.webp' },
-  ] as const;
+  const bulkRot = [-1.8, 1.5, 1];
+  const faqs = [1, 2, 3, 4, 5].map((i) => ({ q: t(`q${i}Q`), a: t(`q${i}A`) }));
 
   return (
     <main>
-      {/* ---- hero: copy left, the real product right ---- */}
+      {/* ---- hero: the copy sells, the photo proves ---- */}
       <section className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-12 pt-9 lg:grid-cols-[1fr_1.04fr] lg:gap-10 lg:pb-16 lg:pt-14">
-        <div>
-          <span className="stkr bg-lime text-[13px]" style={{ transform: 'rotate(-1.5deg)' }}>
+        <div className="relative z-10">
+          <span className="stkr bg-lime text-[13px] rv" style={{ transform: 'rotate(-1.5deg)' } as React.CSSProperties}>
+            <Sparkle s={14} c="var(--ink)" />
             {t('badge')}
           </span>
-          <h1 className="mt-5 font-display text-[38px] font-extrabold leading-[1.04] sm:text-[50px] lg:text-[54px]">
+          <h1 className="mt-5 font-display text-[38px] font-extrabold leading-[1.04] rv sm:text-[50px] lg:text-[54px]" style={{ '--d': '.07s' } as React.CSSProperties}>
             {t('title')}
           </h1>
-          <p className="mt-5 max-w-[48ch] text-[16.5px] opacity-80 sm:text-[17.5px]">{t('sub')}</p>
-
-          <div className="mt-6 flex flex-wrap items-center gap-2.5">
+          <p className="mt-5 max-w-[48ch] text-[16.5px] opacity-80 rv sm:text-[17.5px]" style={{ '--d': '.14s' } as React.CSSProperties}>
+            {t('sub')}
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-2.5 rv" style={{ '--d': '.21s' } as React.CSSProperties}>
             <span className="stkr bg-white text-[13px]">
+              <Stars n={4.8} s={14} />
               <b className="font-display">{t('rating')}</b>
             </span>
             <span className="stkr bg-white text-[13px] font-semibold">{t('reviewsN')}</span>
-            <span className="stkr bg-white text-[13px] font-semibold">{t('ship48')}</span>
+            <span className="stkr bg-white text-[13px] font-semibold">
+              <IcoClock />
+              {t('ship48')}
+            </span>
           </div>
-
-          <Link href="/product" className="btn-p mt-7 px-7 text-[16px]" data-testid="hero-cta">
-            {t('cta')} →
+          <Link href="/product" className="btn-p mt-7 px-7 text-[16px] rv" style={{ '--d': '.28s' } as React.CSSProperties} data-testid="hero-cta">
+            {t('cta')}
+            <ArrowR />
           </Link>
         </div>
 
-        <figure className="relative m-0">
-          <div className="card p-2.5" style={{ transform: 'rotate(-1.1deg)' }}>
+        <figure className="relative m-0 rv" style={{ '--d': '.18s' } as React.CSSProperties} data-testid="hero-photo">
+          <div className="relative rounded-[22px] bg-white p-2.5 b2 sh" style={{ transform: 'rotate(-1.1deg)' }}>
             <Image
               src="/photos/real-hero.webp"
               alt={t('heroAlt')}
@@ -68,10 +105,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               sizes="(max-width: 1024px) 100vw, 560px"
               className="block h-auto w-full rounded-[14px] border-2 border-ink bg-cream"
             />
+            <span className="stkr pop absolute -top-3.5 left-3 z-10 bg-mandarin text-[10.5px] text-white" style={{ '--d': '.5s', '--rot': '-5deg' } as React.CSSProperties}>
+              <Sparkle s={11} c="#fff" />
+              {t('heroPhotoBadge')}
+            </span>
           </div>
-          <figcaption className="mt-2.5 px-1 text-[12px] leading-snug opacity-60">
-            {t('heroCap')}
-          </figcaption>
+          <figcaption className="mt-2.5 px-1 text-[12px] leading-snug opacity-60">{t('heroCap')}</figcaption>
         </figure>
       </section>
 
@@ -79,109 +118,273 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <div className="marquee" aria-hidden>
         <div className="marquee-track">
           {[0, 1].map((i) => (
-            <span key={i} className="whitespace-nowrap px-6 py-2.5 font-display text-[13px] font-extrabold uppercase tracking-wider text-white">
-              {t('marquee')} ·&nbsp;
+            <span key={i} className="flex shrink-0 items-center">
+              <span className="whitespace-nowrap px-5 py-3 font-display text-[15px] font-extrabold uppercase tracking-wide sm:text-[17px]">
+                {t('marquee')}
+              </span>
+              <Burst s={13} c="var(--mandarin)" />
             </span>
           ))}
         </div>
       </div>
 
-      {/* ---- the finished thing, photographed ---- */}
-      <section className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-center font-display text-[26px] font-extrabold sm:text-[32px]">
-          {t('realTitle')}
-        </h2>
-        <p className="mx-auto mt-2 max-w-[60ch] text-center text-[15px] opacity-70">{t('realSub')}</p>
-        <div className="mt-8 grid gap-5 sm:grid-cols-3">
-          {real.map((r, i) => (
-            <figure key={r.k} className="card m-0 overflow-hidden" style={{ transform: `rotate(${i % 2 ? 0.8 : -0.8}deg)` }}>
-              <Image
-                src={r.src}
-                alt={t(`${r.k}d`)}
-                width={600}
-                height={600}
-                sizes="(max-width: 640px) 100vw, 360px"
-                className="aspect-square w-full border-b-2 border-ink object-cover"
-              />
-              <figcaption className="p-4">
-                <p className="font-display text-[15.5px] font-bold leading-tight">{t(r.k)}</p>
-                <p className="mt-1 text-[13px] leading-snug opacity-70">{t(`${r.k}d`)}</p>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-        <p className="mt-3 text-center text-xs opacity-45">{t('photoNote')}</p>
-      </section>
-
-      {/* ---- how it works ---- */}
-      <section className="border-y-2 border-ink bg-cream">
-        <div className="mx-auto max-w-6xl px-4 py-12">
-          <h2 className="text-center font-display text-[26px] font-extrabold sm:text-[32px]">
-            {t('howTitle')}
-          </h2>
-          <div className="mt-8 grid gap-5 sm:grid-cols-3">
-            {steps.map((s, i) => (
-              <div key={s} className="card p-5">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-lime font-display font-extrabold">
-                  {i + 1}
-                </span>
-                <p className="mt-3 font-display text-[16px] font-bold">{t(`${s}Title`)}</p>
-                <p className="mt-1 text-[14px] leading-snug opacity-70">{t(`${s}Body`)}</p>
+      {/* ---- how it works: four steps ---- */}
+      <section id="jak" className="bg-cream" style={{ borderTop: 'var(--border)', borderBottom: 'var(--border)' }}>
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
+          <SecHead title={t('howTitle')} sub={t('howSub')} />
+          <div className="mt-11 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((I, i) => (
+              <div key={i} className="rv" style={{ '--d': `${0.06 * i}s` } as React.CSSProperties}>
+                <div className="relative h-full rounded-[var(--r-card)] bg-white p-5 b2 sh" style={{ transform: `rotate(${stepRot[i]}deg)` }}>
+                  <div className="flex h-14 w-14 items-center justify-center rounded-[14px] border-2 border-ink shs" style={{ background: stepBg[i] }}>
+                    <I />
+                  </div>
+                  <span className="absolute right-5 top-4 font-display text-[13px] font-extrabold opacity-30">0{i + 1}</span>
+                  <h3 className="mt-4 font-display text-[18px] font-bold leading-tight">{t(`s${i + 1}Title`)}</h3>
+                  <p className="mt-2 text-[14.5px] leading-snug opacity-70">{t(`s${i + 1}Body`)}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ---- price ladder: quantity is the only lever ---- */}
-      <section className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-center font-display text-[26px] font-extrabold sm:text-[32px]">
-          {t('priceTitle')}
-        </h2>
-        <p className="mt-2 text-center text-[14px] opacity-60">{t('priceSub')}</p>
-        <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3">
-          {tiers.map((tier) => (
-            <div
-              key={tier.qty}
-              className={`card p-5 text-center ${tier.hot ? '!bg-lime' : ''}`}
-              style={tier.hot ? { transform: 'rotate(-1deg)' } : undefined}
-            >
-              <p className="text-[13px] font-bold opacity-60">{t('pieces', { qty: tier.qty })}</p>
-              <p className="mt-1 font-display text-[30px] font-extrabold">{tier.price}</p>
-              <p className="text-xs opacity-55">{t('perPiece')}</p>
-              {tier.hot && <p className="mt-2 text-xs font-bold">{t('popular')}</p>}
-            </div>
-          ))}
-        </div>
-        <div className="mx-auto mt-8 max-w-xl">
-          <Guarantee />
+      {/* ---- the finished thing, photographed. Shares Jak's cream on purpose: "how it
+             works" and "how it really looks" are one thought, and a second 2.5px rule
+             between them would draw a 5px seam ---- */}
+      <section id="realne" className="bg-cream" style={{ borderBottom: 'var(--border)' }}>
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
+          <SecHead title={t('realTitle')} sub={t('realSub')} />
+          <div className="mt-5 flex justify-center">
+            <span className="stkr bg-lime text-[12px] rv" style={{ '--d': '.1s', transform: 'rotate(-1.5deg)' } as React.CSSProperties}>
+              <Burst s={12} c="var(--ink)" />
+              {t('realBadge')}
+            </span>
+          </div>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+            {real.map((src, i) => (
+              <figure key={src} className="m-0 rv" style={{ '--d': `${0.07 * i}s` } as React.CSSProperties}>
+                <div className="flex h-full flex-col rounded-[var(--r-card)] bg-white p-3 b2 sh" style={{ transform: `rotate(${realRot[i]}deg)` }}>
+                  <div className="overflow-hidden rounded-[14px] border-2 border-ink bg-cream" style={{ aspectRatio: '1' }}>
+                    <Image
+                      src={src}
+                      alt={t(`r${i + 1}a`)}
+                      width={600}
+                      height={600}
+                      sizes="(max-width: 640px) 100vw, 360px"
+                      data-testid={`real-img-${i}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-3.5 px-1 pb-1">
+                    <h3 className="font-display text-[17.5px] font-bold leading-tight">{t(`r${i + 1}`)}</h3>
+                    <p className="mt-1.5 text-[14px] leading-snug opacity-70">{t(`r${i + 1}d`)}</p>
+                  </figcaption>
+                </div>
+              </figure>
+            ))}
+          </div>
         </div>
       </section>
 
+      {/* ---- templates: six poses, one price ---- */}
+      <section id="szablony" className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
+        <SecHead title={t('szabTitle')} sub={t('szabSub')} />
+        <div className="mt-11 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3">
+          {POSES.map((p, i) => (
+            <PoseCard
+              key={p.id}
+              pose={p}
+              index={i}
+              rotate={tplRot[i % tplRot.length]!}
+              name={t(`pose.${p.id}`)}
+              note={t('szabCardD')}
+              price="79 zł"
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* ---- the quantity ladder ---- */}
+      <section className="mx-auto max-w-6xl px-4 pb-14 sm:pb-20">
+        <div className="relative overflow-hidden rounded-[26px] p-6 b2 sh rv sm:p-9" style={{ background: 'var(--blue)' }}>
+          <Sparkle className="absolute right-6 top-5 opacity-70" s={26} c="var(--lime)" />
+          <div className="relative z-10 grid items-center gap-7 lg:grid-cols-[1fr_auto]">
+            <div>
+              <h2 className="font-display text-[27px] font-extrabold leading-tight text-white sm:text-[34px]">{t('bulkTitle')}</h2>
+              <p className="mt-2.5 max-w-[46ch] text-[15px] text-white/85">{t('bulkSub')}</p>
+              <span className="stkr mt-4 bg-lime text-[12.5px]" style={{ transform: 'rotate(-1.5deg)' }}>
+                <Burst s={13} c="var(--ink)" />
+                {t('bulkDiff')}
+              </span>
+            </div>
+            <div className="flex w-full flex-col gap-2.5 lg:w-auto">
+              <div className="flex gap-2.5">
+                {bulkRows.map(([qty, price, each], i) => (
+                  <div
+                    key={qty}
+                    className="flex-1 rounded-[16px] bg-white px-2 py-3 text-center b2 lg:w-[104px]"
+                    style={{ boxShadow: 'var(--shadow-sm)', transform: `rotate(${bulkRot[i]}deg)` }}
+                  >
+                    <p className="text-[11.5px] font-semibold uppercase tracking-wide opacity-55">{qty}</p>
+                    <p className="mt-0.5 font-display text-[21px] font-extrabold leading-none">{price}</p>
+                    <p className="mt-0.5 h-[13px] text-[10.5px] opacity-55">{each}</p>
+                  </div>
+                ))}
+              </div>
+              <Link href="/product" className="btn-p mt-1 w-full text-[15px]" style={{ background: 'var(--ink)' }}>
+                {t('bulkCta')}
+                <ArrowR s={17} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ---- the wall ---- */}
+      <section className="bg-cream" style={{ borderTop: 'var(--border)', borderBottom: 'var(--border)' }}>
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
+          <SecHead title={t('ugcTitle')} sub={t('ugcSub')} />
+          <div className="mt-11 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3">
+            {UGC.map((x, i) => {
+              const pose = x.pose ? POSES.find((p) => p.id === x.pose)! : null;
+              return (
+                <div
+                  key={x.user}
+                  className="ugc-t rv"
+                  style={{ '--rr': `${x.rot}deg`, '--d': `${0.04 * i}s`, transform: `rotate(${x.rot}deg)` } as React.CSSProperties}
+                >
+                  <div className="flex h-full flex-col rounded-[18px] bg-white p-2.5 b2 sh">
+                    <div className="relative overflow-hidden rounded-[12px] border-2 border-ink bg-cream" style={{ aspectRatio: '1' }}>
+                      {pose ? (
+                        <div className="flex h-full w-full items-center justify-center p-2">
+                          <div style={{ width: `min(74%, calc(100% * ${pose.w} / ${pose.h}))` }}>
+                            <Image src={pose.src} alt="" width={pose.w} height={pose.h} sizes="(max-width: 768px) 45vw, 240px" className="block h-auto w-full" />
+                          </div>
+                        </div>
+                      ) : (
+                        <Image src={x.photo!} alt="" width={700} height={700} sizes="(max-width: 768px) 45vw, 300px" className="h-full w-full object-cover" />
+                      )}
+                      {x.viral && (
+                        <span className="stkr pop absolute left-2 top-2 z-10 bg-lime text-[10px]" style={{ '--d': '.5s', '--rot': '-6deg' } as React.CSSProperties}>
+                          <Burst s={11} c="var(--ink)" />
+                          {t('badgeViral')}
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-2 flex items-center justify-between px-0.5">
+                      <span className="truncate text-[12px] font-semibold">{x.user}</span>
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[12px] opacity-70">
+                        <Heart s={12} />
+                        {x.likes}
+                      </span>
+                    </div>
+                    <p className="truncate px-0.5 text-[11.5px] leading-snug opacity-55">{t(`ugc${i + 1}`)}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* real reviews from the reviews module — never invented ones */}
       <Reviews />
 
-      {/* ---- FAQ + the closing CTA ---- */}
-      <section className="border-t-2 border-ink bg-cream">
-        <div className="mx-auto max-w-2xl px-4 py-12">
-          <h2 className="text-center font-display text-[26px] font-extrabold sm:text-[32px]">
-            {t('faqTitle')}
-          </h2>
-          <div className="mt-6 space-y-3">
-            {faqs.map((q) => (
-              <details key={q} className="group card p-4">
-                <summary className="cursor-pointer list-none font-display font-bold">
-                  {t(`${q}Q`)}
-                  <span className="float-right transition-transform group-open:rotate-45">＋</span>
-                </summary>
-                <p className="mt-2 text-sm leading-relaxed opacity-75">{t(`${q}A`)}</p>
-              </details>
+      {/* ---- the three promises, on ink ---- */}
+      <section style={{ background: 'var(--ink)' }}>
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-[4.5rem]">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="font-display text-[28px] font-extrabold leading-tight text-white rv sm:text-[35px]">{t('gwTitle')}</h2>
+            <p className="mt-3 text-[15.5px] text-white/65 rv" style={{ '--d': '.06s' } as React.CSSProperties}>{t('gwSub')}</p>
+          </div>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {gwIco.map((I, i) => (
+              <div
+                key={i}
+                className="rounded-[var(--r-card)] bg-white p-5 b2 rv"
+                style={{ '--d': `${0.06 * i}s`, boxShadow: '4px 5px 0 rgba(255,255,255,.22)' } as React.CSSProperties}
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-[13px] border-2 border-ink bg-lime shs">
+                  <I />
+                </div>
+                <h3 className="mt-3.5 font-display text-[16.5px] font-bold leading-tight">{t(`gw${i + 1}T`)}</h3>
+                <p className="mt-1.5 text-[14px] leading-snug opacity-70">{t(`gw${i + 1}D`)}</p>
+              </div>
             ))}
           </div>
-          <div className="mt-10 text-center">
-            <Link href="/product" className="btn-p px-8 text-[17px]">
-              {t('cta')} →
+        </div>
+      </section>
+
+      {/* ---- occasions ---- */}
+      <section className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
+        <SecHead title={t('okTitle')} sub={t('okSub')} />
+        <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
+          {OCCASION_PHOTO.map((src, i) => (
+            <Link
+              key={src}
+              href="/product"
+              className="tcard rv"
+              style={{ '--rr': `${tplRot[i]}deg`, '--d': `${0.05 * i}s` } as React.CSSProperties}
+              data-testid={`ok-${i}`}
+            >
+              <div className="tcard-in relative overflow-hidden rounded-[var(--r-card)] b2 sh" style={{ aspectRatio: '4/3' }}>
+                <Image src={src} alt="" width={560} height={420} sizes="(max-width: 640px) 45vw, 280px" className="absolute inset-0 h-full w-full object-cover" />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg,rgba(23,19,26,0) 38%,rgba(23,19,26,.78) 100%)' }} />
+                <span className="absolute bottom-3 left-3.5 right-3 font-display text-[15px] font-extrabold leading-tight text-white sm:text-[17px]">
+                  {t(`ok${i + 1}`)}
+                </span>
+              </div>
             </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ---- the three facts a buyer checks before paying ---- */}
+      <section className="bg-cream" style={{ borderTop: 'var(--border)', borderBottom: 'var(--border)' }}>
+        <div className="mx-auto grid max-w-6xl gap-5 px-4 py-11 md:grid-cols-3">
+          <div className="rv">
+            <div className="flex items-center gap-2.5">
+              <IcoPay />
+              <h3 className="font-display text-[16px] font-bold">{t('trustPay')}</h3>
+            </div>
+            <p className="mt-1.5 text-[13.5px] opacity-65">{t('trustPayD')}</p>
+            <PayMarks className="mt-2.5 flex flex-wrap items-center gap-1.5" />
           </div>
+          <div className="rv" style={{ '--d': '.06s' } as React.CSSProperties}>
+            <div className="flex items-center gap-2.5">
+              <IcoClock />
+              <h3 className="font-display text-[16px] font-bold">{t('trustShip')}</h3>
+            </div>
+            <p className="mt-1.5 text-[13.5px] opacity-65">{t('trustShipD')}</p>
+          </div>
+          <div className="rv" style={{ '--d': '.12s' } as React.CSSProperties}>
+            <div className="flex items-center gap-2.5">
+              <IcoTruck />
+              <h3 className="font-display text-[16px] font-bold">{t('trustFree')}</h3>
+            </div>
+            <p className="mt-1.5 text-[13.5px] opacity-65">{t('trustFreeD')}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ---- objections ---- */}
+      <section id="faq" className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
+        <SecHead title={t('faqTitle')} />
+        <Accordion items={faqs} />
+      </section>
+
+      {/* ---- and the ask ---- */}
+      <section className="mx-auto max-w-6xl px-4 pb-16">
+        <div className="relative overflow-hidden rounded-[26px] bg-mandarin px-6 py-11 text-center b2 sh rv sm:py-14">
+          <Sparkle className="absolute left-7 top-6 opacity-80" s={24} c="var(--lime)" />
+          <Sparkle className="absolute bottom-6 right-8 opacity-80" s={20} c="#fff" />
+          <h2 className="relative z-10 font-display text-[29px] font-extrabold leading-tight text-white sm:text-[40px]">{t('ctaTitle')}</h2>
+          <p className="relative z-10 mt-3 text-[16px] text-white/90">{t('ctaSub')}</p>
+          <Link href="/product" className="btn-p relative z-10 mt-7 px-7 text-[16px]" style={{ background: 'var(--ink)' }}>
+            {t('cta')}
+            <ArrowR />
+          </Link>
         </div>
       </section>
     </main>

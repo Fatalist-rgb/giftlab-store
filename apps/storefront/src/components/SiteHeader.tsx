@@ -40,9 +40,10 @@ export function SiteHeader() {
 
   const links = (
     <>
-      <Link href="/product" onClick={() => setOpen(false)}>{t('shop')}</Link>
-      <Link href="/catalog" onClick={() => setOpen(false)}>{t('catalog')}</Link>
-      <Link href="/info/dostawa" onClick={() => setOpen(false)}>{t('how')}</Link>
+      <Link href="/#szablony" onClick={() => setOpen(false)}>{t('shop')}</Link>
+      <Link href="/jak-to-dziala" onClick={() => setOpen(false)}>{t('how')}</Link>
+      <Link href="/opinie" onClick={() => setOpen(false)}>{t('opinions')}</Link>
+      <Link href="/kontakt" onClick={() => setOpen(false)}>{t('contact')}</Link>
     </>
   );
 

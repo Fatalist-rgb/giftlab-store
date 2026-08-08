@@ -11,6 +11,9 @@ export interface ImageLike {
 
 export interface Ctx2D {
   fillStyle: string;
+  strokeStyle: string;
+  lineWidth: number;
+  lineJoin: string;
   font: string;
   textAlign: string;
   textBaseline: string;
@@ -27,6 +30,7 @@ export interface Ctx2D {
   rect(x: number, y: number, w: number, h: number): void;
   clip(): void;
   fillText(text: string, x: number, y: number): void;
+  strokeText(text: string, x: number, y: number): void;
   drawImage(image: unknown, dx: number, dy: number, dw: number, dh: number): void;
 }
 

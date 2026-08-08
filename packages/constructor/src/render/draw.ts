@@ -25,8 +25,9 @@ export function drawScene<Img extends ImageLike>(
   opts: DrawOptions<Img>,
 ): void {
   const scale = opts.scale ?? 1;
-  const cw = opts.schema.canvasPx.w * scale;
-  const ch = opts.schema.canvasPx.h * scale;
+  // the scene owns its pixel space: the selected pose decides it, not the product
+  const cw = scene.canvas.w * scale;
+  const ch = scene.canvas.h * scale;
   ctx.clearRect(0, 0, cw, ch);
 
   for (const node of scene.nodes) {
@@ -102,13 +103,45 @@ function paintFace<Img extends ImageLike>(
   ctx.restore();
 }
 
+/**
+ * The name is printed ON the figurine, so it is sized against the ARTWORK, never
+ * against the output DPI: a share of the canvas width, shrinking as the name gets
+ * longer so 14 characters still fit across a shoulder. Same curve the approved design
+ * uses (10% of the width down to 3.4%).
+ */
+function nameSize(value: string, cw: number): number {
+  const n = value.length;
+  if (!n) return 0;
+  return (Math.max(3.4, Math.min(10, 42 / (n * 0.52))) / 100) * cw;
+}
+
 function drawText(ctx: Ctx2D, node: SceneTextNode, cw: number, ch: number, scale: number): void {
+  const size = nameSize(node.value, cw);
+  if (size <= 0) return;
+
   ctx.save();
-  ctx.fillStyle = node.color;
-  ctx.font = `700 ${Math.round(26 * scale)}px ${node.font}, sans-serif`;
+  ctx.font = `700 ${size}px ${node.font}, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  // name band on the figure, lower third — a deterministic placement the schema can refine
-  ctx.fillText(node.value, cw * 0.5, ch * 0.62);
+
+  if (node.anchor) {
+    // the pose says where the name goes — along the shoulder, tilted with the body
+    ctx.translate(node.anchor.x * scale, node.anchor.y * scale);
+    ctx.rotate(node.anchor.rot * DEG);
+    strokeThenFill(ctx, node.value, 0, 0, size, node.color);
+  } else {
+    // no anchor: the lower-third band, the deterministic default
+    strokeThenFill(ctx, node.value, cw * 0.5, ch * 0.62, size, node.color);
+  }
   ctx.restore();
+}
+
+/** Ink outline under the fill, so the name reads on skin, on a shirt or on a beer. */
+function strokeThenFill(ctx: Ctx2D, value: string, x: number, y: number, size: number, color: string): void {
+  ctx.lineWidth = size * 0.2;
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#17131A';
+  ctx.strokeText(value, x, y);
+  ctx.fillStyle = color;
+  ctx.fillText(value, x, y);
 }

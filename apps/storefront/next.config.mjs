@@ -6,6 +6,12 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig = {
   // @gl/constructor ships as TypeScript source — let Next compile it
   transpilePackages: ['@gl/constructor', '@gl/cutout'],
+  images: {
+    // The four "occasion" tiles are licensed Unsplash lifestyle shots, the same ones the
+    // approved design uses. Next fetches and re-encodes them server-side, so the visitor's
+    // browser never talks to unsplash.com — no third-party request on the landing.
+    remotePatterns: [{ protocol: 'https', hostname: 'images.unsplash.com' }],
+  },
   async headers() {
     return [
       {

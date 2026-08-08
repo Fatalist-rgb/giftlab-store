@@ -5,6 +5,7 @@ import {
   computePrice,
   faceAutoFit,
   renderSceneToCanvas,
+  sceneGeometry,
   type DesignState,
   type LocalizedText,
   type ProductSchema,
@@ -65,8 +66,8 @@ export function Constructor({
   const schema = schemaProp ?? demoSchema;
   const bodyLayer = schema.characterLayers[0]!;
 
-  const mkSlot = (): Slot => ({
-    variantId: bodyLayer.variants[0]!.id,
+  const mkSlot = (variantId = bodyLayer.variants[0]!.id): Slot => ({
+    variantId,
     name: '',
     facePhotoId: null,
     adj: CENTER,
@@ -110,6 +111,22 @@ export function Constructor({
   useEffect(() => {
     track('constructor_open', { step: 'open' });
   }, []);
+
+  /**
+   * `?t=<pose>` — the pose the visitor clicked on a template or "other versions" card.
+   *
+   * Applied in an effect rather than as the initial state on purpose: the page is
+   * statically prerendered, so the server has no query string and seeding state from
+   * `location` during render is a hydration mismatch. It runs once, and only while the
+   * builder is still untouched, so a click inside the builder is never overwritten.
+   */
+  useEffect(() => {
+    const want = new URLSearchParams(window.location.search).get('t');
+    if (!want || !bodyLayer.variants.some((v) => v.id === want)) return;
+    setSlots((all) => (all.length === 1 && !all[0]!.facePhotoId && !all[0]!.name
+      ? [{ ...all[0]!, variantId: want }]
+      : all));
+  }, [bodyLayer]);
 
   // pre-warm the face detector while the customer is still picking a file
   useEffect(() => {
@@ -173,8 +190,8 @@ export function Constructor({
               imgW: scan.imgW,
               imgH: scan.imgH,
               faceBox: scan.box,
-              zoneW: schema.faceZone.bounds.w,
-              zoneH: schema.faceZone.bounds.h,
+              zoneW: geoOf(target).faceBounds.w,
+              zoneH: geoOf(target).faceBounds.h,
               minScale: 0.6,
               maxScale: 2.6,
             })
@@ -253,6 +270,11 @@ export function Constructor({
   });
   const designs = useMemo(() => slots.map(toDesign), [slots, schema.id, schema.version, bodyLayer.id]);
   const activeDesign = designs[active]!;
+
+  /** Geometry of one slot's POSE. Each pose is its own photo crop, so the canvas and the
+   *  face hole move when the customer switches — resolved by the engine, never guessed. */
+  const geoOf = (index: number) => sceneGeometry(schema, toDesign(slots[index]!));
+  const geo = sceneGeometry(schema, activeDesign);
 
   // add to cart: every slot's design in ONE cart
   const [adding, setAdding] = useState(false);
@@ -337,21 +359,25 @@ export function Constructor({
 
   const liveScene = (
     <div className="relative flex flex-col items-center rounded-[24px] border-2 border-ink bg-cream p-3 shadow-offset sm:p-5">
-          <div className="flex h-[clamp(190px,30vh,290px)] w-full items-center justify-center lg:h-auto">
+          {/* A fixed-height stage on every breakpoint. Poses are not one shape — a
+              standing figure is 615×1231, a lying one 1445×1083 — so a width-driven box
+              would jump by 200px the moment the customer switches pose. Height is the
+              budget; the canvas fits inside it and keeps its own ratio. */}
+          <div className="flex h-[clamp(190px,30vh,290px)] w-full items-center justify-center lg:h-[420px]">
           <canvas
             ref={canvasRef}
             // the real pixel size from the very first paint: a bare <canvas> defaults to
-            // 300×150 and jumps to the figure's 304×424 once the renderer sizes it,
-            // which is a visible layout shift on mobile (Lighthouse CLS budget)
-            width={Math.round(schema.canvasPx.w * PREVIEW_SCALE)}
-            height={Math.round(schema.canvasPx.h * PREVIEW_SCALE)}
+            // 300×150 and jumps to the figure's size once the renderer sizes it, which is
+            // a visible layout shift on mobile (Lighthouse CLS budget)
+            width={Math.round(geo.canvas.w * PREVIEW_SCALE)}
+            height={Math.round(geo.canvas.h * PREVIEW_SCALE)}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
             onPointerCancel={endDrag}
-            /* height-driven on phones (the wrapper owns the budget), width-driven
-               from lg up, so the aspect never distorts either way */
-            className={`mx-auto block h-full w-auto lg:h-auto lg:w-full lg:max-w-[365px] ${slot.facePhotoId ? 'cursor-grab touch-none' : ''}`}
+            /* height-driven everywhere: the wrapper owns the budget and the canvas keeps
+               its own ratio, so switching pose never distorts or resizes the frame */
+            className={`mx-auto block h-full w-auto max-w-full ${slot.facePhotoId ? 'cursor-grab touch-none' : ''}`}
           />
           </div>
           {busy && (

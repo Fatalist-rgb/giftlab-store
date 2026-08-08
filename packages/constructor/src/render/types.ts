@@ -28,12 +28,20 @@ export interface SceneTextNode {
   font: string;
   color: string;
   placement: string;
+  /** centre + tilt in artwork px/degrees; absent → the renderer's default band */
+  anchor?: { x: number; y: number; rot: number };
   zIndex: number;
 }
 
 export type SceneNode = SceneImageNode | SceneFaceNode | SceneTextNode;
 
 export interface Scene {
+  /**
+   * Artwork pixel space this scene is authored in. It comes from the SELECTED character
+   * variant, not from the product, because each pose is its own photograph with its own
+   * dimensions — the renderer must size the canvas from the scene, never from the schema.
+   */
+  canvas: { w: number; h: number };
   /** paint order, ascending zIndex */
   nodes: SceneNode[];
 }

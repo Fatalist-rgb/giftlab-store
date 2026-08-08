@@ -21,12 +21,24 @@
   --cream: #fff7ec;
   --paper: #fffdf9;
 
+  --blue: #2f6bff;
+
   --border: 2.5px solid var(--ink);
   --shadow: 4px 5px 0 var(--ink);
   --shadow-sm: 2.5px 3px 0 var(--ink);
-  --r-card: 22px;
+  --r-card: 20px;
   --r-btn: 16px;
   --r-chip: 999px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+/* the landing rotates cards by a degree or two; `clip` keeps that from opening a
+   horizontal scrollbar without creating a scroll container the way `hidden` does */
+html,
+body {
+  overflow-x: clip;
 }
 
 body {
@@ -129,6 +141,75 @@ body {
     right: 11px;
     pointer-events: none;
   }
+
+  /* ---- template / occasion tile: rotated at rest, lifts on hover ----
+     The rotation lives on the <a> and the shadow on the inner box, so the hover lift
+     can translate without cancelling the tilt. */
+  .tcard {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transform: rotate(var(--rr, 0deg));
+    transition: transform 0.18s ease;
+  }
+  .tcard:hover {
+    transform: rotate(var(--rr, 0deg)) translateY(-7px);
+  }
+  .tcard-in {
+    transition: box-shadow 0.18s ease;
+  }
+  .tcard:hover .tcard-in {
+    box-shadow: 6px 8px 0 var(--ink);
+  }
+
+  .ugc-t {
+    transition: transform 0.2s ease;
+  }
+  .ugc-t:hover {
+    transform: translateY(-5px) rotate(var(--rr, 0deg));
+  }
+
+  /* fixed-height photo box: every pose is a differently-shaped crop, so the card sizes
+     the BOX and fits the image inside it — otherwise the grid goes ragged */
+  .card-fig {
+    --sh: 220px;
+    height: var(--sh);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ---- entrance animations: decoration only, so reduced motion switches them off ---- */
+.rv {
+  opacity: 0;
+  animation: glRise 0.65s cubic-bezier(0.22, 0.9, 0.29, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes glRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.pop {
+  opacity: 0;
+  animation: glPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes glPop {
+  from {
+    opacity: 0;
+    transform: rotate(var(--rot, 0deg)) scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(var(--rot, 0deg)) scale(1);
+  }
 }
 
 /* the ticker under the hero: pure decoration, so it stops for reduced motion */
@@ -144,20 +225,33 @@ body {
   overflow: hidden;
   border-top: var(--border);
   border-bottom: var(--border);
-  background: var(--ink);
+  background: #fff;
 }
 .marquee-track {
   display: flex;
   width: max-content;
   animation: glSlide 26s linear infinite;
 }
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
     animation: none;
   }
+  .rv,
+  .pop {
+    animation-duration: 0.01s;
+    animation-delay: 0s;
+  }
   .btn-p:hover,
-  .btn-s:hover {
+  .btn-s:hover,
+  .tcard:hover,
+  .ugc-t:hover {
     transform: none;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }

@@ -41,8 +41,8 @@ export interface ServerRenderOptions {
 export async function renderSceneCanvas(scene: Scene, opts: ServerRenderOptions): Promise<Canvas> {
   ensureFonts();
   const scale = opts.scale ?? 1;
-  const w = Math.max(1, Math.round(opts.schema.canvasPx.w * scale));
-  const h = Math.max(1, Math.round(opts.schema.canvasPx.h * scale));
+  const w = Math.max(1, Math.round(scene.canvas.w * scale));
+  const h = Math.max(1, Math.round(scene.canvas.h * scale));
 
   const canvas = createCanvas(w, h);
   const ctx = canvas.getContext('2d');
@@ -68,11 +68,18 @@ export async function renderScenePng(scene: Scene, opts: ServerRenderOptions): P
 }
 
 /**
- * Scale that renders the artwork at `dpi`, given the figure's real height (mm). Keeps the
- * production file at true print resolution regardless of the artwork's authored size.
+ * Scale that renders the artwork at `dpi`, given the figure's real size (mm).
+ *
+ * `heightMm` is the figure's LONGEST dimension — 11 cm tall standing, 11 cm long lying
+ * down — so the scale is measured against the canvas's longest edge. Measuring against
+ * the height alone would print a lying pose at 1.3× its real size.
+ *
+ * Pass the scene when one exists: each pose owns its pixel space, and only the scene
+ * knows which one was selected.
  */
-export function scaleForDpi(schema: ProductSchema, dpi = 300): number {
-  const heightInches = schema.physical.heightMm / 25.4;
-  const targetPx = heightInches * dpi;
-  return targetPx / schema.canvasPx.h;
+export function scaleForDpi(schema: ProductSchema, dpi = 300, scene?: Scene): number {
+  const canvas = scene?.canvas ?? schema.canvasPx;
+  const longestInches = schema.physical.heightMm / 25.4;
+  const targetPx = longestInches * dpi;
+  return targetPx / Math.max(canvas.w, canvas.h);
 }

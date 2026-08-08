@@ -4101,7 +4101,21 @@ var variantZ = external_exports.object({
   id: external_exports.string().min(1),
   label: localizedTextZ.optional(),
   assetKey: external_exports.string().min(1),
-  priceDelta: external_exports.number().int().default(0)
+  priceDelta: external_exports.number().int().default(0),
+  /**
+   * Per-variant artwork geometry — all optional, all fall back to the product-level
+   * values. A pose is a differently-shaped photograph: a standing figure is 615×1231
+   * and a lying one is 1445×1083, and the face hole and the printed name sit in
+   * different places on each. Without these the artwork would have to be padded to one
+   * shared canvas, which wastes print resolution and drags an empty margin through the
+   * cut contour.
+   *
+   * Coordinates are in THIS variant's own pixel space (`canvasPx`).
+   */
+  canvasPx: external_exports.object({ w: external_exports.number().int().positive(), h: external_exports.number().int().positive() }).optional(),
+  faceBounds: external_exports.object({ x: external_exports.number(), y: external_exports.number(), w: external_exports.number().positive(), h: external_exports.number().positive() }).optional(),
+  /** anchor for the printed name: centre point in artwork px, plus a tilt in degrees */
+  namePos: external_exports.object({ x: external_exports.number(), y: external_exports.number(), rot: external_exports.number().default(0) }).optional()
 });
 var characterLayerZ = external_exports.object({
   id: external_exports.string().min(1),

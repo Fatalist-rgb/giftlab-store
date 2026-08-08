@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { CheckIcon, SecHead, Stars as StarRow } from '@/components/icons';
 
 type Review = {
   id: string;
@@ -13,16 +14,20 @@ type Review = {
 };
 type Summary = { count: number; average: number | null; distribution: Record<string, number> };
 
-const Stars = ({ value }: { value: number }) => (
-  <span aria-label={`${value}/5`} className="text-mandarin">
-    {'★'.repeat(value)}
-    <span className="opacity-25">{'★'.repeat(5 - value)}</span>
+const Stars = ({ value, s = 14 }: { value: number; s?: number }) => (
+  <span aria-label={`${value}/5`}>
+    <StarRow n={value} s={s} />
   </span>
 );
 
 /**
- * PDP reviews (T066): summary, verified-buyer marking and — required by Omnibus — an
+ * Reviews (T066): summary, verified-buyer marking and — required by Omnibus — an
  * explicit disclosure of HOW verification works. Submissions go through moderation.
+ *
+ * Wears the approved design's "Opinie" skin, but the cards are whatever the reviews
+ * module actually returns. The demo showed four written-in testimonials; inventing
+ * those on a live shop is a banned commercial practice in the EU (UCPD Annex I), so
+ * the layout is reproduced and the content is not.
  */
 export function Reviews() {
   const t = useTranslations('reviews');
@@ -79,37 +84,53 @@ export function Reviews() {
   };
 
   return (
-    <section className="mx-auto mt-12 max-w-2xl px-5 pb-16" data-testid="reviews">
-      <h2 className="font-display text-2xl font-extrabold">{t('title')}</h2>
+    <section id="opinie" className="mx-auto max-w-6xl px-4 py-14 sm:py-20" data-testid="reviews">
+      <SecHead title={t('title')} sub={t('subtitle')} />
 
       {summary && summary.count > 0 ? (
-        <p className="mt-2 text-sm opacity-75">
-          <Stars value={Math.round(summary.average ?? 0)} /> {summary.average} / 5 · {t('count', { count: summary.count })}
-        </p>
+        <div className="mt-5 flex justify-center">
+          <span className="stkr bg-lime px-4 py-1.5 text-[15px]" style={{ transform: 'rotate(-1.5deg)' }}>
+            <b className="font-display text-[20px]">{summary.average}</b>
+            <Stars value={Math.round(summary.average ?? 0)} s={15} />
+            <span className="text-[13px] font-semibold opacity-70">{t('count', { count: summary.count })}</span>
+          </span>
+        </div>
       ) : (
-        <p className="mt-2 text-sm opacity-60">{t('empty')}</p>
+        <p className="mt-4 text-center text-sm opacity-60">{t('empty')}</p>
+      )}
+
+      {reviews.length > 0 && (
+        <div className="mt-9 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+          {reviews.slice(0, 8).map((r, i) => (
+            <figure
+              key={r.id}
+              className="m-0 flex h-full flex-col rounded-[var(--r-card)] bg-white p-4 b2 sh"
+              style={{ transform: `rotate(${[-1.4, 1.2, -1, 1.6][i % 4]}deg)` }}
+            >
+              <Stars value={r.rating} />
+              <blockquote className="mt-2.5 flex-1 whitespace-pre-wrap text-[14px] leading-snug opacity-85">
+                {r.body}
+              </blockquote>
+              <figcaption className="mt-4 pt-3" style={{ borderTop: '2px dashed rgba(23,19,26,.18)' }}>
+                <p className="truncate font-display text-[13.5px] font-bold leading-tight">{r.author}</p>
+              </figcaption>
+              {r.verifiedBuyer && (
+                <span className="mt-2.5 inline-flex items-center gap-1 text-[10.5px] font-semibold" style={{ color: 'var(--blue)' }}>
+                  <CheckIcon s={12} />
+                  {t('verified')}
+                </span>
+              )}
+            </figure>
+          ))}
+        </div>
       )}
 
       {/* Omnibus: how reviews are verified — stated, not implied */}
-      <p className="mt-2 rounded-xl bg-cream px-3 py-2 text-xs leading-relaxed opacity-70">
+      <p className="mx-auto mt-7 max-w-3xl rounded-xl bg-cream px-3 py-2 text-center text-xs leading-relaxed opacity-70">
         {t('verificationNote')}
       </p>
 
-      <div className="mt-5 space-y-3">
-        {reviews.map((r) => (
-          <div key={r.id} className="card p-4">
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <b>{r.author}</b>
-              <Stars value={r.rating} />
-              {r.verifiedBuyer && (
-                <span className="rounded-full bg-lime px-2 py-0.5 text-xs font-bold">{t('verified')}</span>
-              )}
-            </div>
-            <p className="mt-1 whitespace-pre-wrap text-sm opacity-85">{r.body}</p>
-          </div>
-        ))}
-      </div>
-
+      <div className="mx-auto mt-5 max-w-2xl">
       {sent ? (
         <p className="mt-5 rounded-xl bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-900">
           {t('thanks')}
@@ -151,10 +172,11 @@ export function Reviews() {
           </button>
         </form>
       ) : (
-        <button onClick={() => setFormOpen(true)} className="mt-5 btn-s px-4 py-2 text-[14px]">
+        <button onClick={() => setFormOpen(true)} className="btn-s mt-1 px-4 py-2 text-[14px]">
           {t('write')}
         </button>
       )}
+      </div>
     </section>
   );
 }

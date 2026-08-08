@@ -21,8 +21,9 @@ export function renderSceneToCanvas<Img extends ImageLike>(
   opts: BrowserRenderOptions<Img>,
 ): void {
   const scale = opts.scale ?? 1;
-  canvas.width = Math.max(1, Math.round(opts.schema.canvasPx.w * scale));
-  canvas.height = Math.max(1, Math.round(opts.schema.canvasPx.h * scale));
+  // the scene carries the selected pose's pixel space — poses are not all the same shape
+  canvas.width = Math.max(1, Math.round(scene.canvas.w * scale));
+  canvas.height = Math.max(1, Math.round(scene.canvas.h * scale));
 
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('2d canvas context unavailable');

@@ -1,8 +1,10 @@
 import { setRequestLocale } from 'next-intl/server';
 import { Constructor } from '@/features/constructor/Constructor';
+import { Details, Similar } from '@/features/constructor/Details';
 import { Reviews } from '@/features/reviews/Reviews';
 import { Guarantee } from '@/components/Guarantee';
 import { fetchProductSchema, FIGURINE_PRODUCT_ID } from '@/lib/backend';
+import type { PoseId } from '@/lib/poses';
 
 // ISR — the page is prebuilt with the live schema and refreshed every 5 minutes
 export const revalidate = 300;
@@ -20,8 +22,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function ProductPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ t?: string }>;
+}) {
   const { locale } = await params;
+  const { t: pose } = await searchParams;
   setRequestLocale(locale);
 
   // The constructor is data-driven: the published schema comes from Medusa when the
@@ -34,7 +43,9 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
       <div className="mx-auto max-w-2xl px-5 pt-2">
         <Guarantee />
       </div>
+      <Details />
       <Reviews />
+      <Similar current={pose as PoseId | undefined} />
     </>
   );
 }

@@ -25,7 +25,20 @@ async function main() {
 
   const storage = createR2Storage(cfg, createR2Client(cfg));
   const artDir = resolve(ASSET_ROOT, 'art');
-  const files = (await readdir(artDir)).filter((f) => MIME[extname(f).toLowerCase()]);
+
+  // recursive: the poses live in art/poses/, and their schema keys carry that folder —
+  // a flat listing would silently skip them and the worker would render bodyless figures
+  const walk = async (dir: string, prefix = ''): Promise<string[]> => {
+    const out: string[] = [];
+    for (const e of await readdir(dir, { withFileTypes: true })) {
+      const rel = prefix ? `${prefix}/${e.name}` : e.name;
+      if (e.isDirectory()) out.push(...(await walk(join(dir, e.name), rel)));
+      else if (MIME[extname(e.name).toLowerCase()]) out.push(rel);
+    }
+    return out;
+  };
+
+  const files = await walk(artDir);
   if (!files.length) throw new Error(`no artwork files in ${artDir}`);
 
   for (const file of files) {

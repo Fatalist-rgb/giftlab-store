@@ -14,7 +14,7 @@ export { parseDesignState, crossCheck } from './design-state/validate.js';
 
 // scene + rendering (browser-safe; the server renderer is at "@gl/constructor/server")
 export * from './render/types.js';
-export { buildScene } from './render/scene.js';
+export { buildScene, sceneGeometry } from './render/scene.js';
 export * from './render/context.js';
 export { drawScene, type DrawOptions } from './render/draw.js';
 export { faceAutoFit, type AutoFit, type AutoFitInput, type FaceBox } from './render/auto-fit.js';

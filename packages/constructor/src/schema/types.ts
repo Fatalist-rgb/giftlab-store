@@ -16,6 +16,23 @@ export const variantZ = z.object({
   label: localizedTextZ.optional(),
   assetKey: z.string().min(1),
   priceDelta: z.number().int().default(0),
+
+  /**
+   * Per-variant artwork geometry — all optional, all fall back to the product-level
+   * values. A pose is a differently-shaped photograph: a standing figure is 615×1231
+   * and a lying one is 1445×1083, and the face hole and the printed name sit in
+   * different places on each. Without these the artwork would have to be padded to one
+   * shared canvas, which wastes print resolution and drags an empty margin through the
+   * cut contour.
+   *
+   * Coordinates are in THIS variant's own pixel space (`canvasPx`).
+   */
+  canvasPx: z.object({ w: z.number().int().positive(), h: z.number().int().positive() }).optional(),
+  faceBounds: z
+    .object({ x: z.number(), y: z.number(), w: z.number().positive(), h: z.number().positive() })
+    .optional(),
+  /** anchor for the printed name: centre point in artwork px, plus a tilt in degrees */
+  namePos: z.object({ x: z.number(), y: z.number(), rot: z.number().default(0) }).optional(),
 });
 export type Variant = z.infer<typeof variantZ>;
 
