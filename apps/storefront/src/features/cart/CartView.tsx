@@ -152,7 +152,7 @@ export function CartView() {
       {/* lines */}
       <div className="mt-6 space-y-3">
         {cart.items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between rounded-2xl border-2 border-ink bg-cream p-4 shadow-offset-sm">
+          <div key={item.id} className="flex items-center justify-between rounded-[20px] border-2 border-ink bg-cream p-4 shs">
             <div>
               <p className="font-display font-bold">{item.title}</p>
               <p className="text-sm opacity-60">
@@ -181,7 +181,7 @@ export function CartView() {
         <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('phone')} className="w-full rounded-xl border-2 border-ink px-4 py-2.5" />
 
         {/* totals */}
-        <div className="mt-4 rounded-2xl border-2 border-ink bg-cream p-4 shadow-offset-sm">
+        <div className="mt-4 rounded-[20px] border-2 border-ink bg-cream p-4 shs">
           <div className="flex justify-between text-sm opacity-70">
             <span>{t('items')}</span>
             <span>{money(cart.itemTotal, cart.currency)}</span>
@@ -210,7 +210,7 @@ export function CartView() {
 
         {error && <p className="rounded-xl bg-red-100 px-4 py-2 text-sm font-semibold text-red-900">{error}</p>}
 
-        <button type="submit" disabled={placing} data-testid="place-order" className="w-full rounded-2xl border-2 border-ink bg-mandarin py-3 font-display font-bold text-white shadow-offset disabled:opacity-60">
+        <button type="submit" disabled={placing} data-testid="place-order" className="w-full btn-p py-3 disabled:opacity-60">
           {placing ? '…' : t('placeOrder')}
         </button>
         <p className="text-center text-xs opacity-50">{t('paymentNote')}</p>

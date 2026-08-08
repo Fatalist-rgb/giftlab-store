@@ -97,7 +97,7 @@ export function Reviews() {
 
       <div className="mt-5 space-y-3">
         {reviews.map((r) => (
-          <div key={r.id} className="rounded-2xl border-2 border-ink bg-white p-4 shadow-offset-sm">
+          <div key={r.id} className="card p-4">
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <b>{r.author}</b>
               <Stars value={r.rating} />
@@ -151,7 +151,7 @@ export function Reviews() {
           </button>
         </form>
       ) : (
-        <button onClick={() => setFormOpen(true)} className="mt-5 rounded-xl border-2 border-ink bg-white px-4 py-2 text-sm font-bold">
+        <button onClick={() => setFormOpen(true)} className="mt-5 btn-s px-4 py-2 text-[14px]">
           {t('write')}
         </button>
       )}

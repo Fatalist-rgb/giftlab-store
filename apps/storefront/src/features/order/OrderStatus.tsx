@@ -128,7 +128,7 @@ export function OrderStatus({ orderId }: { orderId: string }) {
 
       <div className="mt-6 space-y-3">
         {status.lines.map((line) => (
-          <div key={line.lineItemId} className="rounded-2xl border-2 border-ink bg-white p-4 shadow-offset-sm">
+          <div key={line.lineItemId} className="card p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <p className="font-display font-bold">{line.title ?? 'Figurka'}</p>

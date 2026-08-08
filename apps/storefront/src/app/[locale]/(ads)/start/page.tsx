@@ -39,7 +39,7 @@ export default async function AdLandingPage({ params }: { params: Promise<{ loca
 
       <Link
         href="/product"
-        className="mt-8 inline-block rounded-2xl border-2 border-ink bg-mandarin px-8 py-3.5 font-display text-lg font-bold text-white shadow-offset transition-transform hover:-translate-y-0.5"
+        className="mt-8 inline-block btn-p px-8 text-[17px] transition-transform hover:-translate-y-0.5"
       >
         {t('cta')}
       </Link>

@@ -25,7 +25,7 @@ export async function generateMetadata({
   const { locale, handle } = await params;
   const entry = await catalogEntry(handle);
   return {
-    title: entry ? `${entry.title} — zaprojektuj swoją` : 'Figurka — GiftLab',
+    title: entry ? `${entry.title} — zaprojektuj swoją` : 'Figurka z brzuszkiem',
     description:
       entry?.description ??
       'Wgraj zdjęcie, wybierz postać, dodaj imię. Podgląd na żywo — drukujemy dokładnie to, co widzisz.',

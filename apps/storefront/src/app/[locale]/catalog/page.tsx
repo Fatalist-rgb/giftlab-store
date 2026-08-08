@@ -9,7 +9,7 @@ export const revalidate = 300;
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   return {
-    title: 'Katalog figurek — GiftLab',
+    title: 'Katalog figurek',
     description: 'Personalizowane figurki akrylowe: mama, dzieci, zwierzaki, święta. 11 cm, magnes w zestawie.',
     alternates: {
       canonical: `/${locale}/catalog`,
@@ -32,7 +32,7 @@ export default async function CatalogPage({ params }: { params: Promise<{ locale
   const categories = await fetchCatalog();
 
   return (
-    <main className="mx-auto max-w-5xl px-5 py-16">
+    <main className="mx-auto max-w-6xl px-4 py-12">
       <h1 className="font-display text-3xl font-extrabold tracking-tight">{t('title')}</h1>
 
       {categories.length === 0 ? (
@@ -48,7 +48,7 @@ export default async function CatalogPage({ params }: { params: Promise<{ locale
                 return (
                   <li
                     key={p.id}
-                    className="rounded-2xl border-2 border-ink/10 p-5 transition hover:border-ink hover:shadow-md"
+                    className="card p-4 transition-transform hover:-translate-y-0.5"
                   >
                     <Link
                       href={productHref(locale, p.handle)}
@@ -56,12 +56,12 @@ export default async function CatalogPage({ params }: { params: Promise<{ locale
                       data-testid={`catalog-item-${p.handle}`}
                     >
                       {p.thumbnail ? (
-                        <div className="mb-4 flex aspect-[4/3] w-full items-center justify-center rounded-xl bg-cream">
+                        <div className="mb-3 flex aspect-[4/3] w-full items-center justify-center rounded-[14px] border-2 border-ink bg-white">
                           {/* schema artwork: served from /public locally and R2 in prod (same key) */}
                           <img src={p.thumbnail} alt="" className="h-full w-auto object-contain py-3" />
                         </div>
                       ) : (
-                        <div className="mb-4 flex aspect-[4/3] w-full items-center justify-center rounded-xl bg-black/5 text-4xl">
+                        <div className="mb-3 flex aspect-[4/3] w-full items-center justify-center rounded-[14px] border-2 border-ink bg-cream text-4xl">
                           🎁
                         </div>
                       )}

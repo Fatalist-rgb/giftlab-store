@@ -36,7 +36,7 @@ export function CookieConsent() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[60] p-3 sm:p-4" role="dialog" aria-live="polite" aria-label={t('title')}>
-      <div className="mx-auto max-w-xl rounded-2xl border-2 border-ink bg-white p-4 shadow-offset">
+      <div className="mx-auto max-w-xl card p-4">
         <p className="font-display font-bold">{t('title')}</p>
         <p className="mt-1 text-sm leading-relaxed opacity-75">
           {t('body')}{' '}

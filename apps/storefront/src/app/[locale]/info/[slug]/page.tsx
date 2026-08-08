@@ -25,9 +25,9 @@ export default async function InfoPage({ params }: { params: Params }) {
   if (!page) notFound();
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-16">
-      <h1 className="font-display text-3xl font-extrabold tracking-tight">{page.title}</h1>
-      <div className="mt-6 leading-relaxed opacity-90">
+    <main className="mx-auto max-w-2xl px-4 py-10">
+      <h1 className="font-display text-[30px] font-extrabold leading-tight sm:text-[36px]">{page.title}</h1>
+      <div className="card mt-6 p-5 leading-relaxed opacity-90 sm:p-7">
         {/* Markdown so the operator can structure legal pages from the admin editor.
             Rendered on the server — no markdown code reaches the browser bundle. */}
         <ReactMarkdown

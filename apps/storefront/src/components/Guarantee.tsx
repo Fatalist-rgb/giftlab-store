@@ -11,7 +11,7 @@ export function Guarantee({ compact = false }: { compact?: boolean }) {
   const points = ['approve', 'remake', 'shipping'] as const;
 
   return (
-    <div className={compact ? 'rounded-xl bg-cream p-3' : 'rounded-2xl border-2 border-ink bg-cream p-4 shadow-offset-sm'}>
+    <div className={compact ? 'rounded-xl bg-cream p-3' : 'rounded-[20px] border-2 border-ink bg-cream p-4 shs'}>
       {!compact && <p className="font-display font-bold">{t('title')}</p>}
       <ul className={`${compact ? '' : 'mt-2'} space-y-1.5 text-sm leading-snug`}>
         {points.map((p) => (

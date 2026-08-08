@@ -17,6 +17,7 @@ import { createBrowserCutout } from '@/lib/cutout';
 import { scanFaces, warmFaceDetector } from '@/lib/face-detect';
 import { uploadPhotoWithCutout } from '@/lib/uploads';
 import { track } from '@/lib/analytics';
+import { ProductGallery } from './ProductGallery';
 
 const PREVIEW_SCALE = 1.2;
 const MAX_SLOTS = 6;
@@ -334,11 +335,8 @@ export function Constructor({
   };
   const stepIndex = STEPS.indexOf(step);
 
-  return (
-    <main className="mx-auto grid max-w-5xl gap-8 px-4 pb-28 pt-10 lg:grid-cols-2 lg:pb-10">
-      {/* live preview (stays visible while steps change — T041) */}
-      <div className="lg:sticky lg:top-24 lg:self-start">
-        <div className="relative rounded-3xl border-2 border-ink bg-cream p-4 shadow-offset">
+  const liveScene = (
+    <div className="relative rounded-[24px] border-2 border-ink bg-cream p-4 shadow-offset sm:p-5">
           <canvas
             ref={canvasRef}
             // the real pixel size from the very first paint: a bare <canvas> defaults to
@@ -364,15 +362,72 @@ export function Constructor({
               </span>
             </div>
           )}
-        </div>
-        <p className="mt-3 text-center text-xs opacity-55">{t('engine')}</p>
+      <p className="mt-2 text-center text-[11.5px] opacity-55">
+        {t(slot.facePhotoId ? 'dragHint' : 'dragHint0')}
+      </p>
+    </div>
+  );
+
+  return (
+    <main className="mx-auto max-w-6xl px-4 pb-28 pt-4 lg:pb-10">
+      {/* breadcrumb + the delivery promise, the two things a buyer checks first */}
+      <nav className="flex items-center gap-1.5 py-2 text-[12.5px] opacity-60" aria-label="breadcrumb">
+        <Link href="/" className="hover:opacity-100">{t('crumbShop')}</Link>
+        <span aria-hidden>/</span>
+        <span>{t('h1')}</span>
+      </nav>
+      <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[16px] border-2 border-ink bg-lime px-4 py-2.5 shs">
+        <b className="font-display text-[15px]">{t('deliverToday')}</b>
+        <span className="text-[12.5px] opacity-70 sm:ml-auto">{t('deliveryNote')}</span>
       </div>
 
-      {/* controls */}
-      <div>
-        <h1 className="font-display text-3xl font-extrabold">{t('title')}</h1>
-        <p className="mt-2 text-sm opacity-60">{t('freeNote')}</p>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.06fr)_minmax(0,.94fr)] lg:gap-9 lg:items-start">
+        {/* left: the gallery rail drives one frame — live build or a photo */}
+        <div className="lg:sticky lg:top-[76px]">
+          <ProductGallery live={liveScene} />
+          <p className="mt-3 text-center text-[11px] opacity-45">{t('engine')}</p>
+        </div>
 
+        {/* right: what it is, what it costs, and the builder */}
+        <div className="min-w-0">
+        <h1 className="font-display text-[30px] font-extrabold leading-tight sm:text-[38px]">{t('h1')}</h1>
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <b className="font-display text-[14.5px]">★ {t('rating')}</b>
+          <a href="#opinie" className="text-[13.5px] underline underline-offset-2 opacity-65 hover:opacity-100">
+            {t('reviewsLink')}
+          </a>
+        </div>
+        <p className="mt-3 max-w-[52ch] text-[15px] opacity-75">{t('sub')}</p>
+        <div className="mt-3.5 flex flex-wrap gap-2" data-testid="spec">
+          <span className="stkr bg-white text-[12.5px]">{t('specMaterial')}</span>
+          <span className="stkr bg-white text-[12.5px]">{t('specSize')}</span>
+          <span className="stkr bg-white text-[12.5px]">{t('specMagnet')}</span>
+        </div>
+
+        {/* price sits ABOVE the builder: the number is the first question, and the
+            ladder spans every figurine in the order */}
+        <div className="mt-4 rounded-[20px] border-2 border-ink bg-cream p-4 shs">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <span className="flex items-baseline gap-2">
+              <span className="text-[11px] font-bold tracking-wider opacity-45">{t('priceLabel')}</span>
+              <b className="font-display text-[30px] font-extrabold leading-none" data-testid="unit-price">
+                {zl(price.ladderUnitPrice)}
+              </b>
+              <span className="text-[13px] opacity-55">{t('priceEach')}</span>
+            </span>
+            {totalQty > 1 && (
+              <span className="text-[13.5px]">
+                {t('total')} ({t('pieces', { count: totalQty })}):{' '}
+                <b className="font-display text-[17px]" data-testid="total-price">{zl(price.total)}</b>
+              </span>
+            )}
+          </div>
+          <p className="mt-2 border-t border-dashed border-ink/20 pt-2 text-[12.5px] opacity-60">
+            {t('priceNote')}
+          </p>
+        </div>
+
+        <div className="mt-4 rounded-[22px] border-2 border-ink bg-white p-4 shs sm:p-5">
         {/* figurine slots (T042) — several designs, one order, one ladder */}
         <div className="mt-5 flex flex-wrap items-center gap-2" data-testid="slots">
           {slots.map((s, i) => (
@@ -421,20 +476,34 @@ export function Constructor({
         {slots.length > 1 && <p className="mt-1 text-xs opacity-55">{t('ladderHint')}</p>}
 
         {/* step tabs — any tab reachable, completed marked (T041) */}
-        <div className="mt-4 grid grid-cols-4 gap-1 rounded-2xl border-2 border-ink bg-white p-1" role="tablist">
-          {STEPS.map((s) => (
+        <div className="mt-1 flex gap-1.5 overflow-x-auto" role="tablist" style={{ scrollbarWidth: 'none' }}>
+          {STEPS.map((s, i) => (
             <button
               key={s}
               role="tab"
               aria-selected={step === s}
               data-testid={`step-${s}`}
               onClick={() => setStep(s)}
-              className={`rounded-xl px-2 py-2 text-xs font-bold sm:text-sm ${
-                step === s ? 'bg-lime shadow-offset-sm' : ''
+              className={`relative inline-flex min-h-[44px] flex-1 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-[12px] border-2 border-ink px-2.5 py-1.5 font-display text-[13px] font-bold transition-transform hover:-translate-y-px ${
+                step === s ? 'bg-ink text-white shs' : 'bg-white'
               }`}
             >
-              {stepDone[s] && <span className="mr-1 text-emerald-700">✓</span>}
+              <span
+                className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-extrabold ${
+                  step === s ? 'bg-lime text-ink' : 'bg-mandarin text-white'
+                }`}
+              >
+                {i + 1}
+              </span>
               {stepLabel[s]}
+              {stepDone[s] && (
+                <span
+                  className="absolute -right-[5px] -top-[6px] flex h-[17px] w-[17px] items-center justify-center rounded-full border-2 border-ink bg-lime text-[9px] font-bold text-ink"
+                  aria-hidden
+                >
+                  ✓
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -468,12 +537,12 @@ export function Constructor({
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="rounded-xl border-2 border-ink bg-white px-4 py-2 text-sm font-bold"
+                  className="btn-s px-4 py-2 text-[14.5px]"
                   data-testid="upload"
                 >
                   {slot.facePhotoId ? t('swapPhoto') : t('upload')}
                 </button>
-                <button onClick={useSample} className="rounded-xl border-2 border-ink bg-white px-4 py-2 text-sm font-bold">
+                <button onClick={useSample} className="stkr bg-white px-4 py-2 text-[13px]">
                   {t('sample')}
                 </button>
                 {slot.facePhotoId && (
@@ -504,6 +573,22 @@ export function Constructor({
                   {t('multiFace')}
                 </div>
               )}
+              {/* the guide sits ABOVE the upload on purpose: a warning after the fact
+                  cannot un-choose a blurry group photo */}
+              <figure className="mt-3.5 m-0" data-testid="photo-guide">
+                <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider opacity-55">
+                  {t('guideLabel')}
+                </p>
+                <img
+                  src="/photos/photo-guide.webp"
+                  alt={t('guideAlt')}
+                  width={900}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
+                  className="block h-auto w-full rounded-[14px] border-2 border-ink bg-white"
+                />
+              </figure>
               {!slot.facePhotoId && <p className="mt-2 text-xs opacity-55">{t('deferred')}</p>}
               <p className="mt-2 text-xs opacity-45">{t('photoConsent')}</p>
 
@@ -603,29 +688,12 @@ export function Constructor({
           </button>
         </div>
 
-        {/* price — the ladder spans ALL figurines */}
-        <div className="mt-6 rounded-2xl border-2 border-ink bg-cream p-4 shadow-offset-sm">
-          <div className="flex items-end justify-between">
-            <span className="font-display text-3xl font-extrabold" data-testid="unit-price">
-              {zl(price.ladderUnitPrice)}
-              <span className="ml-1 text-sm font-normal opacity-55">{t('priceEach')}</span>
-            </span>
-            {totalQty > 1 && (
-              <span className="text-sm">
-                {t('total')} ({t('pieces', { count: totalQty })}):{' '}
-                <b className="font-display text-lg" data-testid="total-price">
-                  {zl(price.total)}
-                </b>
-              </span>
-            )}
-          </div>
-        </div>
 
         <button
           onClick={addToCart}
           disabled={adding}
           data-testid="add-to-cart"
-          className="mt-4 w-full rounded-2xl border-2 border-ink bg-mandarin py-3 font-display font-bold text-white shadow-offset disabled:opacity-60"
+          className="btn-p mt-4 w-full text-[16px] disabled:opacity-60"
         >
           {adding ? '…' : t('add')}
         </button>
@@ -640,6 +708,8 @@ export function Constructor({
         {addError && (
           <p className="mt-3 rounded-xl bg-red-100 px-4 py-2 text-sm font-semibold text-red-900">{t('addError')}</p>
         )}
+        </div>
+        </div>
       </div>
 
       {/* mobile sticky buy bar — completes add-to-cart in place (T043) */}
@@ -663,7 +733,7 @@ export function Constructor({
             <button
               onClick={addToCart}
               disabled={adding}
-              className="flex-1 rounded-xl border-2 border-ink bg-mandarin py-3 font-display font-bold text-white disabled:opacity-60"
+              className="btn-p flex-1 py-3 disabled:opacity-60"
             >
               {adding ? '…' : t('add')}
             </button>

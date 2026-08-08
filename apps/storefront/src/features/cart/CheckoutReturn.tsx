@@ -78,7 +78,7 @@ export function CheckoutReturn() {
       )}
       <Link
         href="/"
-        className="mt-6 inline-block rounded-xl border-2 border-ink bg-white px-4 py-2 text-sm font-bold"
+        className="mt-6 inline-block btn-s px-4 py-2 text-[14px]"
       >
         {t('home')}
       </Link>
