@@ -27,7 +27,7 @@ export async function Footer() {
         </div>
         <nav className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
           {legal.map(([slug, label]) => (
-            <Link key={slug} href={`/info/${slug}`} className="hover:text-mandarin">
+            <Link key={slug} href={`/info/${slug}`} className="inline-flex min-h-[40px] items-center hover:text-mandarin">
               {label}
             </Link>
           ))}

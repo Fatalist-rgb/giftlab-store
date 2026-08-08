@@ -336,7 +336,8 @@ export function Constructor({
   const stepIndex = STEPS.indexOf(step);
 
   const liveScene = (
-    <div className="relative rounded-[24px] border-2 border-ink bg-cream p-4 shadow-offset sm:p-5">
+    <div className="relative flex flex-col items-center rounded-[24px] border-2 border-ink bg-cream p-3 shadow-offset sm:p-5">
+          <div className="flex h-[clamp(190px,30vh,290px)] w-full items-center justify-center lg:h-auto">
           <canvas
             ref={canvasRef}
             // the real pixel size from the very first paint: a bare <canvas> defaults to
@@ -348,10 +349,13 @@ export function Constructor({
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
             onPointerCancel={endDrag}
-            className={`mx-auto block h-auto w-full max-w-[365px] ${slot.facePhotoId ? 'cursor-grab touch-none' : ''}`}
+            /* height-driven on phones (the wrapper owns the budget), width-driven
+               from lg up, so the aspect never distorts either way */
+            className={`mx-auto block h-full w-auto lg:h-auto lg:w-full lg:max-w-[365px] ${slot.facePhotoId ? 'cursor-grab touch-none' : ''}`}
           />
+          </div>
           {busy && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-3xl bg-white/85">
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-[24px] bg-white/85">
               <span className="font-display font-bold">{t('removing')}</span>
               <span className="text-sm opacity-70" data-testid="cut-progress">
                 {progress.stage === 'model'
@@ -383,7 +387,10 @@ export function Constructor({
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.06fr)_minmax(0,.94fr)] lg:gap-9 lg:items-start">
         {/* left: the gallery rail drives one frame — live build or a photo */}
-        <div className="lg:sticky lg:top-[76px]">
+        {/* sticky on EVERY size: on a phone the preview used to scroll away long
+            before the step tabs came into reach, so the customer picked a pose blind.
+            z-30 keeps it under the header (z-50) and above the builder. */}
+        <div className="sticky top-[60px] z-30 bg-white py-2 lg:top-[76px] lg:py-0">
           <ProductGallery live={liveScene} />
           <p className="mt-3 text-center text-[11px] opacity-45">{t('engine')}</p>
         </div>
