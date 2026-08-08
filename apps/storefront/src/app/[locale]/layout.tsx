@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { CookieConsent } from '@/features/consent/CookieConsent';
 import { Footer } from '@/components/Footer';
+import { SiteHeader } from '@/components/SiteHeader';
 import { Rum } from '@/features/rum/Rum';
 import '../globals.css';
 
@@ -24,9 +24,12 @@ export async function generateMetadata({
   // canonical + hreflang for every localized page (T062)
   return {
     metadataBase: new URL(SITE),
-    title: { default: 'GiftLab — figurki personalizowane', template: '%s · GiftLab' },
+    title: {
+      default: 'mavorashop — akrylowe figurki z brzuszkiem z Twojego zdjęcia',
+      template: '%s · mavorashop',
+    },
     description:
-      'Figurka z Twoją twarzą i imieniem. Zaprojektuj w 2 minuty — my wydrukujemy i dostarczymy.',
+      'Akrylowa figurka z Twoją twarzą i miękkim brzuszkiem. 11 cm, wbudowany magnes, imię drukowane na figurce.',
     alternates: {
       canonical: `/${locale}`,
       languages: { pl: '/pl', en: '/en', uk: '/uk', 'x-default': '/pl' },
@@ -46,7 +49,6 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const messages = await getMessages();
-  const t = await getTranslations('nav');
 
   return (
     <html lang={locale}>
@@ -60,36 +62,7 @@ export default async function LocaleLayout({
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b-2 border-ink bg-white px-4">
-            <Link href="/" className="flex items-center gap-1.5">
-              <span className="font-display text-2xl font-extrabold">Gift</span>
-              <span className="rounded-lg border-2 border-ink bg-mandarin px-1.5 font-display text-xl font-extrabold text-white">
-                Lab
-              </span>
-            </Link>
-            <nav className="flex items-center gap-5 text-sm font-semibold">
-              <Link href="/product" className="hover:text-mandarin">
-                {t('shop')}
-              </Link>
-              <Link href="/catalog" className="hover:text-mandarin">
-                {t('catalog')}
-              </Link>
-              <div className="flex items-center gap-1 rounded-full border-2 border-ink p-0.5">
-                {routing.locales.map((l) => (
-                  <Link
-                    key={l}
-                    href="/"
-                    locale={l}
-                    className={`rounded-full px-2 py-0.5 text-xs font-bold uppercase ${
-                      l === locale ? 'bg-ink text-white' : 'text-ink'
-                    }`}
-                  >
-                    {l}
-                  </Link>
-                ))}
-              </div>
-            </nav>
-          </header>
+          <SiteHeader />
           {children}
           <Footer />
           <CookieConsent />

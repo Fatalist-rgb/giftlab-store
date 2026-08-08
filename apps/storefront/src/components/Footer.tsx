@@ -22,7 +22,7 @@ export async function Footer() {
     <footer className="mt-16 border-t-2 border-ink bg-white">
       <div className="mx-auto grid max-w-4xl gap-8 px-5 py-10 sm:grid-cols-2">
         <div>
-          <p className="font-display text-lg font-extrabold">GiftLab</p>
+          <p className="font-display text-lg font-extrabold">mavora<span className="ml-1 rounded-lg border-2 border-ink bg-mandarin px-1.5 text-white">shop</span></p>
           <p className="mt-2 whitespace-pre-line text-sm leading-relaxed opacity-70">{t('company')}</p>
         </div>
         <nav className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
@@ -34,7 +34,7 @@ export async function Footer() {
         </nav>
       </div>
       <p className="border-t border-ink/10 px-5 py-4 text-center text-xs opacity-50">
-        © {new Date().getFullYear()} GiftLab · {t('rights')}
+        © {new Date().getFullYear()} mavorashop · {t('rights')}
       </p>
     </footer>
   );

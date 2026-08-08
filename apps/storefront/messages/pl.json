@@ -5,9 +5,9 @@
     "how": "Jak to działa"
   },
   "home": {
-    "badge": "Figurka z brzuszkiem",
-    "title": "Twoja twarz na akrylowej figurce",
-    "sub": "Wybierz postać, dodaj imię i zobacz podgląd na żywo — to, co widzisz, trafia do druku.",
+    "badge": "Figurki z brzuszkiem · 79 zł",
+    "title": "Zamień zdjęcie w urocze akrylowe cudo z brzuszkiem",
+    "sub": "Akrylowa figurka z Twoją twarzą i miękkim brzuszkiem, który zabawnie się ugina. 11 cm, wbudowany magnes na lodówkę, imię wydrukowane prosto na figurce.",
     "cta": "Zaprojektuj figurkę",
     "howTitle": "Jak to działa",
     "s1Title": "Wgraj zdjęcie",
@@ -34,7 +34,21 @@
     "q5A": "BLIK, Przelewy24 i karta — płatności uruchamiamy z kontem sprzedawcy; do tego czasu zamówienia są testowe.",
     "photoFridgeAlt": "Gotowa figurka z magnesem na lodówce",
     "photoTableAlt": "Figurka leżąca na blacie — widać grubość akrylu",
-    "photoNote": "Zdjęcia prawdziwych, wysłanych zamówień."
+    "photoNote": "Zdjęcia prawdziwych, wysłanych zamówień.",
+    "heroCap": "Robert · 11 cm · akryl, miękki brzuszek, magnes z tyłu.",
+    "heroAlt": "Leżąca akrylowa figurka z twarzą mężczyzny i kuflem piwa, na jasnym blacie.",
+    "realTitle": "Jak to wygląda naprawdę",
+    "realSub": "Żadnych renderów. To zdjęcia gotowego magnesu — dokładnie tego, który wyjmiesz z paczki.",
+    "r1": "Twoja twarz, nasze ciało",
+    "r1d": "Ty przysyłasz jedno zdjęcie, my dorysowujemy resztę. Tło zostaje po drodze.",
+    "r2": "Miękki brzuszek, który się ugina",
+    "r2d": "Pod akrylem siedzi silikonowa poduszka. Naciskasz — wraca na miejsce.",
+    "r3": "Trzyma się lodówki",
+    "r3d": "Magnes na całe plecy figurki. Trzaskanie drzwiami mu niestraszne.",
+    "ship48": "Wysyłka w 48h",
+    "rating": "4,8",
+    "reviewsN": "2300+ opinii",
+    "marquee": "ŚWIEŻE DROPY · VIRAL · 100% TY · PREZENT ROKU · WYSYŁKA 48H · RĘCZNIE PAKOWANE"
   },
   "product": {
     "title": "Zaprojektuj figurkę",

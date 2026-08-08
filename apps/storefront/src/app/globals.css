@@ -2,12 +2,162 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * The approved demo's design system, ported here so the shop looks like what the
+ * client signed off on. The tokens already lived in tailwind.config.ts; what was
+ * missing is the LOOK those tokens are supposed to produce — a 2.5px ink border, a
+ * hard offset shadow instead of a blur, and pills/cards that sit slightly rotated.
+ * Everything below is a component class rather than a pile of utilities, because the
+ * same button appears on ten pages and must not drift between them.
+ */
+
 :root {
   color-scheme: light;
+
+  --ink: #17131a;
+  --mandarin: #ff6a2b;
+  --pink: #ff3d8b;
+  --lime: #b8e63a;
+  --cream: #fff7ec;
+  --paper: #fffdf9;
+
+  --border: 2.5px solid var(--ink);
+  --shadow: 4px 5px 0 var(--ink);
+  --shadow-sm: 2.5px 3px 0 var(--ink);
+  --r-card: 22px;
+  --r-btn: 16px;
+  --r-chip: 999px;
 }
 
 body {
   font-family: 'Space Grotesk', system-ui, sans-serif;
   background: #ffffff;
-  color: #17131a;
+  color: var(--ink);
+}
+
+@layer components {
+  /* ---- the two buttons the whole shop is built from ---- */
+  .btn-p {
+    @apply inline-flex items-center justify-center gap-2 font-display font-bold text-white no-underline;
+    background: var(--mandarin);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    border-radius: var(--r-btn);
+    padding: 0.8rem 1.5rem;
+    min-height: 48px;
+    cursor: pointer;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+  }
+  .btn-p:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 7px 0 var(--ink);
+  }
+  .btn-p:active {
+    transform: translate(1px, 1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-s {
+    @apply inline-flex items-center justify-center gap-2 bg-white font-display font-bold no-underline;
+    color: var(--ink);
+    border: var(--border);
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--r-btn);
+    padding: 0.8rem 1.4rem;
+    min-height: 48px;
+    cursor: pointer;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+  }
+  .btn-s:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4.5px 5.5px 0 var(--ink);
+    background: var(--cream);
+  }
+
+  /* ---- sticker: the little rotated pill used for badges and facts ---- */
+  .stkr {
+    @apply inline-flex items-center gap-1.5 font-display font-bold;
+    border: 2px solid var(--ink);
+    border-radius: var(--r-chip);
+    box-shadow: var(--shadow-sm);
+    padding: 0.3rem 0.8rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  /* ---- card: border + hard shadow, the shop's one container ---- */
+  .b2 {
+    border: var(--border);
+  }
+  .sh {
+    box-shadow: var(--shadow);
+  }
+  .shs {
+    box-shadow: var(--shadow-sm);
+  }
+  .card {
+    @apply bg-white;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    border-radius: var(--r-card);
+  }
+
+  /* ---- language selector: a real <select> wearing the button skin ---- */
+  .lang-sel {
+    @apply relative inline-flex items-center;
+  }
+  .lang-sel select {
+    @apply font-display font-bold;
+    appearance: none;
+    -webkit-appearance: none;
+    font-size: 12.5px;
+    color: var(--ink);
+    background: #fff;
+    border: 2px solid var(--ink);
+    border-radius: var(--r-chip);
+    padding: 0 30px 0 12px;
+    height: 34px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.14s ease;
+  }
+  .lang-sel select:hover {
+    background: var(--cream);
+  }
+  .lang-sel svg {
+    position: absolute;
+    right: 11px;
+    pointer-events: none;
+  }
+}
+
+/* the ticker under the hero: pure decoration, so it stops for reduced motion */
+@keyframes glSlide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  overflow: hidden;
+  border-top: var(--border);
+  border-bottom: var(--border);
+  background: var(--ink);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: glSlide 26s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .btn-p:hover,
+  .btn-s:hover {
+    transform: none;
+  }
 }

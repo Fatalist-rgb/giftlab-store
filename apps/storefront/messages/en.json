@@ -5,10 +5,10 @@
     "catalog": "Catalogue"
   },
   "home": {
-    "badge": "Belly figurine",
-    "title": "Your face on an acrylic figurine",
-    "sub": "Pick a character, add a name and watch the live preview — what you see is what gets printed.",
-    "cta": "Design a figurine",
+    "badge": "Belly figurines · 79 zł",
+    "title": "Turn a photo into an adorable acrylic belly",
+    "sub": "An acrylic figurine with your face and a soft belly that squishes right back. 11 cm, a built-in fridge magnet, the name printed on the figurine itself.",
+    "cta": "Design your figurine",
     "howTitle": "How it works",
     "s1Title": "Upload a photo",
     "s1Body": "The background disappears automatically — right in your browser, before anything reaches us.",
@@ -34,7 +34,21 @@
     "q5A": "BLIK, Przelewy24 and card — payments go live with the merchant account; until then orders are test-mode.",
     "photoFridgeAlt": "A finished figurine held on a fridge by its magnet",
     "photoTableAlt": "The figurine on a table — you can see the acrylic thickness",
-    "photoNote": "Photos of real, shipped orders."
+    "photoNote": "Photos of real, shipped orders.",
+    "heroCap": "Robert · 11 cm · acrylic, soft belly, magnet on the back.",
+    "heroAlt": "The lying acrylic figurine with a man’s face and a mug of beer, on a light worktop.",
+    "realTitle": "How it really looks",
+    "realSub": "No renders. These are photos of the finished magnet — the one you take out of the parcel.",
+    "r1": "Your face, our body",
+    "r1d": "You send one photo, we draw the rest. The background stays behind.",
+    "r2": "A soft belly that gives",
+    "r2d": "A silicone cushion sits under the acrylic. Press it — it springs back.",
+    "r3": "It holds onto the fridge",
+    "r3d": "A magnet across the whole back. Slammed doors do not faze it.",
+    "ship48": "Ships in 48h",
+    "rating": "4.8",
+    "reviewsN": "2300+ reviews",
+    "marquee": "FRESH DROPS · VIRAL · 100% YOU · GIFT OF THE YEAR · SHIPS IN 48H · PACKED BY HAND"
   },
   "product": {
     "title": "Design a figurine",
