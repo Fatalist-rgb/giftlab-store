@@ -188,6 +188,12 @@
       "kufel": "Z kuflem, na stojąco",
       "lezy": "Na leżąco",
       "lezy-piwo": "Na leżąco z piwem"
+    },
+    "drinkL": "Napój w dłoni",
+    "drink": {
+      "none": "Bez napoju",
+      "piwo": "Szklanka piwa",
+      "kufel": "Kufel piwa"
     }
   },
   "catalog": {

@@ -14,6 +14,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { demoSchema, SAMPLE_FACE_KEY, SAMPLE_PHOTO_ID } from '@/lib/schema';
+import { DRINK_ORDER, POSES, POSE_GROUPS, drinkOf, groupOf, isPoseSchema } from '@/lib/poses';
 import { createBrowserCutout } from '@/lib/cutout';
 import { scanFaces, warmFaceDetector } from '@/lib/face-detect';
 import { uploadPhotoWithCutout } from '@/lib/uploads';
@@ -544,27 +545,103 @@ export function Constructor({
         </div>
 
         <div className="mt-4 min-h-[190px]">
-          {step === 'character' && (
-            <div className="flex flex-wrap gap-2">
-              {bodyLayer.variants.map((v, vi) => (
-                <button
-                  key={v.id}
-                  // stable hook for tests: the labels come from the published schema
-                  data-testid={`variant-${vi}`}
-                  onClick={() => {
-                    patchSlot({ variantId: v.id });
-                    track('character_chosen', { step: 'character', variant: v.id });
-                  }}
-                  aria-pressed={slot.variantId === v.id}
-                  className={`rounded-xl border-2 border-ink px-4 py-2 text-sm font-bold ${
-                    slot.variantId === v.id ? 'bg-lime shadow-offset-sm' : 'bg-white'
-                  }`}
-                >
-                  {label(v.label)}
-                </button>
-              ))}
-            </div>
-          )}
+          {step === 'character' &&
+            (isPoseSchema(bodyLayer.variants.map((v) => v.id)) ? (
+              /* the approved picker: 3 pose cards + the drink toggled separately */
+              <div>
+                <div className="grid grid-cols-3 gap-2.5">
+                  {POSE_GROUPS.map((g) => {
+                    const on = groupOf(slot.variantId) === g;
+                    // the active tile previews the chosen combination; the others show
+                    // their bare pose, so switching never surprises
+                    const shownId = on ? slot.variantId : g.opts.none!;
+                    const art = POSES.find((p) => p.id === shownId)!;
+                    const variantOf = (id: string) => bodyLayer.variants.find((v) => v.id === id);
+                    return (
+                      <button
+                        key={g.id}
+                        aria-pressed={on}
+                        data-testid={`variant-${g.id}`}
+                        title={label(variantOf(g.opts.none!)?.label)}
+                        onClick={() => {
+                          if (on) return;
+                          // keep the drink when the new pose offers it, drop it otherwise
+                          const d = drinkOf(slot.variantId);
+                          const next = g.opts[d] ?? g.opts.none!;
+                          patchSlot({ variantId: next });
+                          track('character_chosen', { step: 'character', variant: next });
+                        }}
+                        className={`rounded-[14px] border-2 border-ink p-1.5 text-left transition-transform hover:-translate-y-0.5 ${
+                          on ? 'bg-lime shs' : 'bg-white'
+                        }`}
+                      >
+                        <div className="flex h-[92px] items-center justify-center overflow-hidden rounded-[9px] border-2 border-ink bg-white">
+                          <img
+                            src={art.src}
+                            alt=""
+                            className="h-auto max-h-[84%] w-auto max-w-[84%]"
+                            loading="lazy"
+                          />
+                        </div>
+                        <span className="mt-1.5 block font-display text-[10.5px] font-semibold leading-tight">
+                          {label(variantOf(g.opts.none!)?.label)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {DRINK_ORDER.filter((d) => groupOf(slot.variantId).opts[d]).length > 1 && (
+                  <div className="mt-3.5" data-testid="drink-row">
+                    <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider opacity-55">
+                      {t('drinkL')}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {DRINK_ORDER.filter((d) => groupOf(slot.variantId).opts[d]).map((d) => {
+                        const on = drinkOf(slot.variantId) === d;
+                        return (
+                          <button
+                            key={d}
+                            aria-pressed={on}
+                            data-testid={`drink-${d}`}
+                            onClick={() => {
+                              const next = groupOf(slot.variantId).opts[d]!;
+                              patchSlot({ variantId: next });
+                              track('character_chosen', { step: 'character', variant: next });
+                            }}
+                            className={`rounded-xl border-2 border-ink px-3.5 py-2 text-[12.5px] font-bold ${
+                              on ? 'bg-lime shadow-offset-sm' : 'bg-white'
+                            }`}
+                          >
+                            {t(`drink.${d}`)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* any other product's schema: the generic flat pills */
+              <div className="flex flex-wrap gap-2">
+                {bodyLayer.variants.map((v, vi) => (
+                  <button
+                    key={v.id}
+                    // stable hook for tests: the labels come from the published schema
+                    data-testid={`variant-${vi}`}
+                    onClick={() => {
+                      patchSlot({ variantId: v.id });
+                      track('character_chosen', { step: 'character', variant: v.id });
+                    }}
+                    aria-pressed={slot.variantId === v.id}
+                    className={`rounded-xl border-2 border-ink px-4 py-2 text-sm font-bold ${
+                      slot.variantId === v.id ? 'bg-lime shadow-offset-sm' : 'bg-white'
+                    }`}
+                  >
+                    {label(v.label)}
+                  </button>
+                ))}
+              </div>
+            ))}
 
           {step === 'photo' && (
             <div>

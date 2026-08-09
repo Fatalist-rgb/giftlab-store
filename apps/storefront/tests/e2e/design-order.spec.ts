@@ -76,9 +76,12 @@ test('design → cart → checkout → confirmation', async ({ page }) => {
   await page.goto('/pl/product');
   await page.getByTestId('consent-necessary').click();
 
-  // step 1: character — pick the second pose, whatever the catalogue calls it today
-  // (variant labels come from the published schema, so no literal name here)
-  await page.getByTestId('variant-1').click();
+  // step 1: character — the grouped picker: pick the second pose card, then check the
+  // drink row appears for a pose that offers drinks and maps to the right variant
+  await page.getByTestId('variant-kieszen').click();
+  await page.getByTestId('variant-stoi').click();
+  await expect(page.getByTestId('drink-row')).toBeVisible();
+  await page.getByTestId('drink-piwo').click();
   // step 2: photo (sample face)
   await page.getByTestId('step-photo').click();
   await page.getByRole('button', { name: /wstaw przykładową|przykładow/i }).click();

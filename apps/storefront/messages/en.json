@@ -188,6 +188,12 @@
       "kufel": "Standing with a mug",
       "lezy": "Lying down",
       "lezy-piwo": "Lying down with a beer"
+    },
+    "drinkL": "Drink in hand",
+    "drink": {
+      "none": "No drink",
+      "piwo": "Glass of beer",
+      "kufel": "Beer mug"
     }
   },
   "catalog": {
