@@ -107,10 +107,11 @@ test('design → cart → checkout → confirmation', async ({ page }) => {
   await page.getByRole('button', { name: /usuń figurkę/i }).click();
   await expect(page.getByTestId('total-price')).toContainText('158');
 
-  // add to cart → success + link to the cart
+  // add to cart: the price rides on the button; the toast confirms and links to the cart
+  await expect(page.getByTestId('add-to-cart')).toContainText('158');
   await page.getByTestId('add-to-cart').click();
   await expect(page.getByTestId('added-ok')).toBeVisible();
-  await page.getByRole('link', { name: /koszyka/i }).click();
+  await page.getByTestId('added-ok').getByRole('link').click();
 
   // cart page: line with the configured pose + name, cart total includes the courier
   await expect(page).toHaveURL(/\/pl\/cart/);

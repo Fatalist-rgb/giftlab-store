@@ -2,7 +2,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { Constructor } from '@/features/constructor/Constructor';
 import { Details, Similar } from '@/features/constructor/Details';
 import { Reviews } from '@/features/reviews/Reviews';
-import { Guarantee } from '@/components/Guarantee';
+import { GwarancjaDark } from '@/components/GwarancjaDark';
 import { fetchProductSchema, FIGURINE_PRODUCT_ID } from '@/lib/backend';
 import type { PoseId } from '@/lib/poses';
 
@@ -37,12 +37,12 @@ export default async function ProductPage({
   // backend is configured, otherwise the local demo schema is used (see lib/backend.ts).
   const schema = await fetchProductSchema(FIGURINE_PRODUCT_ID);
 
+  // the demo's order below the builder: the promises on ink, then details, reviews,
+  // and the other poses — same section, same skin as the landing
   return (
     <>
       <Constructor schema={schema ?? undefined} />
-      <div className="mx-auto max-w-2xl px-5 pt-2">
-        <Guarantee />
-      </div>
+      <GwarancjaDark />
       <Details />
       <Reviews />
       <Similar current={pose as PoseId | undefined} />

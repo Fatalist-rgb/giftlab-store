@@ -50,7 +50,6 @@ export async function Footer() {
           <h3 className="mb-3 font-display text-[16px] font-bold">{t('colShop')}</h3>
           <L href="/product">{t('creator')}</L>
           <L href="/#szablony">{t('templates')}</L>
-          <L href="/catalog">{t('catalog')}</L>
           <L href="/jak-to-dziala">{t('how')}</L>
         </div>
 

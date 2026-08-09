@@ -15,6 +15,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { demoSchema, SAMPLE_FACE_KEY, SAMPLE_PHOTO_ID } from '@/lib/schema';
 import { DRINK_ORDER, POSES, POSE_GROUPS, drinkOf, groupOf, isPoseSchema } from '@/lib/poses';
+import { CheckIcon } from '@/components/icons';
 import { createBrowserCutout } from '@/lib/cutout';
 import { scanFaces, warmFaceDetector } from '@/lib/face-detect';
 import { uploadPhotoWithCutout } from '@/lib/uploads';
@@ -294,7 +295,9 @@ export function Constructor({
       const body = (await res.json()) as { cartId?: string };
       if (!res.ok || !body.cartId) throw new Error('add-to-cart failed');
       localStorage.setItem('gl_cart_id', body.cartId);
+      // a toast, not a persistent banner: it confirms, offers the cart, and leaves
       setAdded(true);
+      window.setTimeout(() => setAdded(false), 6000);
       track('add_to_cart', {
         step: 'add-to-cart',
         designs: slots.length,
@@ -781,76 +784,88 @@ export function Constructor({
           )}
         </div>
 
-        {/* Wstecz / Dalej */}
-        <div className="mt-3 flex justify-between">
+        {/* the linear path with its position — Wstecz · n/4 · Dalej */}
+        <div className="mt-5 flex items-center gap-2.5 pt-3.5" style={{ borderTop: '2px dashed rgba(23,19,26,.16)' }}>
           <button
             onClick={() => setStep(STEPS[Math.max(0, stepIndex - 1)]!)}
             disabled={stepIndex === 0}
-            className="rounded-xl border-2 border-ink bg-white px-4 py-2 text-sm font-bold disabled:opacity-40"
+            data-testid="step-prev"
+            className="btn-s px-4 py-2 text-[14px] disabled:opacity-40"
           >
             ← {t('back')}
           </button>
+          <span className="mx-auto text-[12px] tabular-nums opacity-45" data-testid="step-count">
+            {stepIndex + 1} / {STEPS.length}
+          </span>
           <button
             onClick={() => setStep(STEPS[Math.min(STEPS.length - 1, stepIndex + 1)]!)}
             disabled={stepIndex === STEPS.length - 1}
             data-testid="next-step"
-            className="rounded-xl border-2 border-ink bg-white px-4 py-2 text-sm font-bold disabled:opacity-40"
+            className="btn-s px-4 py-2 text-[14px] disabled:opacity-40"
           >
             {t('next')} →
           </button>
         </div>
+        </div>
 
-
-        <button
-          onClick={addToCart}
-          disabled={adding}
-          data-testid="add-to-cart"
-          className="btn-p mt-4 w-full text-[16px] disabled:opacity-60"
-        >
-          {adding ? '…' : t('add')}
-        </button>
-        {added && (
-          <p className="mt-3 rounded-xl bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-900" data-testid="added-ok">
-            {t('added')}{' '}
-            <Link href="/cart" className="underline underline-offset-2">
-              {tCart('goToCart')}
-            </Link>
-          </p>
-        )}
+        {/* desktop CTA — OUTSIDE the step card, so it never vanishes on steps 1–3;
+            the price rides ON the button, and the cart is one click away beside it */}
+        <div className="mt-5 hidden gap-2.5 lg:flex">
+          <button
+            onClick={addToCart}
+            disabled={adding}
+            data-testid="add-to-cart"
+            className="btn-p flex-1 text-[16px] disabled:opacity-60"
+          >
+            {adding ? '…' : `${t('add')} · ${zl(price.total)}`}
+          </button>
+          <Link href="/cart" className="btn-s text-[15px]">
+            {tCart('goToCart')}
+          </Link>
+        </div>
         {addError && (
           <p className="mt-3 rounded-xl bg-red-100 px-4 py-2 text-sm font-semibold text-red-900">{t('addError')}</p>
         )}
         </div>
-        </div>
       </div>
 
-      {/* mobile sticky buy bar — completes add-to-cart in place (T043) */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-ink bg-white p-3 lg:hidden" data-testid="sticky-buy">
-        {added ? (
-          <Link
-            href="/cart"
-            className="block w-full rounded-xl border-2 border-ink bg-emerald-100 py-3 text-center font-display font-bold text-emerald-900"
+      {/* post-add toast, the demo's — confirms and offers the cart, then gets out of the way */}
+      {added && (
+        <div className="fixed bottom-20 left-1/2 z-[60] -translate-x-1/2 lg:bottom-6" data-testid="added-ok">
+          <div
+            className="flex items-center gap-3 rounded-[14px] px-4 py-3 text-white"
+            style={{ background: 'var(--ink)', boxShadow: '4px 5px 0 rgba(0,0,0,.35)' }}
           >
-            {t('added')} {tCart('goToCart')}
-          </Link>
-        ) : (
-          <div className="flex items-center gap-3">
-            <div className="min-w-0">
-              <p className="font-display text-lg font-extrabold leading-none">{zl(price.total)}</p>
-              <p className="text-xs opacity-55">
-                {t('pieces', { count: totalQty })} · {zl(price.ladderUnitPrice)}
-                {t('priceEach')}
-              </p>
-            </div>
-            <button
-              onClick={addToCart}
-              disabled={adding}
-              className="btn-p flex-1 py-3 disabled:opacity-60"
-            >
-              {adding ? '…' : t('add')}
-            </button>
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-lime text-ink">
+              <CheckIcon s={13} />
+            </span>
+            <span className="font-display text-[14px] font-bold">{t('added')}</span>
+            <Link href="/cart" className="font-display text-[13px] font-bold text-lime underline underline-offset-2">
+              {tCart('goToCart')}
+            </Link>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* mobile sticky buy bar — completes add-to-cart in place (T043); the toast
+          above is the confirmation, so the bar itself never changes shape */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-ink bg-white p-3 lg:hidden" data-testid="sticky-buy">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0">
+            <p className="font-display text-lg font-extrabold leading-none">{zl(price.total)}</p>
+            <p className="text-xs opacity-55">
+              {t('pieces', { count: totalQty })} · {zl(price.ladderUnitPrice)}
+              {t('priceEach')}
+            </p>
+          </div>
+          <button
+            onClick={addToCart}
+            disabled={adding}
+            className="btn-p flex-1 py-3 disabled:opacity-60"
+          >
+            {adding ? '…' : t('add')}
+          </button>
+        </div>
       </div>
     </main>
   );
