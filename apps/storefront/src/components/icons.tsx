@@ -120,6 +120,11 @@ export const IcoPay = () => (
 export const IcoClock = () => (
   <svg {...trustSvg}><circle cx="16" cy="16" r="11.6" /><path d="M16 8.8V16l4.8 2.9" /></svg>
 );
+export const IcoPhone = () => (
+  <svg {...trustSvg}>
+    <path d="M11.4 16.6c-2.4-2.4-3.9-4.9-4.4-7.4-.2-.9.2-1.8 1-2.3l1.9-1.2 3.4 5-2.2 1.7c.6 1.4 1.6 2.7 3.1 4.1s2.7 2.5 4.1 3.1l1.7-2.2 5 3.4-1.2 1.9c-.5.8-1.4 1.2-2.3 1-2.5-.5-5-2-7.4-4.4z" />
+  </svg>
+);
 export const IcoTruck = () => (
   <svg {...trustSvg}>
     <path d="M3.5 7.5h15v13h-15z" /><path d="M18.5 12h5.6l3.9 4.5v4h-9.5z" />

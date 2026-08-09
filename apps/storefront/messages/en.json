@@ -280,7 +280,7 @@
     "returns": "Returns & complaints",
     "delivery": "Shipping & returns",
     "contact": "Contact",
-    "company": "[Seller details — to be filled after registration:\ncompany name, address, VAT ID, e-mail, phone]",
+    "company": "GKR-GROUP sp. z o.o. · ul. Paprotna 8B, 51-117 Wrocław, Polska\nKRS 0000551761 · NIP 8133703087 · REGON 361194800\nDistrict Court for Wrocław-Fabryczna in Wrocław, 6th Commercial Division of the National Court Register · share capital PLN 20,000.00\nmavorashop2026@gmail.com · +48 531 083 838",
     "rights": "All rights reserved",
     "slogan": "Tiny figurines, big feelings.",
     "colShop": "Shop",
@@ -339,6 +339,9 @@
     "konOrder": "A question about an order you already placed?",
     "konOrderD": "Write with the order number — it is in your confirmation e-mail. Without it, checking the status takes longer.",
     "konFaq": "Check the FAQ",
-    "konDelivery": "Shipping and returns"
+    "konDelivery": "Shipping and returns",
+    "konPhone": "Phone",
+    "konAddr": "Return address",
+    "konAddrV": "GKR-GROUP sp. z o.o.\nul. Paprotna 8B\n51-117 Wrocław"
   }
 }

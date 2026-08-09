@@ -3,23 +3,41 @@ import { CONTENT_MODULE } from '../modules/content'
 import type ContentModuleService from '../modules/content/service'
 
 /**
- * Polish base of the legal / info pages (FR-036). These are WORKING DRAFTS written for
- * this shop's actual model (personalised acrylic figurines, single size, courier
- * delivery) — complete enough for the payment operator's site review, but every
- * `[DO UZUPEŁNIENIA: …]` marker must be filled with the seller's real data and the whole
- * set signed off by a lawyer before launch. Editable afterwards in admin → Treści.
- * Idempotent (upsert per slug). Run with:
+ * Polish base of the legal / info pages (FR-036), written for this shop's actual model
+ * (personalised acrylic figurines, single size, courier delivery) and carrying the
+ * seller's real registration data. Complete enough for the payment operator's site
+ * review — still worth a lawyer's sign-off before launch. Editable afterwards in
+ * admin → Treści. Idempotent (upsert per slug). Run with:
  *   npx medusa exec ./src/scripts/seed-content.ts
  */
 
-// company data the seller fills in once; kept as one constant so it is easy to find
-const SELLER = `[DO UZUPEŁNIENIA: pełna nazwa sprzedawcy], [DO UZUPEŁNIENIA: adres siedziby],
-NIP [DO UZUPEŁNIENIA], REGON [DO UZUPEŁNIENIA], e-mail [DO UZUPEŁNIENIA],
-telefon [DO UZUPEŁNIENIA]`
+/**
+ * The seller identity block. One constant, used by every page, so the shop can never
+ * state two different addresses.
+ *
+ * The court, KRS number, NIP and share capital are not decoration: art. 206 § 1 of the
+ * Polish Commercial Companies Code requires a sp. z o.o. to carry all of them on its
+ * website. Verified against the Ministry of Justice KRS register (state of 07.07.2026).
+ */
+const SELLER = `**GKR-GROUP sp. z o.o.**
+ul. Paprotna 8B, 51-117 Wrocław, woj. dolnośląskie, Polska
+KRS 0000551761 — Sąd Rejonowy dla Wrocławia-Fabrycznej we Wrocławiu,
+VI Wydział Gospodarczy Krajowego Rejestru Sądowego
+NIP 8133703087 · REGON 361194800 · kapitał zakładowy 20 000,00 zł
+e-mail: mavorashop2026@gmail.com · tel. +48 531 083 838`
+
+/** Where a customer sends a return or a complaint — same site as the workshop. */
+const RETURN_ADDRESS = `GKR-GROUP sp. z o.o., ul. Paprotna 8B, 51-117 Wrocław`
+
+const SHOP_EMAIL = 'mavorashop2026@gmail.com'
+const SHOP_URL = 'https://mavorashop.eu'
+/** The day these terms take effect — the date the shop published this version. */
+const TERMS_DATE = '9 sierpnia 2026 r.'
 
 const REGULAMIN = `# Regulamin sklepu
 
-Sklep internetowy dostępny pod adresem [DO UZUPEŁNIENIA: adres sklepu] prowadzi:
+Sklep internetowy mavorashop, dostępny pod adresem ${SHOP_URL}, prowadzi:
+
 ${SELLER}
 
 ## §1. Postanowienia ogólne
@@ -60,7 +78,9 @@ ${SELLER}
 ## §4. Płatności
 
 1. Dostępne metody płatności: BLIK, szybki przelew online i karta płatnicza,
-   obsługiwane przez operatora płatności [DO UZUPEŁNIENIA: nazwa operatora].
+   obsługiwane przez operatora płatności Przelewy24 — PayPro S.A. z siedzibą
+   w Poznaniu, ul. Pastelowa 8, 60-198 Poznań, wpisaną do rejestru krajowych
+   instytucji płatniczych prowadzonego przez Komisję Nadzoru Finansowego.
 2. Zamówienie jest kierowane do produkcji po zaksięgowaniu płatności.
 3. Do każdego zamówienia wystawiany jest dokument sprzedaży przesyłany elektronicznie.
 
@@ -80,14 +100,15 @@ ${SELLER}
    zgodnie z art. 38 pkt 3 ustawy o prawach konsumenta. Informacja o tym jest
    prezentowana przed złożeniem zamówienia i wymaga potwierdzenia.
 3. Pozycje niespersonalizowane zachowują pełne prawo odstąpienia. Oświadczenie można
-   złożyć e-mailem na adres sprzedawcy; zwrot płatności następuje w terminie 14 dni.
+   złożyć e-mailem na adres ${SHOP_EMAIL}; zwrot płatności następuje w terminie 14 dni.
+4. Adres do zwrotów: ${RETURN_ADDRESS}.
 
 ## §7. Reklamacje i gwarancja jakości
 
 1. Sprzedawca odpowiada za zgodność towaru z umową na zasadach ustawy o prawach
    konsumenta (rozdział 5a).
-2. Reklamacje przyjmowane są e-mailem; sprzedawca ustosunkuje się do reklamacji
-   w terminie 14 dni.
+2. Reklamacje przyjmowane są e-mailem na adres ${SHOP_EMAIL}; sprzedawca ustosunkuje
+   się do reklamacji w terminie 14 dni.
 3. Niezależnie od uprawnień ustawowych: w razie wady produkcyjnej sprzedawca wykonuje
    figurkę ponownie albo zwraca zapłaconą kwotę, bez kosztów odsyłki po stronie Klienta.
 
@@ -107,7 +128,7 @@ Zasady przetwarzania danych, w tym przesyłanych zdjęć, opisuje Polityka prywa
 1. W sprawach nieuregulowanych stosuje się przepisy prawa polskiego.
 2. Konsument może skorzystać z pozasądowych sposobów rozpatrywania reklamacji,
    w tym z platformy ODR: https://ec.europa.eu/consumers/odr
-3. Regulamin obowiązuje od dnia [DO UZUPEŁNIENIA: data]. Zmiany nie naruszają praw
+3. Regulamin obowiązuje od dnia ${TERMS_DATE} Zmiany nie naruszają praw
    nabytych z zamówień złożonych przed zmianą.`
 
 const PRIVACY = `# Polityka prywatności
@@ -145,8 +166,9 @@ przetwarzają dane na podstawie umów powierzenia.
 
 Prawo dostępu, sprostowania, usunięcia, ograniczenia, przenoszenia, sprzeciwu oraz
 cofnięcia zgody w dowolnym momencie (bez wpływu na zgodność z prawem wcześniejszego
-przetwarzania). Zgłoszenia: [DO UZUPEŁNIENIA: adres e-mail].
-Przysługuje również skarga do Prezesa Urzędu Ochrony Danych Osobowych.
+przetwarzania). Zgłoszenia: ${SHOP_EMAIL}.
+Przysługuje również skarga do Prezesa Urzędu Ochrony Danych Osobowych
+(ul. Stawki 2, 00-193 Warszawa).
 
 ## Pliki cookies
 
@@ -193,9 +215,16 @@ z numerem zamówienia; zwrot płatności następuje w ciągu 14 dni od otrzymani
 
 ## Reklamacja — jak zgłosić
 
-1. Napisz na [DO UZUPEŁNIENIA: adres e-mail] i podaj numer zamówienia.
+1. Napisz na ${SHOP_EMAIL} i podaj numer zamówienia.
 2. Dołącz zdjęcie wady — zwykle wystarcza do rozpatrzenia.
 3. Odpowiadamy w ciągu 14 dni i uzgadniamy sposób załatwienia sprawy.
+
+## Adres do zwrotów
+
+${RETURN_ADDRESS}
+
+Przed odesłaniem czegokolwiek napisz do nas — przy wadzie jakościowej zwykle nie
+trzeba nic odsyłać.
 
 ## Uszkodzenie w transporcie
 
@@ -215,8 +244,12 @@ zdjęcia przez stronę statusu zamówienia (link jest w e-mailu potwierdzającym
 
 ## Koszt i sposób
 
-Dostawa kurierem na terenie Polski — koszt widoczny w koszyku przed złożeniem
-zamówienia. Przewidywane okno dostawy pokazujemy przy podsumowaniu.
+| Sposób | Koszt |
+|---|---|
+| Kurier (cała Polska) | 15,99 zł |
+
+Koszt dostawy widoczny jest w koszyku przed złożeniem zamówienia; przewidywane okno
+dostawy pokazujemy przy podsumowaniu. Wysyłamy wyłącznie na terenie Polski.
 
 ## Śledzenie
 
@@ -227,8 +260,10 @@ const KONTAKT = `# Kontakt
 
 ${SELLER}
 
-**Obsługa zamówień:** [DO UZUPEŁNIENIA: adres e-mail]
-**Godziny pracy:** [DO UZUPEŁNIENIA: np. pn.–pt. 9:00–17:00]
+**Obsługa zamówień:** ${SHOP_EMAIL}
+**Telefon:** +48 531 083 838
+**Godziny pracy:** pn.–pt. 9:00–17:00
+**Adres do zwrotów i reklamacji:** ${RETURN_ADDRESS}
 
 Odpowiadamy zwykle w ciągu jednego dnia roboczego. Przy pytaniach o zamówienie podaj
 jego numer — przyspieszy to sprawę.`

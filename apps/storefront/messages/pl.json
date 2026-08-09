@@ -280,7 +280,7 @@
     "returns": "Zwroty i reklamacje",
     "delivery": "Dostawa i zwroty",
     "contact": "Kontakt",
-    "company": "[Dane sprzedawcy — do uzupełnienia po rejestracji:\nnazwa spółki, adres, NIP, e-mail, telefon]",
+    "company": "GKR-GROUP sp. z o.o. · ul. Paprotna 8B, 51-117 Wrocław, Polska\nKRS 0000551761 · NIP 8133703087 · REGON 361194800\nSąd Rejonowy dla Wrocławia-Fabrycznej we Wrocławiu, VI Wydział Gospodarczy KRS · kapitał zakładowy 20 000,00 zł\nmavorashop2026@gmail.com · +48 531 083 838",
     "rights": "Wszystkie prawa zastrzeżone",
     "slogan": "Małe figurki, wielkie emocje.",
     "colShop": "Sklep",
@@ -339,6 +339,9 @@
     "konOrder": "Masz pytanie o złożone zamówienie?",
     "konOrderD": "Napisz z numerem zamówienia — znajdziesz go w mailu z potwierdzeniem. Bez numeru sprawdzenie statusu trwa dłużej.",
     "konFaq": "Zajrzyj do FAQ",
-    "konDelivery": "Dostawa i zwroty"
+    "konDelivery": "Dostawa i zwroty",
+    "konPhone": "Telefon",
+    "konAddr": "Adres do zwrotów",
+    "konAddrV": "GKR-GROUP sp. z o.o.\nul. Paprotna 8B\n51-117 Wrocław"
   }
 }
