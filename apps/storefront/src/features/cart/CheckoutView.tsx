@@ -269,7 +269,7 @@ export function CheckoutView() {
 
           {/* consents + the withdrawal notice, right where the money moves */}
           <section className="rounded-[var(--r-card)] bg-cream p-5 b2 sh sm:p-6">
-            <label className="flex min-h-[44px] cursor-pointer items-start gap-3 py-1" htmlFor="c-terms">
+            <label className="flex min-h-[44px] cursor-pointer items-start gap-3 py-1 scroll-mt-[132px]" htmlFor="c-terms">
               <span className="relative mt-0.5 inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-lg border-[2.5px] border-ink shs" style={consentBox(terms)}>
                 {terms && <CheckIcon s={15} />}
                 <input id="c-terms" data-testid="c-terms" type="checkbox" checked={terms} onChange={() => setTerms(!terms)} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
@@ -282,7 +282,7 @@ export function CheckoutView() {
                 <span className="text-pink"> *</span>
               </span>
             </label>
-            <label className="flex min-h-[44px] cursor-pointer items-start gap-3 py-1" htmlFor="c-priv">
+            <label className="flex min-h-[44px] cursor-pointer items-start gap-3 py-1 scroll-mt-[132px]" htmlFor="c-priv">
               <span className="relative mt-0.5 inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-lg border-[2.5px] border-ink shs" style={consentBox(priv)}>
                 {priv && <CheckIcon s={15} />}
                 <input id="c-priv" data-testid="c-priv" type="checkbox" checked={priv} onChange={() => setPriv(!priv)} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
@@ -321,7 +321,7 @@ export function CheckoutView() {
         </div>
 
         {/* summary aside */}
-        <aside className="rounded-[var(--r-card)] bg-cream p-5 b2 sh lg:sticky lg:top-24">
+        <aside className="rounded-[var(--r-card)] bg-cream p-5 b2 sh lg:sticky lg:top-[120px]">
           <h2 className="m-0 flex items-center gap-2 font-display text-lg font-extrabold">
             {t('sumH')}
             <Sparkle s={16} />

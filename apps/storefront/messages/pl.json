@@ -6,7 +6,20 @@
     "opinions": "Opinie",
     "contact": "Kontakt",
     "cart": "Koszyk",
-    "menu": "Menu"
+    "menu": "Menu",
+    "cbAria": "Katalog",
+    "cbFigurines": "Figurki z brzuszkiem",
+    "cbOccasions": "Okazje",
+    "cbForWhom": "Dla kogo",
+    "cbPets": "Zwierzaki",
+    "cbHolidays": "Święta",
+    "cbNew": "Nowości",
+    "cbSoon": "wkrótce",
+    "cbPoses": "Pozy",
+    "cbStart": "Na start",
+    "cbCreator": "Kreator figurki",
+    "cbTemplates": "Szablony",
+    "cbFull": "Cały katalog"
   },
   "home": {
     "badge": "Figurki z brzuszkiem · 79 zł",
@@ -214,7 +227,16 @@
     "empty": "Katalog jest chwilowo pusty — zajrzyj wkrótce.",
     "customize": "Personalizuj",
     "ladderHint": "od {price} zł/szt. przy {qty}+",
-    "variants": "{count, plural, one {# wariant} few {# warianty} many {# wariantów} other {# wariantu}} do wyboru"
+    "variants": "{count, plural, one {# wariant} few {# warianty} many {# wariantów} other {# wariantu}} do wyboru",
+    "sub": "Wszystkie nasze produkty w jednym miejscu. Zaczynamy od figurek z brzuszkiem — kolejne kategorie już w przygotowaniu.",
+    "belly": "Figurki z brzuszkiem",
+    "cardNote": "Akryl + miękki silikon · 11 cm · magnes",
+    "soon": "Wkrótce",
+    "pets": "Zwierzaki",
+    "petsD": "Pupil w akrylu — pies, kot albo królik z pyszczkiem z Twojego zdjęcia.",
+    "xmas": "Święta",
+    "xmasD": "Mikołaj, elf i renifer — figurki na lodówkę na sezon prezentowy.",
+    "soonNote": "Kategorie w przygotowaniu — grafiki poglądowe."
   },
   "cart": {
     "title": "Koszyk",

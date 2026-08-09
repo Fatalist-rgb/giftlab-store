@@ -6,7 +6,20 @@
     "opinions": "Reviews",
     "contact": "Contact",
     "cart": "Cart",
-    "menu": "Menu"
+    "menu": "Menu",
+    "cbAria": "Catalogue",
+    "cbFigurines": "Belly figurines",
+    "cbOccasions": "Occasions",
+    "cbForWhom": "For whom",
+    "cbPets": "Pets",
+    "cbHolidays": "Holidays",
+    "cbNew": "New in",
+    "cbSoon": "soon",
+    "cbPoses": "Poses",
+    "cbStart": "Start here",
+    "cbCreator": "Figurine creator",
+    "cbTemplates": "Templates",
+    "cbFull": "Full catalogue"
   },
   "home": {
     "badge": "Belly figurines · 79 zł",
@@ -214,7 +227,16 @@
     "empty": "The catalogue is temporarily empty — check back soon.",
     "customize": "Customize",
     "ladderHint": "from {price} zł/pc at {qty}+",
-    "variants": "{count, plural, one {# variant} other {# variants}} to pick"
+    "variants": "{count, plural, one {# variant} other {# variants}} to pick",
+    "sub": "Everything we make in one place. We start with the belly figurines — more categories are in the works.",
+    "belly": "Belly figurines",
+    "cardNote": "Acrylic + soft silicone · 11 cm · magnet",
+    "soon": "Coming soon",
+    "pets": "Pets",
+    "petsD": "Your pet in acrylic — a dog, cat or rabbit with the face from your photo.",
+    "xmas": "Holidays",
+    "xmasD": "Santa, an elf and a reindeer — fridge figurines for the gifting season.",
+    "soonNote": "Categories in the works — placeholder artwork."
   },
   "cart": {
     "title": "Your cart",

@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState, useTransition } from 'react';
 import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
+import { CatalogBar } from '@/components/CatalogBar';
 
 const LANG_NAMES: Record<string, string> = { pl: 'Polski', en: 'English', uk: 'Українська' };
 
@@ -95,6 +96,8 @@ export function SiteHeader() {
           </button>
         </div>
       </div>
+
+      <CatalogBar />
 
       {open && (
         <div className="lg:hidden" style={{ borderTop: 'var(--border)' }}>

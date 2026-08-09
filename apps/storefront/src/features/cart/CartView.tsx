@@ -166,7 +166,7 @@ export function CartView() {
           </div>
         </div>
 
-        <aside className="rounded-[var(--r-card)] bg-cream p-5 b2 sh lg:sticky lg:top-24 sm:p-6">
+        <aside className="rounded-[var(--r-card)] bg-cream p-5 b2 sh lg:sticky lg:top-[120px] sm:p-6">
           <h2 className="m-0 flex items-center gap-2 font-display text-xl font-extrabold">
             {t('summaryH')}
             <Sparkle s={18} />

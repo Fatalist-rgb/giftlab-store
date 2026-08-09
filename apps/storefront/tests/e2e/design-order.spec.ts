@@ -143,8 +143,13 @@ test('design → cart → checkout → confirmation', async ({ page }) => {
   // the pay button without consents must NOT submit — the hint appears instead
   await placeOrder.click();
   await expect(page.getByText(/wymagane zgody/i)).toBeVisible();
-  await page.getByTestId('c-terms').click({ force: true });
-  await page.getByTestId('c-priv').click({ force: true });
+  // click the visible LABELS (the inputs are opacity-0): normal actionability scrolls
+  // them clear of the sticky header via their scroll-margin — force would skip that
+  // scroll and land the click underneath the header
+  await page.locator('label[for="c-terms"]').click();
+  await page.locator('label[for="c-priv"]').click();
+  await expect(page.getByTestId('c-terms')).toBeChecked();
+  await expect(page.getByTestId('c-priv')).toBeChecked();
   await placeOrder.click();
 
   // confirmation page with the order number and the receipt
