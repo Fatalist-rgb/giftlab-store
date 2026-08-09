@@ -88,9 +88,12 @@ test('design → cart → checkout → confirmation', async ({ page }) => {
   // step 3: name
   await page.getByTestId('step-name').click();
   await page.getByPlaceholder(/np\.|imię/i).fill('Zosia');
-  // step 4: quantity 2
+  // step 4: quantity 2 — the stepper IS the figurine list (demo model), so the
+  // switcher appears and the second figurine inherits the first one's pose
   await page.getByTestId('step-quantity').click();
-  await page.getByRole('button', { name: '+', exact: true }).click();
+  await page.getByTestId('qty-plus').click();
+  await expect(page.getByTestId('fig-switch')).toBeVisible();
+  await expect(page.getByTestId('fig-1')).toBeVisible();
 
   // live preview canvas rendered; steps show completion marks
   await expect(page.locator('canvas').first()).toBeVisible();
@@ -99,12 +102,12 @@ test('design → cart → checkout → confirmation', async ({ page }) => {
   // price reflects qty 2 at base tier (2 × 79)
   await expect(page.getByTestId('total-price')).toContainText('158');
 
-  // a SECOND figurine joins the same order — the ladder now spans 3 pcs → 65 zł each
-  await page.getByTestId('add-slot').click();
+  // a THIRD figurine → the ladder tier flips: 65 zł each, middle tile lit
+  await page.getByTestId('qty-plus').click();
   await expect(page.getByTestId('unit-price')).toContainText('65');
   await expect(page.getByTestId('total-price')).toContainText('195');
-  // back to one figurine for the rest of the flow
-  await page.getByRole('button', { name: /usuń figurkę/i }).click();
+  // back to two for the rest of the flow
+  await page.getByTestId('qty-minus').click();
   await expect(page.getByTestId('total-price')).toContainText('158');
 
   // add to cart: the price rides on the button; the toast confirms and links to the cart

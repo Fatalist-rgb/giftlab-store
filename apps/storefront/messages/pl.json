@@ -204,7 +204,10 @@
     "bulkRow3Q": "6 szt",
     "bulkRow3P": "49 zł/szt",
     "bulkDiff": "różne wzory — każda figurka inna",
-    "slotsHint": "Każdą figurkę ustawiasz osobno — przełącznik figurek jest na górze kreatora. Zdjęcie, imię i postać wybierasz dla każdej z osobna."
+    "slotsHint": "Każdą figurkę ustawiasz osobno — przełącznik figurek jest na górze kreatora. Zdjęcie, imię i postać wybierasz dla każdej z osobna.",
+    "slotsTitle": "Każdą figurkę ustawiasz osobno",
+    "slotsD": "Rabat liczy się od łącznej liczby sztuk, ale wzory nie muszą być takie same.",
+    "figN": "Figurka"
   },
   "catalog": {
     "title": "Katalog",

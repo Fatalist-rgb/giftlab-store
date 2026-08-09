@@ -23,7 +23,6 @@ import { track } from '@/lib/analytics';
 import { ProductGallery } from './ProductGallery';
 
 const PREVIEW_SCALE = 1.2;
-const MAX_SLOTS = 6;
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -44,7 +43,6 @@ type Slot = {
   name: string;
   facePhotoId: string | null;
   adj: Adj;
-  quantity: number;
 };
 
 type Step = 'character' | 'photo' | 'name' | 'quantity';
@@ -73,7 +71,6 @@ export function Constructor({
     name: '',
     facePhotoId: null,
     adj: CENTER,
-    quantity: 1,
   });
 
   const [slots, setSlots] = useState<Slot[]>(() => [mkSlot()]);
@@ -267,7 +264,7 @@ export function Constructor({
     faceLayer: s.facePhotoId ? { uploadedPhotoId: s.facePhotoId, ...s.adj } : null,
     textValues: s.name.trim() ? [{ fieldId: 'name', value: s.name.trim() }] : [],
     selectedOptions: {},
-    quantity: s.quantity,
+    quantity: 1,
     photoStatus: s.facePhotoId ? 'ready' : 'deferred',
   });
   const designs = useMemo(() => slots.map(toDesign), [slots, schema.id, schema.version, bodyLayer.id]);
@@ -343,7 +340,21 @@ export function Constructor({
   };
 
   const price = useMemo(() => computePrice(schema, designs), [schema, designs]);
-  const totalQty = designs.reduce((s, d) => s + d.quantity, 0);
+  const totalQty = slots.length;
+  /** Quantity IS the figurine list (demo model): growing copies the last figurine's
+   *  pose so a new one is never blank; shrinking drops from the end and keeps the
+   *  editor pointed at an existing figurine. Designs are never touched otherwise. */
+  const setQty = (n: number) => {
+    const next = Math.min(12, Math.max(1, n));
+    setSlots((all) => {
+      if (all.length === next) return all;
+      if (all.length > next) return all.slice(0, next);
+      const grown = all.slice();
+      while (grown.length < next) grown.push(mkSlot(grown[grown.length - 1]!.variantId));
+      return grown;
+    });
+    setActive((a) => Math.min(a, next - 1));
+  };
   const zl = (grosz: number) => `${Math.round(grosz / 100)} zł`;
   const label = (l?: LocalizedText) => l?.[locale] ?? l?.pl ?? '';
 
@@ -467,55 +478,48 @@ export function Constructor({
         </div>
 
         <div className="mt-4 rounded-[22px] border-2 border-ink bg-white p-4 shs sm:p-5">
-        {/* figurine slots (T042) — several designs, one order, one ladder */}
-        <div className="mt-5 flex flex-wrap items-center gap-2" data-testid="slots">
-          {slots.map((s, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                setActive(i);
-                setStep('character');
-              }}
-              aria-pressed={i === active}
-              data-testid={`slot-${i}`}
-              className={`rounded-xl border-2 border-ink px-3 py-1.5 text-sm font-bold ${
-                i === active ? 'bg-ink text-white' : 'bg-white'
-              }`}
-            >
-              {t('figurineN', { n: i + 1 })}
-              {(s.facePhotoId || s.name.trim()) && <span className="ml-1 text-lime">●</span>}
-            </button>
-          ))}
-          {slots.length < MAX_SLOTS && (
-            <button
-              onClick={() => {
-                setSlots((all) => [...all, mkSlot()]);
-                setActive(slots.length);
-                setStep('character');
-              }}
-              data-testid="add-slot"
-              className="rounded-xl border-2 border-dashed border-ink px-3 py-1.5 text-sm font-bold opacity-70 hover:opacity-100"
-            >
-              {t('addFigurine')}
-            </button>
-          )}
-          {slots.length > 1 && (
-            <button
-              onClick={() => {
-                setSlots((all) => all.filter((_, i) => i !== active));
-                setActive((a) => Math.max(0, a - 1));
-              }}
-              aria-label={t('removeFigurine')}
-              className="rounded-xl border-2 border-ink bg-white px-2.5 py-1.5 text-sm"
-            >
-              ✕
-            </button>
-          )}
-        </div>
-        {slots.length > 1 && <p className="mt-1 text-xs opacity-55">{t('ladderHint')}</p>}
+        {/* figurine switcher — only when ordering more than one (the quantity step
+            grows the list). Picks WHICH figurine the four tabs below are editing. */}
+        {slots.length > 1 && (
+          <div className="mb-3.5 mt-5 pb-3.5" style={{ borderBottom: '2px dashed rgba(23,19,26,.16)' }} data-testid="fig-switch">
+            <div className="flex items-baseline justify-between gap-2">
+              <p className="m-0 font-display text-[13.5px] font-bold">{t('slotsTitle')}</p>
+              <span className="shrink-0 text-[11px] tabular-nums opacity-55" data-testid="fig-pos">
+                {active + 1} / {slots.length}
+              </span>
+            </div>
+            <div className="mt-2 flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label={t('slotsTitle')}>
+              {slots.map((s, i) => {
+                const on = i === active;
+                const art = POSES.find((x) => x.id === s.variantId) ?? POSES[0]!;
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    role="tab"
+                    aria-selected={on}
+                    data-testid={`fig-${i}`}
+                    onClick={() => setActive(i)}
+                    className={`w-[74px] shrink-0 rounded-[13px] border-2 border-ink p-1 transition-transform hover:-translate-y-0.5 ${
+                      on ? 'bg-lime shs' : 'bg-white'
+                    }`}
+                  >
+                    <div className="flex h-[64px] items-center justify-center overflow-hidden rounded-[8px] border-2 border-ink bg-white">
+                      <img src={art.src} alt="" className="h-auto max-h-[88%] w-auto max-w-[88%]" loading="lazy" />
+                    </div>
+                    <span className="mt-0.5 block text-center font-display text-[9.5px] font-bold">
+                      {t('figN')} {i + 1}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="m-0 mt-1 text-[11.5px] leading-snug opacity-60">{t('slotsD')}</p>
+          </div>
+        )}
 
         {/* step tabs — any tab reachable, completed marked (T041) */}
-        <div className="mt-1 flex gap-1.5 overflow-x-auto" role="tablist" style={{ scrollbarWidth: 'none' }}>
+        <div className="mt-5 flex gap-1.5 overflow-x-auto" role="tablist" style={{ scrollbarWidth: 'none' }}>
           {STEPS.map((s, i) => (
             <button
               key={s}
@@ -773,7 +777,7 @@ export function Constructor({
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => patchSlot({ quantity: Math.max(1, slot.quantity - 1) })}
+                      onClick={() => setQty(totalQty - 1)}
                       className="h-11 w-11 rounded-xl border-2 border-ink bg-white text-[19px] font-bold shs"
                       aria-label="-"
                       data-testid="qty-minus"
@@ -781,10 +785,10 @@ export function Constructor({
                       −
                     </button>
                     <span className="w-9 text-center font-display text-[19px] font-extrabold" data-testid="qty">
-                      {slot.quantity}
+                      {totalQty}
                     </span>
                     <button
-                      onClick={() => patchSlot({ quantity: Math.min(12, slot.quantity + 1) })}
+                      onClick={() => setQty(totalQty + 1)}
                       className="h-11 w-11 rounded-xl border-2 border-ink bg-white text-[19px] font-bold shs"
                       aria-label="+"
                       data-testid="qty-plus"
