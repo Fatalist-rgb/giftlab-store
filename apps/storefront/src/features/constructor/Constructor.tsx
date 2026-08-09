@@ -375,9 +375,11 @@ export function Constructor({
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
             onPointerCancel={endDrag}
-            /* height-driven everywhere: the wrapper owns the budget and the canvas keeps
-               its own ratio, so switching pose never distorts or resizes the frame */
-            className={`mx-auto block h-full w-auto max-w-full ${slot.facePhotoId ? 'cursor-grab touch-none' : ''}`}
+            /* contain-fit: auto size + max on BOTH axes lets the browser scale the
+               canvas by its intrinsic ratio. Forcing h-full here once squashed the
+               lying pose 20% narrower — an explicit height beats aspect-ratio the
+               moment max-width clamps the other axis. */
+            className={`mx-auto block h-auto max-h-full w-auto max-w-full ${slot.facePhotoId ? 'cursor-grab touch-none' : ''}`}
           />
           </div>
           {busy && (
