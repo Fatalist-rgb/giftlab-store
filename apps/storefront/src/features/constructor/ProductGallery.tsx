@@ -14,10 +14,10 @@ import { useTranslations } from 'next-intl';
  * preview" says it better.
  */
 const SHOTS = [
-  { k: 'fridge', src: '/photos/shot-fridge.webp', full: '/photos/real-fridge.webp', ar: '3/4' },
-  { k: 'table', src: '/photos/real-table.webp', full: '/photos/real-table.webp', ar: '16/9' },
-  { k: 'poses', src: '/photos/shot-poses.webp', full: '/photos/shot-poses.webp', ar: '16/9' },
-  { k: 'lezy', src: '/photos/shot-lezy.webp', full: '/photos/shot-lezy.webp', ar: '4/3' },
+  { k: 'fridge', src: '/photos/scene-fridge-tall.webp', full: '/photos/scene-fridge-tall.webp', ar: '4/5' },
+  { k: 'table', src: '/photos/scene-desk.webp', full: '/photos/scene-desk.webp', ar: '3/2' },
+  { k: 'poses', src: '/photos/scene-shelf.webp', full: '/photos/scene-shelf.webp', ar: '4/5' },
+  { k: 'lezy', src: '/photos/real-lying-wide.webp', full: '/photos/real-lying-wide.webp', ar: '4/3' },
 ] as const;
 
 export function ProductGallery({ live }: { live: ReactNode }) {

@@ -24,22 +24,24 @@ import {
  * accordion, so that is the only thing shipped as client JS.
  */
 
+/* Our own occasion scenes — the product in each setting, no stock photography. */
 const OCCASION_PHOTO = [
-  'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=560&q=75&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=560&q=75&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=560&q=75&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1608755728617-aefab37d2edd?w=560&q=75&auto=format&fit=crop',
+  '/photos/ok-urodziny.webp',
+  '/photos/ok-rocznica.webp',
+  '/photos/ok-rodzice.webp',
+  '/photos/ok-bez.webp',
 ];
 
-/* The wall mixes our own photography with three poses, exactly as the design does.
-   The handles and like counts are PLACEHOLDERS until real tagged posts exist — they
-   are strings in the message catalogue so they can be swapped without a deploy. */
+/* The wall mixes our product photography (one frame is a real phone shot of the
+   physical magnet) with three poses, exactly as the design does. The handles and
+   like counts are PLACEHOLDERS until real tagged posts exist — they are strings
+   in the message catalogue so they can be swapped without a deploy. */
 const UGC: { photo?: string; pose?: PoseId; user: string; likes: string; rot: number; viral?: boolean }[] = [
-  { photo: '/photos/real-fridge.webp', user: '@kasia.w', likes: '1,2k', rot: -1.8 },
+  { photo: '/photos/scene-hand-sq.webp', user: '@kasia.w', likes: '1,2k', rot: -1.8 },
   { pose: 'kieszen', user: '@michal_p', likes: '870', rot: 1.5 },
-  { photo: '/photos/real-table.webp', user: '@ola.i.kuba', likes: '3,4k', rot: -1.2, viral: true },
+  { photo: '/photos/ugc-real-lying.webp', user: '@ola.i.kuba', likes: '3,4k', rot: -1.2, viral: true },
   { pose: 'lezy', user: '@burek.official', likes: '2,1k', rot: 1.8 },
-  { photo: '/photos/shot-fridge.webp', user: '@lucy.golden', likes: '640', rot: -1.5 },
+  { photo: '/photos/scene-giftbox-sq.webp', user: '@lucy.golden', likes: '640', rot: -1.5 },
   { pose: 'kufel', user: '@gosia.k', likes: '1,5k', rot: 1.2 },
 ];
 
@@ -51,7 +53,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const steps = [IcoChar, IcoCut, IcoName, IcoBox];
   const stepRot = [-2.2, 1.6, -1.4, 2.2];
   const stepBg = ['var(--lime)', '#fff', '#fff', 'var(--lime)'];
-  const real = ['/photos/real-faces.webp', '/photos/real-belly.webp', '/photos/real-door.webp'];
+  const real = ['/photos/made-face.webp', '/photos/made-belly.webp', '/photos/scene-fridge-sq.webp'];
   const realRot = [-1.8, 1.5, -1.2];
   const tplRot = [-1.6, 1.4, -1.2, 1.8];
   const bulkRows = [
@@ -97,10 +99,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <figure className="relative m-0 rv" style={{ '--d': '.18s' } as React.CSSProperties} data-testid="hero-photo">
           <div className="relative rounded-[22px] bg-white p-2.5 b2 sh" style={{ transform: 'rotate(-1.1deg)' }}>
             <Image
-              src="/photos/real-hero.webp"
+              src="/photos/scene-hero.webp"
               alt={t('heroAlt')}
-              width={950}
-              height={650}
+              width={1200}
+              height={800}
               priority
               sizes="(max-width: 1024px) 100vw, 560px"
               className="block h-auto w-full rounded-[14px] border-2 border-ink bg-cream"
