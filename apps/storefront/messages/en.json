@@ -194,7 +194,17 @@
       "none": "No drink",
       "piwo": "Glass of beer",
       "kufel": "Beer mug"
-    }
+    },
+    "qtyLab": "Quantity",
+    "bulkLab": "The more you take, the less you pay",
+    "bulkRow1Q": "1 pc",
+    "bulkRow1P": "79 zł",
+    "bulkRow2Q": "3 pcs",
+    "bulkRow2P": "65 zł/ea",
+    "bulkRow3Q": "6 pcs",
+    "bulkRow3P": "49 zł/ea",
+    "bulkDiff": "different designs — every figurine its own",
+    "slotsHint": "Each figurine is set up separately — the figurine switcher is at the top of the builder. Photo, name and character are chosen per figurine."
   },
   "catalog": {
     "title": "Catalogue",

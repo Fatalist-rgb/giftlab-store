@@ -194,7 +194,17 @@
       "none": "Bez napoju",
       "piwo": "Szklanka piwa",
       "kufel": "Kufel piwa"
-    }
+    },
+    "qtyLab": "Ilość",
+    "bulkLab": "Im więcej, tym taniej",
+    "bulkRow1Q": "1 szt",
+    "bulkRow1P": "79 zł",
+    "bulkRow2Q": "3 szt",
+    "bulkRow2P": "65 zł/szt",
+    "bulkRow3Q": "6 szt",
+    "bulkRow3P": "49 zł/szt",
+    "bulkDiff": "różne wzory — każda figurka inna",
+    "slotsHint": "Każdą figurkę ustawiasz osobno — przełącznik figurek jest na górze kreatora. Zdjęcie, imię i postać wybierasz dla każdej z osobna."
   },
   "catalog": {
     "title": "Katalog",

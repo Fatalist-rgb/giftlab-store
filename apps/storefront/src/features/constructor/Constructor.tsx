@@ -15,7 +15,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { demoSchema, SAMPLE_FACE_KEY, SAMPLE_PHOTO_ID } from '@/lib/schema';
 import { DRINK_ORDER, POSES, POSE_GROUPS, drinkOf, groupOf, isPoseSchema } from '@/lib/poses';
-import { CheckIcon } from '@/components/icons';
+import { CheckIcon, Sparkle } from '@/components/icons';
 import { createBrowserCutout } from '@/lib/cutout';
 import { scanFaces, warmFaceDetector } from '@/lib/face-detect';
 import { uploadPhotoWithCutout } from '@/lib/uploads';
@@ -762,24 +762,69 @@ export function Constructor({
           )}
 
           {step === 'quantity' && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => patchSlot({ quantity: Math.max(1, slot.quantity - 1) })}
-                className="h-11 w-11 rounded-xl border-2 border-ink text-lg font-bold"
-                aria-label="-"
-              >
-                −
-              </button>
-              <span className="w-10 text-center font-display text-lg font-extrabold" data-testid="qty">
-                {slot.quantity}
-              </span>
-              <button
-                onClick={() => patchSlot({ quantity: Math.min(12, slot.quantity + 1) })}
-                className="h-11 w-11 rounded-xl border-2 border-ink text-lg font-bold"
-                aria-label="+"
-              >
-                +
-              </button>
+            <div>
+              {/* the stepper and the ladder share one cream card: quantity is the only
+                  price lever, so the price answer sits right where the lever is */}
+              <div className="rounded-[16px] bg-cream p-3.5 b2 shs">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="m-0 font-display text-[14.5px] font-bold">{t('qtyLab')}</p>
+                    <p className="m-0 text-[12px] opacity-60">{t('bulkLab')}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => patchSlot({ quantity: Math.max(1, slot.quantity - 1) })}
+                      className="h-11 w-11 rounded-xl border-2 border-ink bg-white text-[19px] font-bold shs"
+                      aria-label="-"
+                      data-testid="qty-minus"
+                    >
+                      −
+                    </button>
+                    <span className="w-9 text-center font-display text-[19px] font-extrabold" data-testid="qty">
+                      {slot.quantity}
+                    </span>
+                    <button
+                      onClick={() => patchSlot({ quantity: Math.min(12, slot.quantity + 1) })}
+                      className="h-11 w-11 rounded-xl border-2 border-ink bg-white text-[19px] font-bold shs"
+                      aria-label="+"
+                      data-testid="qty-plus"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  {([1, 2, 3] as const).map((row) => {
+                    // the lit tile follows the TOTAL quantity — that is what the ladder prices
+                    const on = totalQty >= 6 ? row === 3 : totalQty >= 3 ? row === 2 : row === 1;
+                    return (
+                      <div
+                        key={row}
+                        data-testid={`bulk-${row - 1}`}
+                        className={`rounded-[12px] border-2 border-ink px-1.5 py-2 text-center ${on ? 'bg-lime' : 'bg-white'}`}
+                      >
+                        <p className="m-0 text-[11px] font-semibold uppercase opacity-60">{t(`bulkRow${row}Q`)}</p>
+                        <p className="m-0 mt-0.5 font-display text-[14px] font-extrabold leading-tight">{t(`bulkRow${row}P`)}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="m-0 mt-2 inline-flex items-center gap-1.5 text-[12px] font-semibold">
+                  <Sparkle s={12} c="var(--ink)" />
+                  {t('bulkDiff')}
+                </p>
+              </div>
+
+              {/* several figurines = several designs; the switcher up top is where each
+                  one is edited, so just point at it */}
+              {totalQty > 1 && (
+                <div className="mt-4 flex gap-2.5 rounded-[14px] bg-white p-3 b2 shs" data-testid="slots-hint">
+                  <span className="mt-0.5 shrink-0">
+                    <Sparkle s={16} />
+                  </span>
+                  <p className="m-0 text-[12.5px] leading-snug opacity-75">{t('slotsHint')}</p>
+                </div>
+              )}
             </div>
           )}
         </div>
