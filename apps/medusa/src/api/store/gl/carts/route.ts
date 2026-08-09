@@ -118,12 +118,24 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       selectedOptions: (d.selected_options ?? {}) as Record<string, string>,
     } as DesignState
     const unitGrosz = ladderUnit + selectionDelta(schema, engineDesign)
+    // what the customer actually configured, denormalised onto the line: the cart and
+    // the order confirmation show "which pose, whose name" without loading the design
+    const pose = Object.values(engineDesign.characterSelections)[0] ?? null
+    const printedName =
+      ((d.text_values ?? []) as Array<{ field_id?: string; value?: string }>).find(
+        (t) => t.field_id === 'name' && t.value?.trim(),
+      )?.value ?? null
     return {
       variant_id: variant.id,
       quantity: Math.max(1, d.quantity ?? 1),
       // Medusa v2 stores amounts in major currency units; the engine works in grosz
       unit_price: unitGrosz / 100,
-      metadata: { design_id: d.id, gl_unit_price_grosz: unitGrosz },
+      metadata: {
+        design_id: d.id,
+        gl_unit_price_grosz: unitGrosz,
+        ...(pose ? { gl_pose: pose } : {}),
+        ...(printedName ? { gl_name: printedName } : {}),
+      },
     }
   })
 

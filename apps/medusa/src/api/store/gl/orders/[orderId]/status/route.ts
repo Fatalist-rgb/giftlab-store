@@ -5,9 +5,12 @@ import { PERSONALIZATION_MODULE } from '../../../../../../modules/personalizatio
 import type PersonalizationModuleService from '../../../../../../modules/personalization/service'
 
 /**
- * GET /store/gl/orders/:orderId/status — the customer's view of their order: per line
- * the render state and whether the line still WAITS FOR A PHOTO (the "order now, send
- * the photo later" flow completes on this page). Order ids are unguessable ULIDs; a
+ * GET /store/gl/orders/:orderId/status — the customer's view of their order.
+ *
+ * This payload feeds the "thank you" page, so it is a RECEIPT, not just a status list:
+ * per line the render state, whether the line still waits for a photo, plus what was
+ * configured (pose, printed name) and what was charged. Totals come from the order —
+ * never recomputed here, an order is immutable. Order ids are unguessable ULIDs; a
  * signed email link tightens this further once real mail lands.
  */
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
@@ -17,7 +20,9 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 
   let order
   try {
-    order = await orders.retrieveOrder(orderId, { relations: ['items'] })
+    order = await orders.retrieveOrder(orderId, {
+      relations: ['items', 'shipping_methods'],
+    })
   } catch {
     return res.status(404).json({ message: 'order not found' })
   }
@@ -25,19 +30,34 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const lines: Array<Record<string, unknown>> = []
   for (const item of order.items ?? []) {
     const [line] = await personalization.listOrderLineDesigns({ medusa_line_item_id: item.id })
+    const meta = (item.metadata ?? {}) as Record<string, unknown>
+    const unitPrice = Number(item.unit_price ?? 0)
     lines.push({
       lineItemId: item.id,
       title: item.title,
       quantity: item.quantity,
+      unitPrice,
+      total: unitPrice * Number(item.quantity ?? 1),
+      pose: (meta.gl_pose as string | undefined) ?? null,
+      printedName: (meta.gl_name as string | undefined) ?? null,
+      personalized: Boolean(meta.design_id),
       renderStatus: line?.render_status ?? null,
       needsPhoto: line?.render_status === 'awaiting_photo',
     })
   }
 
+  const ship = (order.shipping_methods ?? [])[0]
+
   res.json({
     orderId: order.id,
     displayId: order.display_id ?? null,
     createdAt: order.created_at,
+    email: order.email ?? null,
+    currency: order.currency_code ?? 'pln',
+    itemTotal: Number(order.item_total ?? 0),
+    shippingTotal: Number(order.shipping_total ?? 0),
+    total: Number(order.total ?? 0),
+    shippingName: ship?.name ?? null,
     lines,
   })
 }

@@ -15,7 +15,24 @@ const CART = {
   total: 158,
   completed: false,
   items: [
-    { id: 'li_e2e', title: 'Figurka z brzuszkiem', quantity: 2, unitPrice: 79, total: 158, designId: 'des_e2e' },
+    { id: 'li_e2e', title: 'Figurka z brzuszkiem', quantity: 2, unitPrice: 79, total: 158, designId: 'des_e2e', pose: 'stoi', printedName: 'Zosia' },
+  ],
+};
+
+const ORDER_STATUS = {
+  orderId: 'order_e2e',
+  displayId: 42,
+  email: 'e2e@test.pl',
+  currency: 'pln',
+  itemTotal: 158,
+  shippingTotal: 15.99,
+  total: 173.99,
+  shippingName: 'Dostawa kurierem',
+  lines: [
+    {
+      lineItemId: 'li_e2e', title: 'Figurka z brzuszkiem', quantity: 2, unitPrice: 79, total: 158,
+      pose: 'stoi', printedName: 'Zosia', renderStatus: 'queued', needsPhoto: false,
+    },
   ],
 };
 
@@ -39,6 +56,16 @@ async function mockApi(page: Page) {
   );
   await page.route('**/api/gl/consent', (route) =>
     route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify({ ok: true }) }),
+  );
+  await page.route('**/api/gl/order-status*', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ORDER_STATUS) }),
+  );
+  await page.route('**/api/gl/delivery-estimate', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ from: '2026-08-14T00:00:00Z', to: '2026-08-20T00:00:00Z' }),
+    }),
   );
 }
 
@@ -82,25 +109,41 @@ test('design → cart → checkout → confirmation', async ({ page }) => {
   await expect(page.getByTestId('added-ok')).toBeVisible();
   await page.getByRole('link', { name: /koszyka/i }).click();
 
-  // cart page: line, totals, withdrawal notice NEXT TO the pay button (T059/FR-030)
+  // cart page: line with the configured pose + name, cart total includes the courier
   await expect(page).toHaveURL(/\/pl\/cart/);
-  await expect(page.getByText('Figurka z brzuszkiem')).toBeVisible();
+  await expect(page.getByText('Personalizowana figurka').first()).toBeVisible();
+  await expect(page.getByText('Imię: Zosia').first()).toBeVisible();
+  await expect(page.getByTestId('cart-total')).toContainText('173,99');
+
+  // → checkout (its own page, as designed)
+  await page.getByTestId('go-checkout').click();
+  await expect(page).toHaveURL(/\/pl\/checkout/);
+
+  // withdrawal notice NEXT TO the pay button (T059/FR-030)
   const notice = page.getByTestId('withdrawal-notice');
   await expect(notice).toBeVisible();
-  await expect(notice).toContainText('art. 38 pkt 3');
+  await expect(notice).toContainText('art. 38');
   const placeOrder = page.getByTestId('place-order');
   await expect(placeOrder).toBeVisible();
 
-  // checkout form → mocked order
+  // checkout form: address, both required consents, pay → mocked order
+  await page.getByTestId('co-name').fill('Zosia Testowa');
   await page.getByTestId('email').fill('e2e@test.pl');
-  await page.getByPlaceholder('Imię').fill('Zosia');
-  await page.getByPlaceholder('Nazwisko').fill('Testowa');
-  await page.getByPlaceholder(/ulica/i).fill('ul. Testowa 1');
-  await page.getByPlaceholder(/kod/i).fill('00-001');
-  await page.getByPlaceholder(/miasto/i).fill('Warszawa');
+  await page.getByTestId('co-street').fill('ul. Testowa 1');
+  await page.getByTestId('co-zip').fill('00001');
+  await page.getByTestId('co-city').fill('Warszawa');
+
+  // the pay button without consents must NOT submit — the hint appears instead
+  await placeOrder.click();
+  await expect(page.getByText(/wymagane zgody/i)).toBeVisible();
+  await page.getByTestId('c-terms').click({ force: true });
+  await page.getByTestId('c-priv').click({ force: true });
   await placeOrder.click();
 
-  // confirmation with the order number
+  // confirmation page with the order number and the receipt
+  await expect(page).toHaveURL(/\/pl\/order\/order_e2e/);
   await expect(page.getByTestId('order-ok')).toBeVisible();
   await expect(page.getByTestId('order-ok')).toContainText('42');
+  await expect(page.getByText('Zamówienie przyjęte')).toBeVisible();
+  await expect(page.getByText('173,99')).toBeVisible();
 });

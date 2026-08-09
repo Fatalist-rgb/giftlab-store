@@ -39,7 +39,6 @@ export async function GET(req: NextRequest) {
     };
   };
 
-  res.headers.get('content-type');
   return NextResponse.json({
     id: cart.id,
     email: cart.email ?? null,
@@ -52,8 +51,12 @@ export async function GET(req: NextRequest) {
       title: i.product_title || i.title || 'Figurka',
       quantity: i.quantity,
       unitPrice: i.unit_price,
-      total: i.total,
+      // Medusa returns line items WITHOUT `total` unless it is asked for by field —
+      // passing it through unguarded is how the cart once printed "NaN zł"
+      total: i.total ?? i.unit_price * i.quantity,
       designId: (i.metadata?.design_id as string | undefined) ?? null,
+      pose: (i.metadata?.gl_pose as string | undefined) ?? null,
+      printedName: (i.metadata?.gl_name as string | undefined) ?? null,
     })),
   });
 }

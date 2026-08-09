@@ -153,6 +153,46 @@ export const IconFb = () => (
   </svg>
 );
 
+/* ---- small utility icons for cart / checkout / confirmation ---- */
+const utilSvg = (s: number) =>
+  ({ width: s, height: s, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.2, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }) as const;
+
+export const IconTrash = ({ s = 17 }: { s?: number }) => (
+  <svg {...utilSvg(s)}>
+    <path d="M4 6.5h16M9.5 6.5V4.8a1.3 1.3 0 0 1 1.3-1.3h2.4a1.3 1.3 0 0 1 1.3 1.3v1.7" />
+    <path d="M6.2 6.5l.9 13a1.8 1.8 0 0 0 1.8 1.7h6.2a1.8 1.8 0 0 0 1.8-1.7l.9-13" />
+    <path d="M10 10.5v6M14 10.5v6" />
+  </svg>
+);
+export const IconMinusSm = ({ s = 16 }: { s?: number }) => (
+  <svg {...utilSvg(s)}><path d="M5 12h14" /></svg>
+);
+export const IconPlusSm = ({ s = 16 }: { s?: number }) => (
+  <svg {...utilSvg(s)}><path d="M12 5v14M5 12h14" /></svg>
+);
+export const IconMail = ({ s = 15 }: { s?: number }) => (
+  <svg {...utilSvg(s)}>
+    <rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="M3.5 7l8.5 6 8.5-6" />
+  </svg>
+);
+export const IconFile = ({ s = 20 }: { s?: number }) => (
+  <svg {...utilSvg(s)}>
+    <path d="M6 3.5h8l4.5 4.5v12.5H6z" /><path d="M13.7 3.6v4.8h4.7" /><path d="M9 13h6M9 16.5h4" />
+  </svg>
+);
+export const IconTools = ({ s = 20 }: { s?: number }) => (
+  <svg {...utilSvg(s)}>
+    <path d="M14.5 6.5a4 4 0 0 1 5-5l-2.8 2.8 2 2L21.5 3.5a4 4 0 0 1-5 5L8 17a2.1 2.1 0 1 1-3-3z" />
+  </svg>
+);
+export const Squiggle = ({ w = 64, c = 'var(--blue)', className = '', style }: {
+  w?: number; c?: string; className?: string; style?: React.CSSProperties;
+}) => (
+  <svg width={w} height={Math.round(w / 4.5)} viewBox="0 0 90 20" className={className} style={style} aria-hidden="true">
+    <path d="M2 14c8-10 14-10 22 0s14 10 22 0 14-10 22 0 14 10 20 0" fill="none" stroke={c} strokeWidth="3.4" strokeLinecap="round" />
+  </svg>
+);
+
 export const PlusIcon = ({ open }: { open?: boolean }) => (
   <svg
     width="22" height="22" viewBox="0 0 24 24" stroke="var(--ink)" strokeWidth="2.6" strokeLinecap="round"

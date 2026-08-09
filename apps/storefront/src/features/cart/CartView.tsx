@@ -1,19 +1,23 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { Guarantee } from '@/components/Guarantee';
+import { ArrowR, CheckIcon, Sparkle } from '@/components/icons';
+import { DeliveryRow, EmptyCartArt, ItemThumb, SHIP_COURIER_PLN, itemMeta, pluralKey, zl } from './bits';
 
-type CartItem = {
+export type CartItem = {
   id: string;
   title: string;
   quantity: number;
   unitPrice: number;
   total: number;
   designId: string | null;
+  pose?: string | null;
+  printedName?: string | null;
 };
-type Cart = {
+export type Cart = {
   id: string;
   currency: string;
   itemTotal: number;
@@ -21,32 +25,29 @@ type Cart = {
   completed: boolean;
   items: CartItem[];
 };
-type OrderResult = { orderId: string; displayId: number; total: number; currency: string; email: string };
 
-const money = (v: number, currency: string) =>
-  new Intl.NumberFormat('pl-PL', { style: 'currency', currency: currency.toUpperCase() }).format(v);
+/** The quantity ladder, for the honest bulk hint — display only; Medusa holds the
+ *  authoritative prices, written per line when the cart was built. */
+const LADDER = [
+  { min: 6, unit: 49 },
+  { min: 3, unit: 65 },
+  { min: 1, unit: 79 },
+];
+const unitFor = (n: number) => LADDER.find((l) => n >= l.min)?.unit ?? 79;
+const nextTier = (n: number) => (n < 3 ? 3 : n < 6 ? 6 : null);
 
 /**
- * The cart + guest checkout page. Reads the cart id the constructor stored, shows the
- * lines, and submits a one-step checkout (address → courier → payment → order). The
- * per-line withdrawal notice sits next to the pay button (FR-030): personalized lines
- * are excluded from the 14-day right (art. 38 pkt 3), and ordering acknowledges that.
+ * The cart, in the approved design: lines on the left, a cream summary aside on the
+ * right, and the honest bulk hint — the ladder, never a timer. Quantity is chosen in
+ * the constructor (it drives the ladder repricing there), so lines here are a receipt
+ * preview, not steppers: editing a line would silently change every OTHER line's
+ * tier price, and that is a backend repricing job, not a UI toggle.
  */
 export function CartView() {
   const t = useTranslations('cart');
+  const locale = useLocale();
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
-  const [placing, setPlacing] = useState(false);
-  const [order, setOrder] = useState<OrderResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [address1, setAddress1] = useState('');
-  const [city, setCity] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-  const [phone, setPhone] = useState('');
   const [delivery, setDelivery] = useState<{ from: string; to: string } | null>(null);
 
   useEffect(() => {
@@ -69,152 +70,141 @@ export function CartView() {
       .finally(() => setLoading(false));
   }, []);
 
-  const placeOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!cart) return;
-    setPlacing(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/gl/checkout', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          cartId: cart.id,
-          email,
-          address: { firstName, lastName, address1, city, postalCode, phone },
-        }),
-      });
-      const body = (await res.json()) as OrderResult & { message?: string; redirectUrl?: string };
-      if (!res.ok) throw new Error(body.message || 'checkout failed');
-      if (body.redirectUrl) {
-        // redirect payment (BLIK / przelew / karta): the order is created on return,
-        // so the cart id stays in storage until then
-        window.location.href = body.redirectUrl;
-        return;
-      }
-      localStorage.removeItem('gl_cart_id');
-      setOrder(body);
-    } catch {
-      setError(t('error'));
-    } finally {
-      setPlacing(false);
-    }
-  };
-
   if (loading) {
     return <main className="mx-auto max-w-2xl px-5 py-16 text-center opacity-60">{t('loading')}</main>;
   }
 
-  if (order) {
-    return (
-      <main className="mx-auto max-w-2xl px-5 py-16 text-center">
-        <span className="inline-block rounded-full border-2 border-ink bg-lime px-3 py-1 text-sm font-bold shadow-offset-sm">
-          {t('orderBadge')}
-        </span>
-        <h1 className="mt-5 font-display text-4xl font-extrabold" data-testid="order-ok">
-          {t('orderTitle', { number: order.displayId })}
-        </h1>
-        <p className="mt-4 text-lg opacity-75">
-          {t('orderSub', { total: money(order.total, order.currency), email: order.email })}
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            href={`/order/${order.orderId}`}
-            data-testid="track-order"
-            className="inline-block rounded-2xl border-2 border-ink bg-white px-6 py-3 font-display font-bold shadow-offset"
-          >
-            {t('trackOrder')}
-          </Link>
-          <Link href="/product" className="inline-block rounded-2xl border-2 border-ink bg-mandarin px-6 py-3 font-display font-bold text-white shadow-offset">
-            {t('orderAgain')}
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
   if (!cart || cart.items.length === 0) {
     return (
-      <main className="mx-auto max-w-2xl px-5 py-16 text-center">
-        <h1 className="font-display text-3xl font-extrabold">{t('emptyTitle')}</h1>
-        <p className="mt-3 opacity-70">{t('emptySub')}</p>
-        <Link href="/product" className="mt-6 inline-block rounded-2xl border-2 border-ink bg-mandarin px-6 py-3 font-display font-bold text-white shadow-offset">
+      <main className="mx-auto w-full max-w-6xl px-4 py-10 text-center sm:py-14">
+        <EmptyCartArt />
+        <h1 className="mt-6 font-display text-2xl font-extrabold sm:text-3xl">{t('emptyTitle')}</h1>
+        <p className="mx-auto mt-2 max-w-md opacity-70">{t('emptySub')}</p>
+        <Link href="/product" className="btn-p mt-7">
           {t('emptyCta')}
+          <ArrowR />
         </Link>
+        <div className="mx-auto mt-12 max-w-sm text-left">
+          <Guarantee />
+        </div>
       </main>
     );
   }
 
+  const count = cart.items.reduce((s, i) => s + i.quantity, 0);
+  const subtotal = cart.itemTotal;
+  const ship = SHIP_COURIER_PLN;
+  const total = subtotal + ship;
+
+  // the honest bulk hint: the next tier when it is close, the unlocked tier otherwise
+  const nt = nextTier(count);
+  const need = nt ? nt - count : 0;
+  const showUpsell = !!nt && need <= 2;
+  const bulkActive = unitFor(count) < 79;
+
   return (
-    <main className="mx-auto max-w-2xl px-5 py-12">
-      <h1 className="font-display text-3xl font-extrabold">{t('title')}</h1>
+    <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:py-10">
+      <h1 className="m-0 flex flex-wrap items-center gap-3 font-display text-3xl font-extrabold sm:text-4xl">
+        {t('title')}
+        <span className="stkr bg-pink text-[13px] text-white" style={{ transform: 'rotate(2deg)' }}>
+          {count} {t(pluralKey(count))}
+        </span>
+        <Sparkle s={26} />
+      </h1>
 
-      {/* lines */}
-      <div className="mt-6 space-y-3">
-        {cart.items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between rounded-[20px] border-2 border-ink bg-cream p-4 shs">
-            <div>
-              <p className="font-display font-bold">{item.title}</p>
-              <p className="text-sm opacity-60">
-                {item.quantity} × {money(item.unitPrice, cart.currency)}
-                {item.designId ? ` · ${t('personalized')}` : ''}
-              </p>
-            </div>
-            <span className="font-display text-lg font-bold">{money(item.total, cart.currency)}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* checkout form */}
-      <form onSubmit={placeOrder} className="mt-8 space-y-3">
-        <h2 className="font-display text-xl font-bold">{t('deliveryTitle')}</h2>
-        <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail" className="w-full rounded-xl border-2 border-ink px-4 py-2.5" data-testid="email" />
-        <div className="grid grid-cols-2 gap-3">
-          <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder={t('firstName')} className="rounded-xl border-2 border-ink px-4 py-2.5" />
-          <input required value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder={t('lastName')} className="rounded-xl border-2 border-ink px-4 py-2.5" />
-        </div>
-        <input required value={address1} onChange={(e) => setAddress1(e.target.value)} placeholder={t('address')} className="w-full rounded-xl border-2 border-ink px-4 py-2.5" />
-        <div className="grid grid-cols-2 gap-3">
-          <input required value={postalCode} onChange={(e) => setPostalCode(e.target.value)} placeholder={t('postal')} className="rounded-xl border-2 border-ink px-4 py-2.5" />
-          <input required value={city} onChange={(e) => setCity(e.target.value)} placeholder={t('city')} className="rounded-xl border-2 border-ink px-4 py-2.5" />
-        </div>
-        <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('phone')} className="w-full rounded-xl border-2 border-ink px-4 py-2.5" />
-
-        {/* totals */}
-        <div className="mt-4 rounded-[20px] border-2 border-ink bg-cream p-4 shs">
-          <div className="flex justify-between text-sm opacity-70">
-            <span>{t('items')}</span>
-            <span>{money(cart.itemTotal, cart.currency)}</span>
-          </div>
-          <div className="flex justify-between text-sm opacity-70">
-            <span>{t('shipping')}</span>
-            <span>{t('shippingCourier')}</span>
-          </div>
-          {delivery && (
-            <div className="flex justify-between text-sm opacity-70" data-testid="delivery-window">
-              <span>{t('deliveryWindow')}</span>
-              <span>
-                {new Date(delivery.from).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })} –{' '}
-                {new Date(delivery.to).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })}
+      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[1fr_380px] lg:gap-8">
+        <div className="flex min-w-0 flex-col gap-4">
+          {(showUpsell || bulkActive) && (
+            <div
+              className="flex items-start gap-3 rounded-[var(--r-card)] p-4 b2 sh"
+              style={{ background: showUpsell ? 'var(--lime)' : 'var(--cream)', transform: 'rotate(-.5deg)' }}
+            >
+              <span className="inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full border-2 border-ink bg-white">
+                {showUpsell ? <Sparkle s={18} /> : <CheckIcon s={17} />}
               </span>
+              <div className="min-w-0">
+                <p className="m-0 font-display font-extrabold leading-snug">
+                  {showUpsell
+                    ? t('bulkTo', { n: need, p: zl(unitFor(nt!)) })
+                    : t('bulkActive', { p: zl(unitFor(count)) })}
+                </p>
+                <p className="m-0 mt-1 text-xs opacity-75">{t('bulkDiff')}</p>
+                <p className="m-0 mt-1.5 text-xs font-semibold opacity-90">{t('bulkLadder')}</p>
+              </div>
             </div>
           )}
+
+          {cart.items.map((item) => (
+            <div key={item.id} className="rounded-[var(--r-card)] bg-white p-4 b2 sh sm:p-5">
+              <div className="flex gap-3 sm:gap-5">
+                <div className="shrink-0 pt-1">
+                  <ItemThumb pose={item.pose} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="m-0 font-display text-lg font-bold leading-tight sm:text-xl">{t('prodName')}</h3>
+                  <p className="m-0 mt-0.5 text-[13px] opacity-60">{itemMeta(t, item)}</p>
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-3 sm:mt-4">
+                    <span className="stkr bg-white text-[13px]">× {item.quantity}</span>
+                    <div className="ml-auto text-right">
+                      <div className="font-display text-xl font-extrabold sm:text-2xl">{zl(item.total)}</div>
+                      {item.quantity > 1 && (
+                        <div className="text-xs opacity-55">
+                          {item.quantity} × {zl(item.unitPrice)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <div className="pt-1 text-sm">
+            <Link href="/#szablony" className="underline underline-offset-2 opacity-70 hover:opacity-100">
+              {t('continue')}
+            </Link>
+          </div>
         </div>
 
-        <Guarantee compact />
-
-        {/* withdrawal notice beside the pay button — FR-030 */}
-        <p className="text-xs leading-relaxed opacity-60" data-testid="withdrawal-notice">
-          {t('withdrawalNotice')}
-        </p>
-
-        {error && <p className="rounded-xl bg-red-100 px-4 py-2 text-sm font-semibold text-red-900">{error}</p>}
-
-        <button type="submit" disabled={placing} data-testid="place-order" className="w-full btn-p py-3 disabled:opacity-60">
-          {placing ? '…' : t('placeOrder')}
-        </button>
-        <p className="text-center text-xs opacity-50">{t('paymentNote')}</p>
-      </form>
+        <aside className="rounded-[var(--r-card)] bg-cream p-5 b2 sh lg:sticky lg:top-24 sm:p-6">
+          <h2 className="m-0 flex items-center gap-2 font-display text-xl font-extrabold">
+            {t('summaryH')}
+            <Sparkle s={18} />
+          </h2>
+          <div className="mt-4 flex flex-col gap-2.5 text-[15px]">
+            <div className="flex justify-between gap-3">
+              <span>{t('sub')}</span>
+              <b className="font-display">{zl(subtotal)}</b>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span>
+                {t('ship')}
+                <span className="block text-xs opacity-55">{t('shipKurier')}</span>
+              </span>
+              <b className="font-display">{zl(ship)}</b>
+            </div>
+          </div>
+          <div className="my-4" style={{ borderTop: '2px dashed rgba(23,19,26,.25)' }} />
+          <div className="flex items-end justify-between gap-3">
+            <span className="font-display text-lg font-bold">{t('totalWord')}</span>
+            <span className="font-display text-3xl font-extrabold" data-testid="cart-total">
+              {zl(total)}
+            </span>
+          </div>
+          {delivery && (
+            <div className="mt-4">
+              <DeliveryRow label={t('delLbl')} from={delivery.from} to={delivery.to} locale={locale} />
+            </div>
+          )}
+          <Link href="/checkout" className="btn-p mt-5 w-full" data-testid="go-checkout">
+            {t('checkout')}
+            <ArrowR />
+          </Link>
+          <div className="mt-5 pt-4" style={{ borderTop: '2px dashed rgba(23,19,26,.25)' }}>
+            <Guarantee compact />
+          </div>
+        </aside>
+      </div>
     </main>
   );
 }
