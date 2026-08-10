@@ -11,6 +11,9 @@ type Review = {
   author: string;
   verifiedBuyer: boolean;
   publishedAt: string | null;
+  photoUrl?: string | null;
+  avatarUrl?: string | null;
+  variantLabel?: string | null;
 };
 type Summary = { count: number; average: number | null; distribution: Record<string, number> };
 
@@ -104,15 +107,26 @@ export function Reviews() {
           {reviews.slice(0, 8).map((r, i) => (
             <figure
               key={r.id}
-              className="m-0 flex h-full flex-col rounded-[var(--r-card)] bg-white p-4 b2 sh"
+              className="m-0 flex h-full flex-col rounded-[var(--r-card)] bg-white p-3.5 b2 sh"
               style={{ transform: `rotate(${[-1.4, 1.2, -1, 1.6][i % 4]}deg)` }}
             >
+              {r.photoUrl && (
+                <div className="mb-2.5 overflow-hidden rounded-[11px] border-2 border-ink" style={{ aspectRatio: '4/3' }}>
+                  <img src={r.photoUrl} alt="" loading="lazy" className="h-full w-full object-cover" />
+                </div>
+              )}
               <Stars value={r.rating} />
-              <blockquote className="mt-2.5 flex-1 whitespace-pre-wrap text-[14px] leading-snug opacity-85">
+              <blockquote className="mt-2 flex-1 whitespace-pre-wrap text-[13.5px] leading-snug opacity-85">
                 {r.body}
               </blockquote>
-              <figcaption className="mt-4 pt-3" style={{ borderTop: '2px dashed rgba(23,19,26,.18)' }}>
-                <p className="truncate font-display text-[13.5px] font-bold leading-tight">{r.author}</p>
+              <figcaption className="mt-3 flex items-center gap-2.5 pt-2.5" style={{ borderTop: '2px dashed rgba(23,19,26,.18)' }}>
+                {r.avatarUrl && (
+                  <img src={r.avatarUrl} alt="" loading="lazy" className="h-8 w-8 shrink-0 rounded-full border-2 border-ink object-cover" />
+                )}
+                <div className="min-w-0">
+                  <p className="m-0 truncate font-display text-[13.5px] font-bold leading-tight">{r.author}</p>
+                  {r.variantLabel && <p className="m-0 truncate text-[11.5px] opacity-55">{r.variantLabel}</p>}
+                </div>
               </figcaption>
               {r.verifiedBuyer && (
                 <span className="mt-2.5 inline-flex items-center gap-1 text-[10.5px] font-semibold" style={{ color: 'var(--blue)' }}>

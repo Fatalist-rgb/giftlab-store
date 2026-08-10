@@ -14,6 +14,9 @@ const Review = model.define('review', {
   author_name: model.text(),
   locale: model.enum(['pl', 'en', 'uk']).default('pl'),
   photo_key: model.text().nullable(),
+  avatar_key: model.text().nullable(),
+  /** short "what was ordered" line under the author, e.g. "Z kuflem, na komodzie" */
+  variant_label: model.text().nullable(),
   verified_buyer: model.boolean().default(false),
   order_display_id: model.number().nullable(), // what the reviewer claimed (audit)
   status: model.enum(['pending', 'published', 'rejected']).default('pending'),

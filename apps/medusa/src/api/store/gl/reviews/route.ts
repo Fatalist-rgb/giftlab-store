@@ -40,6 +40,9 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
       verifiedBuyer: r.verified_buyer,
       locale: r.locale,
       publishedAt: r.published_at,
+      photoUrl: r.photo_key ?? null,
+      avatarUrl: r.avatar_key ?? null,
+      variantLabel: r.variant_label ?? null,
     })),
   })
 }
