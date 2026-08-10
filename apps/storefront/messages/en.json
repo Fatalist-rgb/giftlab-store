@@ -220,7 +220,9 @@
     "slotsHint": "Each figurine is set up separately — the figurine switcher is at the top of the builder. Photo, name and character are chosen per figurine.",
     "slotsTitle": "Every figurine is configured separately",
     "slotsD": "The discount counts total units, but the designs do not have to match.",
-    "figN": "Figurine"
+    "figN": "Figurine",
+    "shot_couple": "A couple on the shelf",
+    "shot_woman": "Unpacked as a gift"
   },
   "catalog": {
     "title": "Catalogue",
