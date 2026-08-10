@@ -2,12 +2,24 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { CatalogBar } from '@/components/CatalogBar';
 
 const LANG_NAMES: Record<string, string> = { pl: 'Polski', en: 'English', uk: 'Українська' };
+const LANG_FLAGS: Record<string, string> = { pl: '🇵🇱', en: '🇬🇧', uk: '🇺🇦' };
+
+/** The mobile menu's category tiles — same entries as the pinned bar, icon + name
+ *  (the reference pattern), only the figurines are a live link today. */
+const MENU_TILES = [
+  { key: 'cbFigurines', icon: '🫃', href: '/catalog', active: true },
+  { key: 'cbOccasions', icon: '🎁' },
+  { key: 'cbForWhom', icon: '👪' },
+  { key: 'cbPets', icon: '🐶' },
+  { key: 'cbHolidays', icon: '🎄' },
+  { key: 'cbNew', icon: '✨' },
+] as const;
 
 function ChevDown() {
   return (
@@ -38,6 +50,14 @@ export function SiteHeader() {
     const rest = pathname.replace(new RegExp(`^/(${routing.locales.join('|')})`), '') || '/';
     startTransition(() => router.replace(`/${next}${rest}`));
   };
+
+  // the open menu owns the screen — the page behind it must not scroll
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   const links = (
     <>
@@ -99,14 +119,74 @@ export function SiteHeader() {
 
       <CatalogBar />
 
+      {/* mobile menu: a full-screen sheet — category TILES first (the reference
+          pattern: icon + name, two columns), then the utility rows, language last */}
       {open && (
-        <div className="lg:hidden" style={{ borderTop: 'var(--border)' }}>
-          <div className="mx-auto flex max-w-6xl flex-col px-4 py-2 font-display text-lg font-bold [&_a]:py-3">
-            {links}
-            <label className="lang-sel py-3" style={{ display: 'flex', width: '100%' }}>
+        <div className="fixed inset-0 z-[95] overflow-y-auto bg-cream lg:hidden" data-testid="mobile-menu">
+          <div className="sticky top-0 flex items-center justify-between bg-cream px-4 py-3" style={{ borderBottom: 'var(--border)' }}>
+            <span className="font-display text-xl font-extrabold">{t('menuTitle')}</span>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[12px] border-2 border-ink bg-white shs"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden>
+                <path d="M6 6l12 12" />
+                <path d="M18 6L6 18" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="px-4 pb-10 pt-4">
+            <div className="grid grid-cols-2 gap-3">
+              {MENU_TILES.map((tile) =>
+                'href' in tile ? (
+                  <Link
+                    key={tile.key}
+                    href={tile.href}
+                    onClick={() => setOpen(false)}
+                    className="flex flex-col gap-2 rounded-[14px] border-2 border-ink bg-white p-3.5 no-underline shs"
+                  >
+                    <span className="text-[26px] leading-none" aria-hidden>{tile.icon}</span>
+                    <span className="font-display text-[14.5px] font-bold leading-tight text-mandarin">{t(tile.key)}</span>
+                  </Link>
+                ) : (
+                  <span
+                    key={tile.key}
+                    aria-disabled="true"
+                    className="flex flex-col gap-2 rounded-[14px] border-2 bg-white p-3.5 shs"
+                    style={{ borderColor: 'rgba(23,19,26,.35)', opacity: 0.75 }}
+                  >
+                    <span className="text-[26px] leading-none" style={{ filter: 'grayscale(.4)' }} aria-hidden>{tile.icon}</span>
+                    <span className="font-display text-[14.5px] font-bold leading-tight">
+                      {t(tile.key)}
+                      <span className="ml-1.5 inline-block rounded-full border-2 border-ink bg-pink px-[7px] py-px align-middle text-[9px] font-bold text-white">
+                        {t('cbSoon')}
+                      </span>
+                    </span>
+                  </span>
+                ),
+              )}
+            </div>
+
+            <div className="mt-5 rounded-[14px] border-2 border-ink bg-white shs">
+              <div className="flex flex-col font-display text-[16px] font-bold [&_a]:px-4 [&_a]:py-3.5 [&_a]:no-underline [&_a+a]:border-t-2 [&_a+a]:[border-color:rgba(23,19,26,.12)]">
+                {links}
+              </div>
+            </div>
+
+            <label className="mt-5 flex items-center gap-3 rounded-[14px] border-2 border-ink bg-white px-4 py-2 shs">
+              <span className="text-[20px]" aria-hidden>{LANG_FLAGS[locale] ?? '🌐'}</span>
               <span className="sr-only">Language</span>
-              <select value={locale} onChange={(e) => switchLocale(e.target.value)} aria-label="Language"
-                style={{ height: 44, fontSize: 14, padding: '0 34px 0 15px', width: '100%' }}>
+              <select
+                value={locale}
+                onChange={(e) => switchLocale(e.target.value)}
+                aria-label="Language"
+                disabled={pending}
+                className="w-full bg-transparent py-2 font-display text-[15px] font-bold outline-none"
+                style={{ appearance: 'none', WebkitAppearance: 'none', border: 'none' }}
+              >
                 {routing.locales.map((l) => (
                   <option key={l} value={l}>{LANG_NAMES[l] ?? l}</option>
                 ))}
