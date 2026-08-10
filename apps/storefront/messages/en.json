@@ -238,7 +238,10 @@
     "petsD": "Your pet in acrylic — a dog, cat or rabbit with the face from your photo.",
     "xmas": "Holidays",
     "xmasD": "Santa, an elf and a reindeer — fridge figurines for the gifting season.",
-    "soonNote": "Categories in the works — placeholder artwork."
+    "soonNote": "Categories in the works — placeholder artwork.",
+    "from": "from",
+    "cardCta": "View",
+    "backCat": "Back to the catalogue"
   },
   "cart": {
     "title": "Your cart",

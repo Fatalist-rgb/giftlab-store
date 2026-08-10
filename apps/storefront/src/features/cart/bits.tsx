@@ -20,10 +20,30 @@ export const SHIP_COURIER_PLN = 15.99;
 export const zl = (v: number) =>
   new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(v);
 
-/** The pose preview in a bordered tile — the demo's ItemThumb. */
-export function ItemThumb({ pose, size = 'sm' }: { pose?: string | null; size?: 'xs' | 'sm' }) {
-  const p = POSES.find((x) => x.id === (pose as PoseId)) ?? POSES[0]!;
+/** The line preview in a bordered tile — the demo's ItemThumb. A figurine line shows
+ *  its pose artwork; an ordinary catalogue line shows the product thumbnail. */
+export function ItemThumb({
+  pose,
+  thumbnail,
+  size = 'sm',
+}: {
+  pose?: string | null;
+  thumbnail?: string | null;
+  size?: 'xs' | 'sm';
+}) {
   const box = size === 'xs' ? 48 : 72;
+  if (!pose && thumbnail) {
+    return (
+      <div
+        className="overflow-hidden rounded-[12px] border-2 border-ink bg-cream"
+        style={{ width: box, height: box }}
+      >
+        { }
+        <img src={thumbnail} alt="" className="h-full w-full object-cover" />
+      </div>
+    );
+  }
+  const p = POSES.find((x) => x.id === (pose as PoseId)) ?? POSES[0]!;
   return (
     <div
       className="flex items-center justify-center overflow-hidden rounded-[12px] border-2 border-ink bg-cream"
@@ -40,15 +60,16 @@ export function ItemThumb({ pose, size = 'sm' }: { pose?: string | null; size?: 
   );
 }
 
-/** One line's meta: pose · printed name · spec — same string in cart and confirmation. */
+/** One line's meta: pose · printed name · spec — same string in cart and confirmation.
+ *  An ordinary line (no design) gets no figurine spec text. */
 export function itemMeta(
   t: ReturnType<typeof useTranslations<'cart'>>,
-  item: { pose?: string | null; printedName?: string | null },
+  item: { pose?: string | null; printedName?: string | null; designId?: string | null },
 ): string {
   const parts: string[] = [];
   if (item.pose) parts.push(t(`pose.${item.pose as PoseId}`));
   if (item.printedName) parts.push(`${t('nameChip')}: ${item.printedName}`);
-  if (!parts.length) parts.push(t('specLine'));
+  if (!parts.length && item.designId !== null) parts.push(t('specLine'));
   return parts.join(' · ');
 }
 

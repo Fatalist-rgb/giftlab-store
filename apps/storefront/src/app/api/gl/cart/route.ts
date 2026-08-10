@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
         id: string;
         title?: string | null;
         product_title?: string | null;
+        thumbnail?: string | null;
         quantity: number;
         unit_price: number;
         total: number;
@@ -57,6 +58,7 @@ export async function GET(req: NextRequest) {
       designId: (i.metadata?.design_id as string | undefined) ?? null,
       pose: (i.metadata?.gl_pose as string | undefined) ?? null,
       printedName: (i.metadata?.gl_name as string | undefined) ?? null,
+      thumbnail: i.thumbnail ?? null,
     })),
   });
 }

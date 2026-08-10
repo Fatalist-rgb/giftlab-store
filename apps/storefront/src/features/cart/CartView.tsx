@@ -16,6 +16,7 @@ export type CartItem = {
   designId: string | null;
   pose?: string | null;
   printedName?: string | null;
+  thumbnail?: string | null;
 };
 export type Cart = {
   id: string;
@@ -92,15 +93,18 @@ export function CartView() {
   }
 
   const count = cart.items.reduce((s, i) => s + i.quantity, 0);
+  // the ladder spans FIGURINES only — ordinary catalogue goods neither count toward
+  // a tier nor get tier pricing, so the hint must not count them either
+  const figCount = cart.items.filter((i) => i.designId).reduce((s, i) => s + i.quantity, 0);
   const subtotal = cart.itemTotal;
   const ship = SHIP_COURIER_PLN;
   const total = subtotal + ship;
 
   // the honest bulk hint: the next tier when it is close, the unlocked tier otherwise
-  const nt = nextTier(count);
-  const need = nt ? nt - count : 0;
-  const showUpsell = !!nt && need <= 2;
-  const bulkActive = unitFor(count) < 79;
+  const nt = nextTier(figCount);
+  const need = nt ? nt - figCount : 0;
+  const showUpsell = figCount > 0 && !!nt && need <= 2;
+  const bulkActive = figCount > 0 && unitFor(figCount) < 79;
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:py-10">
@@ -126,7 +130,7 @@ export function CartView() {
                 <p className="m-0 font-display font-extrabold leading-snug">
                   {showUpsell
                     ? t('bulkTo', { n: need, p: zl(unitFor(nt!)) })
-                    : t('bulkActive', { p: zl(unitFor(count)) })}
+                    : t('bulkActive', { p: zl(unitFor(figCount)) })}
                 </p>
                 <p className="m-0 mt-1 text-xs opacity-75">{t('bulkDiff')}</p>
                 <p className="m-0 mt-1.5 text-xs font-semibold opacity-90">{t('bulkLadder')}</p>
@@ -138,10 +142,12 @@ export function CartView() {
             <div key={item.id} className="rounded-[var(--r-card)] bg-white p-4 b2 sh sm:p-5">
               <div className="flex gap-3 sm:gap-5">
                 <div className="shrink-0 pt-1">
-                  <ItemThumb pose={item.pose} />
+                  <ItemThumb pose={item.pose} thumbnail={item.thumbnail} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="m-0 font-display text-lg font-bold leading-tight sm:text-xl">{t('prodName')}</h3>
+                  <h3 className="m-0 font-display text-lg font-bold leading-tight sm:text-xl">
+                    {item.designId ? t('prodName') : item.title}
+                  </h3>
                   <p className="m-0 mt-0.5 text-[13px] opacity-60">{itemMeta(t, item)}</p>
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-3 sm:mt-4">
                     <span className="stkr bg-white text-[13px]">× {item.quantity}</span>

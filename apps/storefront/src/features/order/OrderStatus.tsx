@@ -20,6 +20,7 @@ type Line = {
   total?: number;
   pose?: string | null;
   printedName?: string | null;
+  personalized?: boolean;
   renderStatus: string | null;
   needsPhoto: boolean;
 };
@@ -246,8 +247,12 @@ export function OrderStatus({ orderId }: { orderId: string }) {
                     <ItemThumb pose={line.pose} size="xs" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="font-display text-sm font-bold leading-tight">{tCart('prodName')}</div>
-                    <div className="mt-0.5 text-xs opacity-60">{itemMeta(tCart, line)}</div>
+                    <div className="font-display text-sm font-bold leading-tight">
+                      {line.personalized === false && line.title ? line.title : tCart('prodName')}
+                    </div>
+                    <div className="mt-0.5 text-xs opacity-60">
+                      {itemMeta(tCart, { ...line, designId: line.personalized === false ? null : 'x' })}
+                    </div>
                     {typeof line.unitPrice === 'number' && (
                       <div className="text-xs opacity-60">
                         {line.quantity} × {zl(line.unitPrice)}

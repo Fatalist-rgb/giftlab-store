@@ -45,8 +45,10 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   // MERGE: an open cart's designs join the new ones, and the whole set is repriced —
   // the ladder must span the full order, so existing lines cannot keep an old unit
   // price. Rebuilding the cart is the correct move, not appending. The old cart is
-  // simply abandoned (harmless).
+  // simply abandoned (harmless). ORDINARY lines (admin-added goods, no design_id)
+  // are carried over verbatim — the rebuild must not eat them.
   let carriedEmail: string | null = null
+  const carriedSimple: Array<{ variant_id: string; quantity: number }> = []
   if (body.cartId) {
     try {
       const carts: ICartModuleService = req.scope.resolve(Modules.CART)
@@ -57,6 +59,12 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
           .filter((x): x is string => typeof x === 'string')
         designIds = [...new Set([...oldIds, ...designIds])]
         carriedEmail = old.email ?? null
+        for (const i of old.items ?? []) {
+          const meta = i.metadata as Record<string, unknown> | null
+          if (!meta?.design_id && i.variant_id) {
+            carriedSimple.push({ variant_id: i.variant_id, quantity: i.quantity as number })
+          }
+        }
       }
     } catch {
       /* unknown/gone cart — proceed with the new designs only */
@@ -152,7 +160,8 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       sales_channel_id: channel?.id,
       email: email ?? carriedEmail ?? undefined,
       currency_code: 'pln',
-      items,
+      // ordinary lines ride along with NO unit_price — the price list reprices them
+      items: [...items, ...carriedSimple],
     },
   })
 

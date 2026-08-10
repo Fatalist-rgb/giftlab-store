@@ -238,7 +238,10 @@
     "petsD": "Pupil w akrylu — pies, kot albo królik z pyszczkiem z Twojego zdjęcia.",
     "xmas": "Święta",
     "xmasD": "Mikołaj, elf i renifer — figurki na lodówkę na sezon prezentowy.",
-    "soonNote": "Kategorie w przygotowaniu — grafiki poglądowe."
+    "soonNote": "Kategorie w przygotowaniu — grafiki poglądowe.",
+    "from": "od",
+    "cardCta": "Zobacz",
+    "backCat": "Wróć do katalogu"
   },
   "cart": {
     "title": "Koszyk",

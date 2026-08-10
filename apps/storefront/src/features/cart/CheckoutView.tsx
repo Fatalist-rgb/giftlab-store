@@ -330,10 +330,12 @@ export function CheckoutView() {
             {cart.items.map((it) => (
               <div key={it.id} className="flex items-center gap-3">
                 <div className="shrink-0">
-                  <ItemThumb pose={it.pose} size="xs" />
+                  <ItemThumb pose={it.pose} thumbnail={it.thumbnail} size="xs" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="font-display text-sm font-bold leading-tight">{tc('prodName')}</div>
+                  <div className="font-display text-sm font-bold leading-tight">
+                    {it.designId ? tc('prodName') : it.title}
+                  </div>
                   <div className="mt-0.5 text-xs opacity-60">{itemMeta(tc, it)}</div>
                   <div className="text-xs opacity-60">
                     {it.quantity} × {zl(it.unitPrice)}
