@@ -40,7 +40,7 @@ const OCCASION_PHOTO = [
 const UGC: { photo?: string; pose?: PoseId; user: string; likes: string; rot: number; viral?: boolean }[] = [
   { photo: '/photos/ugc-couple-shelf.webp', user: '@kasia.w', likes: '1,2k', rot: -1.8 },
   { pose: 'kieszen', user: '@michal_p', likes: '870', rot: 1.5 },
-  { photo: '/photos/ugc-real-lying.webp', user: '@ola.i.kuba', likes: '3,4k', rot: -1.2, viral: true },
+  { photo: '/photos/scene-hand-sq.webp', user: '@ola.i.kuba', likes: '3,4k', rot: -1.2, viral: true },
   { pose: 'lezy', user: '@burek.official', likes: '2,1k', rot: 1.8 },
   { photo: '/photos/ugc-woman-gift.webp', user: '@lucy.golden', likes: '640', rot: -1.5 },
   { pose: 'kufel', user: '@gosia.k', likes: '1,5k', rot: 1.2 },

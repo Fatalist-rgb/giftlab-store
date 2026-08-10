@@ -17,7 +17,6 @@ const SHOTS = [
   { k: 'fridge', src: '/photos/scene-fridge-tall.webp', full: '/photos/scene-fridge-tall.webp', ar: '4/5' },
   { k: 'table', src: '/photos/scene-desk.webp', full: '/photos/scene-desk.webp', ar: '3/2' },
   { k: 'couple', src: '/photos/ugc-couple-shelf.webp', full: '/photos/ugc-couple-shelf.webp', ar: '1/1' },
-  { k: 'lezy', src: '/photos/real-lying-wide.webp', full: '/photos/real-lying-wide.webp', ar: '4/3' },
   { k: 'woman', src: '/photos/ugc-woman-gift.webp', full: '/photos/ugc-woman-gift.webp', ar: '1/1' },
 ] as const;
 
