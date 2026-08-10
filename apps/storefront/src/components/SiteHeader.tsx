@@ -123,7 +123,9 @@ export function SiteHeader() {
           pattern: icon + name, two columns), then the utility rows, language last */}
       {open && (
         <div className="fixed inset-0 z-[95] overflow-y-auto bg-cream lg:hidden" data-testid="mobile-menu">
-          <div className="sticky top-0 flex items-center justify-between bg-cream px-4 py-3" style={{ borderBottom: 'var(--border)' }}>
+          {/* z-10: without it the scrolled tiles paint OVER this sticky bar and steal
+              the close button's clicks */}
+          <div className="sticky top-0 z-10 flex items-center justify-between bg-cream px-4 py-3" style={{ borderBottom: 'var(--border)' }}>
             <span className="font-display text-xl font-extrabold">{t('menuTitle')}</span>
             <button
               type="button"
