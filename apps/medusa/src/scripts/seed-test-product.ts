@@ -62,6 +62,9 @@ export default async function ({ container }: ExecArgs) {
               title: 'Standard',
               sku: 'TEST-KUBEK-STD',
               options: { Wariant: 'Standard' },
+              // no stock tracking at launch — the shop sells made-to-order goods;
+              // leaving this on without a stock location breaks add-to-cart
+              manage_inventory: false,
               prices: [{ amount: 39.99, currency_code: 'pln' }],
             },
           ],
