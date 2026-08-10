@@ -433,7 +433,7 @@ export function Constructor({
         {/* sticky on EVERY size: on a phone the preview used to scroll away long
             before the step tabs came into reach, so the customer picked a pose blind.
             z-30 keeps it under the header (z-50) and above the builder. */}
-        <div className="sticky top-[104px] z-30 bg-white py-2 lg:top-[120px] lg:py-0">
+        <div className="sticky top-[64px] z-30 bg-white py-2 lg:top-[120px] lg:py-0">
           <ProductGallery live={liveScene} />
           <p className="mt-3 text-center text-[11px] opacity-45">{t('engine')}</p>
         </div>

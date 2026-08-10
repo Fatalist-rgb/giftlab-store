@@ -27,7 +27,9 @@ export function CatalogBar() {
   const megaLink = 'block py-[5px] text-[14px] text-ink no-underline hover:underline';
 
   return (
-    <nav aria-label={t('cbAria')} data-testid="catalog-bar" className="bg-white" style={{ borderTop: '2px solid rgba(23,19,26,.1)' }}>
+    /* below md the bar disappears entirely — on mobile the categories live in the
+       burger menu's tile grid instead of a second pinned row */
+    <nav aria-label={t('cbAria')} data-testid="catalog-bar" className="hidden bg-white md:block" style={{ borderTop: '2px solid rgba(23,19,26,.1)' }}>
       {/* desktop: centered items, the figurines carry the mega panel */}
       <div className="mx-auto hidden max-w-6xl items-center justify-center gap-8 px-4 md:flex">
         <div className="group">
@@ -62,19 +64,6 @@ export function CatalogBar() {
         </div>
         {MUTED.map((k) => (
           <span key={k} aria-disabled="true" className="inline-flex cursor-default items-center py-2.5 text-[14.5px] font-semibold" style={{ color: 'rgba(23,19,26,.45)' }}>
-            {t(k)}
-            {soon}
-          </span>
-        ))}
-      </div>
-
-      {/* mobile: one scrollable chip row */}
-      <div className="flex gap-2 overflow-x-auto px-3 py-[7px] md:hidden">
-        <Link href="/catalog" className="whitespace-nowrap rounded-full border-2 border-ink bg-white px-3 py-1 text-[12.5px] font-bold text-mandarin no-underline">
-          {t('cbFigurines')}
-        </Link>
-        {MUTED.map((k) => (
-          <span key={k} className="whitespace-nowrap rounded-full bg-white px-3 py-1 text-[12.5px] font-bold" style={{ border: '2px solid rgba(23,19,26,.3)', color: 'rgba(23,19,26,.45)' }}>
             {t(k)}
             {soon}
           </span>
