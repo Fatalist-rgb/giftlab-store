@@ -13,7 +13,7 @@ const LANG_FLAGS: Record<string, string> = { pl: '🇵🇱', en: '🇬🇧', uk:
 /** The mobile menu's category tiles — same entries as the pinned bar, icon + name
  *  (the reference pattern), only the figurines are a live link today. */
 const MENU_TILES = [
-  { key: 'cbFigurines', icon: '🫃', href: '/catalog', active: true },
+  { key: 'cbFigurines', icon: '🍺', href: '/catalog', active: true },
   { key: 'cbOccasions', icon: '🎁' },
   { key: 'cbForWhom', icon: '👪' },
   { key: 'cbPets', icon: '🐶' },
