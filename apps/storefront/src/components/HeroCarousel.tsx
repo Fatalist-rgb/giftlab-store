@@ -8,13 +8,11 @@ export type HeroSlide = {
   src: string;
   /** the sticker that pops in the frame's corner */
   badge: string;
-  /** the caption under the frame */
-  cap: string;
   /** sticker colour rotation keeps the wall from looking stamped */
   badgeBg: 'mandarin' | 'lime' | 'pink' | 'blue';
 };
 
-const HOLD_MS = 4200;
+const HOLD_MS = 4600;
 
 const BADGE_STYLE: Record<HeroSlide['badgeBg'], React.CSSProperties> = {
   mandarin: { background: 'var(--mandarin)', color: '#fff' },
@@ -24,18 +22,18 @@ const BADGE_STYLE: Record<HeroSlide['badgeBg'], React.CSSProperties> = {
 };
 
 /**
- * The hero carousel — a stack of polaroids, not a slideshow. The incoming card
- * drops onto the pile with a tilt while the old one still peeks from underneath,
- * every photo slowly Ken-Burns-drifts while it holds, the corner sticker POPS with
- * each new scene and the story-style progress pills tell the eye something is
- * about to happen. Pauses on hover/touch, swipes on mobile, and with
- * prefers-reduced-motion it degrades to a calm crossfade.
+ * The FULL-BLEED hero carousel. Edge to edge: each scene drops onto the previous
+ * one with a settle, then slowly Ken-Burns-drifts while it holds; the corner
+ * sticker pops per scene and the story-style progress pills fill toward the next
+ * drop. Pauses on hover/touch, swipes on mobile, and under prefers-reduced-motion
+ * it degrades to a calm crossfade. The hero copy card is layered on top by the
+ * page — the carousel only owns the pictures.
  */
 export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const [idx, setIdx] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
-  const [cycle, setCycle] = useState(0); // remounts the progress fill so it restarts
+  const [cycle, setCycle] = useState(0); // remounts animations so they restart
   const touchX = useRef<number | null>(null);
   const reduced = useRef(false);
 
@@ -61,7 +59,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
     return () => window.clearTimeout(t);
   }, [idx, paused, cycle, go]);
 
-  // the old card lingers under the new one just long enough for the drop to read
+  // the old frame lingers under the new one just long enough for the drop to read
   useEffect(() => {
     if (prev === null) return;
     const t = window.setTimeout(() => setPrev(null), 700);
@@ -71,9 +69,8 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const slide = slides[idx]!;
 
   return (
-    <figure
-      className="relative m-0 rv"
-      style={{ '--d': '.18s' } as React.CSSProperties}
+    <div
+      className="relative h-[52vh] min-h-[360px] w-full overflow-hidden bg-cream lg:h-[66vh] lg:max-h-[720px]"
       data-testid="hero-carousel"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -88,59 +85,51 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         setPaused(false);
       }}
     >
-      <div className="relative" style={{ aspectRatio: '3/2' }}>
-        {/* the card underneath — still visible while the new one drops in */}
-        {prev !== null && (
-          <div
-            key={`under-${prev}-${cycle}`}
-            className="absolute inset-0 rounded-[22px] bg-white p-2.5 b2 sh"
-            style={{ transform: 'rotate(1.6deg) scale(.985)', zIndex: 1 }}
-            aria-hidden
-          >
-            <div className="h-full w-full overflow-hidden rounded-[14px] border-2 border-ink bg-cream">
-              <Image
-                src={slides[prev]!.src}
-                alt=""
-                width={1200}
-                height={800}
-                sizes="(max-width: 1024px) 100vw, 560px"
-                className="h-full w-full object-cover"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* the top card: drops in with a tilt, then the photo drifts (Ken Burns) */}
-        <div
-          key={`top-${idx}-${cycle}`}
-          className={`absolute inset-0 rounded-[22px] bg-white p-2.5 b2 sh ${reduced.current ? 'hero-fade' : 'hero-drop'}`}
-          style={{ transform: 'rotate(-1.1deg)', zIndex: 2 }}
-        >
-          <div className="relative h-full w-full overflow-hidden rounded-[14px] border-2 border-ink bg-cream">
-            <Image
-              src={slide.src}
-              alt={slide.cap}
-              width={1200}
-              height={800}
-              priority={idx === 0}
-              sizes="(max-width: 1024px) 100vw, 560px"
-              className={`h-full w-full object-cover ${reduced.current ? '' : 'hero-kenburns'}`}
-            />
-            {/* the sticker pops with every scene */}
-            <span
-              key={`badge-${idx}-${cycle}`}
-              className="stkr pop absolute left-3 top-3 z-10 text-[11px]"
-              style={{ ...BADGE_STYLE[slide.badgeBg], '--d': '.35s', '--rot': '-5deg' } as React.CSSProperties}
-            >
-              <Sparkle s={11} c="currentColor" />
-              {slide.badge}
-            </span>
-          </div>
+      {/* the frame underneath — still visible while the new one drops in */}
+      {prev !== null && (
+        <div key={`under-${prev}-${cycle}`} className="absolute inset-0" style={{ zIndex: 1 }} aria-hidden>
+          <Image
+            src={slides[prev]!.src}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
         </div>
+      )}
+
+      {/* the top frame: settles in, then the photo drifts (Ken Burns) */}
+      <div
+        key={`top-${idx}-${cycle}`}
+        className={`absolute inset-0 ${reduced.current ? 'hero-fade' : 'hero-drop-bleed'}`}
+        style={{ zIndex: 2 }}
+      >
+        <Image
+          src={slide.src}
+          alt={slide.badge}
+          fill
+          priority={idx === 0}
+          sizes="100vw"
+          className={`object-cover ${reduced.current ? '' : 'hero-kenburns'}`}
+        />
       </div>
 
-      {/* story-style progress pills: the filling bar tells the eye a change is coming */}
-      <div className="mt-3 flex items-center gap-1.5 px-1" role="tablist" aria-label="Slides">
+      {/* the sticker pops with every scene */}
+      <span
+        key={`badge-${idx}-${cycle}`}
+        className="stkr pop absolute right-4 top-4 z-10 text-[12px] sm:right-6 sm:top-6 sm:text-[13.5px]"
+        style={{ ...BADGE_STYLE[slide.badgeBg], '--d': '.35s', '--rot': '4deg' } as React.CSSProperties}
+      >
+        <Sparkle s={13} c="currentColor" />
+        {slide.badge}
+      </span>
+
+      {/* story-style progress pills over the photo */}
+      <div
+        className="absolute bottom-4 left-1/2 z-10 flex w-[min(340px,70%)] -translate-x-1/2 items-center gap-1.5 lg:left-auto lg:right-8 lg:translate-x-0"
+        role="tablist"
+        aria-label="Slides"
+      >
         {slides.map((s, i) => (
           <button
             key={s.src}
@@ -149,7 +138,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             aria-selected={i === idx}
             aria-label={s.badge}
             onClick={() => go(i)}
-            className="h-[10px] flex-1 overflow-hidden rounded-full border-2 border-ink bg-white"
+            className="h-[11px] flex-1 overflow-hidden rounded-full border-2 border-ink bg-white shs"
             data-testid={`hero-dot-${i}`}
           >
             <span
@@ -168,10 +157,6 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           </button>
         ))}
       </div>
-
-      <figcaption key={`cap-${idx}`} className="hero-cap-in mt-2 px-1 text-[12px] leading-snug opacity-60">
-        {slide.cap}
-      </figcaption>
-    </figure>
+    </div>
   );
 }

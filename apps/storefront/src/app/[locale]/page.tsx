@@ -68,44 +68,49 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <main>
-      {/* ---- hero: the copy sells, the photo proves ---- */}
-      <section className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-12 pt-9 lg:grid-cols-[1fr_1.04fr] lg:gap-10 lg:pb-16 lg:pt-14">
-        <div className="relative z-10">
-          <span className="stkr bg-lime text-[13px] rv" style={{ transform: 'rotate(-1.5deg)' } as React.CSSProperties}>
-            <Sparkle s={14} c="var(--ink)" />
-            {t('badge')}
-          </span>
-          <h1 className="mt-5 font-display text-[38px] font-extrabold leading-[1.04] rv sm:text-[50px] lg:text-[54px]" style={{ '--d': '.07s' } as React.CSSProperties}>
-            {t('title')}
-          </h1>
-          <p className="mt-5 max-w-[48ch] text-[16.5px] opacity-80 rv sm:text-[17.5px]" style={{ '--d': '.14s' } as React.CSSProperties}>
-            {t('sub')}
-          </p>
-          <div className="mt-6 flex flex-wrap items-center gap-2.5 rv" style={{ '--d': '.21s' } as React.CSSProperties}>
-            <span className="stkr bg-white text-[13px]">
-              <Stars n={4.8} s={14} />
-              <b className="font-display">{t('rating')}</b>
-            </span>
-            <span className="stkr bg-white text-[13px] font-semibold">{t('reviewsN')}</span>
-            <span className="stkr bg-white text-[13px] font-semibold">
-              <IcoClock />
-              {t('ship48')}
-            </span>
-          </div>
-          <Link href="/product" className="btn-p mt-7 px-7 text-[16px] rv" style={{ '--d': '.28s' } as React.CSSProperties} data-testid="hero-cta">
-            {t('cta')}
-            <ArrowR />
-          </Link>
-        </div>
-
+      {/* ---- hero: the FULL-WIDTH carousel is the stage, the copy card sits on it.
+             Desktop: the card floats over the left of the photo; mobile: the photo
+             leads and the card climbs onto its bottom edge ---- */}
+      <section className="relative" style={{ borderBottom: 'var(--border)' }}>
         <HeroCarousel
           slides={[
-            { src: '/photos/scene-hero.webp', badge: t('heroPhotoBadge'), cap: t('heroCap'), badgeBg: 'mandarin' },
-            { src: '/photos/hero-rocznica.webp', badge: t('hs2b'), cap: t('hs2c'), badgeBg: 'pink' },
-            { src: '/photos/hero-rodzice.webp', badge: t('hs3b'), cap: t('hs3c'), badgeBg: 'lime' },
-            { src: '/photos/scene-desk.webp', badge: t('hs4b'), cap: t('hs4c'), badgeBg: 'blue' },
+            { src: '/photos/hero-crew.webp', badge: t('hs1b'), badgeBg: 'mandarin' },
+            { src: '/photos/hero-fridge.webp', badge: t('heroPhotoBadge'), badgeBg: 'lime' },
+            { src: '/photos/hero-worktop.webp', badge: t('hs5b'), badgeBg: 'blue' },
+            { src: '/photos/hero-rocznica.webp', badge: t('hs2b'), badgeBg: 'pink' },
+            { src: '/photos/hero-rodzice.webp', badge: t('hs3b'), badgeBg: 'mandarin' },
           ]}
         />
+        <div className="pointer-events-none mx-auto max-w-6xl px-4 lg:absolute lg:inset-0 lg:flex lg:items-center">
+          <div
+            className="pointer-events-auto relative z-10 -mt-14 mb-8 max-w-[560px] rounded-[22px] bg-white p-5 b2 sh rv sm:p-6 lg:my-0 lg:p-7"
+            style={{ transform: 'rotate(-0.6deg)' } as React.CSSProperties}
+          >
+            <span className="stkr bg-lime text-[12.5px]" style={{ transform: 'rotate(-1.5deg)' }}>
+              <Sparkle s={13} c="var(--ink)" />
+              {t('badge')}
+            </span>
+            <h1 className="mt-4 font-display text-[30px] font-extrabold leading-[1.05] sm:text-[38px] lg:text-[42px]">
+              {t('title')}
+            </h1>
+            <p className="mt-3.5 max-w-[46ch] text-[15.5px] opacity-80 sm:text-[16.5px]">{t('sub')}</p>
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <span className="stkr bg-white text-[12.5px]">
+                <Stars n={4.8} s={13} />
+                <b className="font-display">{t('rating')}</b>
+              </span>
+              <span className="stkr bg-white text-[12.5px] font-semibold">{t('reviewsN')}</span>
+              <span className="stkr bg-white text-[12.5px] font-semibold">
+                <IcoClock />
+                {t('ship48')}
+              </span>
+            </div>
+            <Link href="/product" className="btn-p mt-6 px-7 text-[16px]" data-testid="hero-cta">
+              {t('cta')}
+              <ArrowR />
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* the ticker: pure decoration, and it stops for reduced motion */}
