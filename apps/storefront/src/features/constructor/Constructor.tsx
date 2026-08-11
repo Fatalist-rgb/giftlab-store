@@ -177,18 +177,42 @@ export function Constructor({
         return;
       }
       track('face_uploaded', { step: 'cutout' });
-      const blob = new Blob([res.imageBytes as unknown as BlobPart], { type: res.mime ?? 'image/png' });
-      const img = await loadImage(URL.createObjectURL(blob));
+      let blob = new Blob([res.imageBytes as unknown as BlobPart], { type: res.mime ?? 'image/png' });
+      let img = await loadImage(URL.createObjectURL(blob));
+      // crop the cutout to the HEAD: a full-body photo must not land on the figurine
+      // whole — the zone holds a head, so we keep the face box plus hair and chin
+      let fit: { imgW: number; imgH: number; box: { x: number; y: number; w: number; h: number } } | null =
+        scan?.box ? { imgW: scan.imgW, imgH: scan.imgH, box: scan.box } : null;
+      if (scan?.box) {
+        const b = scan.box;
+        const sx = Math.max(0, Math.round(b.x - b.w * 0.6));
+        const sy = Math.max(0, Math.round(b.y - b.h * 0.9));
+        const sw = Math.min(img.width - sx, Math.round(b.w * 2.2));
+        const sh = Math.min(img.height - sy, Math.round(b.h * 2.45));
+        // only crop when it actually trims something meaningful
+        if (sw > 40 && sh > 40 && (sw < img.width * 0.92 || sh < img.height * 0.92)) {
+          const c = document.createElement('canvas');
+          c.width = sw;
+          c.height = sh;
+          c.getContext('2d')!.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+          const cropped = await new Promise<Blob | null>((ok) => c.toBlob(ok, 'image/png'));
+          if (cropped) {
+            blob = cropped;
+            img = await loadImage(URL.createObjectURL(cropped));
+            fit = { imgW: sw, imgH: sh, box: { x: b.x - sx, y: b.y - sy, w: b.w, h: b.h } };
+          }
+        }
+      }
       const localId = `upload-${target}-${Date.now()}`;
       assetsRef.current.set(localId, img);
       // with a detected face, start with the whole head centred in the zone;
       // cover-fit centring (CENTER) otherwise — e.g. pets, drawings
       const initialAdj =
-        scan?.box != null
+        fit != null
           ? faceAutoFit({
-              imgW: scan.imgW,
-              imgH: scan.imgH,
-              faceBox: scan.box,
+              imgW: fit.imgW,
+              imgH: fit.imgH,
+              faceBox: fit.box,
               zoneW: geoOf(target).faceBounds.w,
               zoneH: geoOf(target).faceBounds.h,
               minScale: 0.6,
@@ -400,12 +424,9 @@ export function Constructor({
           {busy && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-[24px] bg-white/85">
               <span className="font-display font-bold">{t('removing')}</span>
+              {/* no megabytes, no percentages — the visitor only needs to know we're on it */}
               <span className="text-sm opacity-70" data-testid="cut-progress">
-                {progress.stage === 'model'
-                  ? t('modelDownload', { mb: progress.mb.toFixed(1) })
-                  : progress.stage === 'cut'
-                    ? `${progress.pct}%`
-                    : ''}
+                {t('processing')}
               </span>
             </div>
           )}

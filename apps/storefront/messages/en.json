@@ -232,7 +232,8 @@
     "slotsD": "The discount counts total units, but the designs do not have to match.",
     "figN": "Figurine",
     "shot_couple": "A couple on the shelf",
-    "shot_woman": "Unpacked as a gift"
+    "shot_woman": "Unpacked as a gift",
+    "processing": "Processing your photo…"
   },
   "catalog": {
     "title": "Catalogue",
