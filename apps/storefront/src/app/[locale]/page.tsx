@@ -7,6 +7,7 @@ import { PayMarks } from '@/components/PayMarks';
 import { Reviews } from '@/features/reviews/Reviews';
 import { POSES, type PoseId } from '@/lib/poses';
 import { GwarancjaDark } from '@/components/GwarancjaDark';
+import { HeroCarousel } from '@/components/HeroCarousel';
 import {
   ArrowR, Burst, Heart, IcoBox, IcoChar, IcoClock, IcoCut, IcoName,
   IcoPay, IcoTruck, SecHead, Sparkle, Stars,
@@ -97,24 +98,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </Link>
         </div>
 
-        <figure className="relative m-0 rv" style={{ '--d': '.18s' } as React.CSSProperties} data-testid="hero-photo">
-          <div className="relative rounded-[22px] bg-white p-2.5 b2 sh" style={{ transform: 'rotate(-1.1deg)' }}>
-            <Image
-              src="/photos/scene-hero.webp"
-              alt={t('heroAlt')}
-              width={1200}
-              height={800}
-              priority
-              sizes="(max-width: 1024px) 100vw, 560px"
-              className="block h-auto w-full rounded-[14px] border-2 border-ink bg-cream"
-            />
-            <span className="stkr pop absolute -top-3.5 left-3 z-10 bg-mandarin text-[10.5px] text-white" style={{ '--d': '.5s', '--rot': '-5deg' } as React.CSSProperties}>
-              <Sparkle s={11} c="#fff" />
-              {t('heroPhotoBadge')}
-            </span>
-          </div>
-          <figcaption className="mt-2.5 px-1 text-[12px] leading-snug opacity-60">{t('heroCap')}</figcaption>
-        </figure>
+        <HeroCarousel
+          slides={[
+            { src: '/photos/scene-hero.webp', badge: t('heroPhotoBadge'), cap: t('heroCap'), badgeBg: 'mandarin' },
+            { src: '/photos/hero-rocznica.webp', badge: t('hs2b'), cap: t('hs2c'), badgeBg: 'pink' },
+            { src: '/photos/hero-rodzice.webp', badge: t('hs3b'), cap: t('hs3c'), badgeBg: 'lime' },
+            { src: '/photos/scene-desk.webp', badge: t('hs4b'), cap: t('hs4c'), badgeBg: 'blue' },
+          ]}
+        />
       </section>
 
       {/* the ticker: pure decoration, and it stops for reduced motion */}

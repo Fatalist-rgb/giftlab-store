@@ -236,8 +236,72 @@ body {
   animation-play-state: paused;
 }
 
+/* ---- hero carousel: the polaroid drop, the slow drift, the story fill ---- */
+.hero-drop {
+  animation: heroDrop 0.62s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+@keyframes heroDrop {
+  from {
+    opacity: 0;
+    transform: rotate(2.4deg) translateY(-26px) scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-1.1deg) translateY(0) scale(1);
+  }
+}
+.hero-fade {
+  animation: heroFade 0.5s ease both;
+}
+@keyframes heroFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.hero-kenburns {
+  animation: heroKen 5.2s ease-out both;
+  will-change: transform;
+}
+@keyframes heroKen {
+  from {
+    transform: scale(1.08) translateX(1.6%);
+  }
+  to {
+    transform: scale(1) translateX(0);
+  }
+}
+@keyframes heroFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+.hero-cap-in {
+  animation: heroCap 0.45s ease both;
+}
+@keyframes heroCap {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
+    animation: none;
+  }
+  .hero-drop,
+  .hero-kenburns,
+  .hero-cap-in {
     animation: none;
   }
   .rv,
