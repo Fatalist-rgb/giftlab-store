@@ -12,6 +12,9 @@ export type HeroSlide = {
   badgeBg: 'mandarin' | 'lime' | 'pink' | 'blue';
   /** where the figurines live — keeps them in frame when a phone crops the sides */
   pos?: string;
+  /** per-slide copy, shown over the calm left band */
+  title?: string;
+  sub?: string;
 };
 
 const HOLD_MS = 4600;
@@ -31,7 +34,7 @@ const BADGE_STYLE: Record<HeroSlide['badgeBg'], React.CSSProperties> = {
  * it degrades to a calm crossfade. The hero copy card is layered on top by the
  * page — the carousel only owns the pictures.
  */
-export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
+export function HeroCarousel({ slides, ctaLabel, ctaHref = '/product' }: { slides: HeroSlide[]; ctaLabel?: string; ctaHref?: string }) {
   const [idx, setIdx] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
@@ -128,6 +131,37 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         <Sparkle s={13} c="currentColor" />
         {slide.badge}
       </span>
+
+      {/* per-slide copy over the calm left band, sticker lettering, animated in */}
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
+        <div className="mx-auto w-full max-w-6xl px-4">
+          <div key={`copy-${idx}`} className="hero-copy-in max-w-[300px] sm:max-w-[440px] lg:max-w-[520px]">
+            {slide.title && (
+              <div className="hero-title-outline m-0 font-display text-[26px] font-extrabold leading-[1.1] sm:text-[36px] lg:text-[46px]">
+                {slide.title}
+              </div>
+            )}
+            {slide.sub && (
+              <p className="hero-sub-outline mt-3 hidden font-display text-[15px] font-bold sm:block sm:text-[17px]">
+                {slide.sub}
+              </p>
+            )}
+            {ctaLabel && (
+              <a
+                href={ctaHref}
+                className="btn-p pointer-events-auto mt-5 px-6 text-[15px] sm:px-7 sm:text-[16px]"
+                data-testid="hero-cta"
+              >
+                {ctaLabel}
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M5 12h14" />
+                  <path d="M13 6l6 6-6 6" />
+                </svg>
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* story-style progress pills over the photo */}
       <div

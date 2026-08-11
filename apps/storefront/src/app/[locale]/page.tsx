@@ -47,10 +47,56 @@ const UGC: { photo?: string; pose?: PoseId; user: string; likes: string; rot: nu
   { pose: 'kufel', user: '@gosia.k', likes: '1,5k', rot: 1.2 },
 ];
 
+type HeroSlideDoc = {
+  image: string;
+  badge: Record<string, string>;
+  title: Record<string, string>;
+  sub: Record<string, string>;
+  badgeBg: 'mandarin' | 'lime' | 'pink' | 'blue';
+  pos?: string;
+};
+
+/** Admin-managed hero slides (content doc `hero-slides`), refreshed every 2 minutes;
+ *  pl is the base language, en/uk fall back to it per field. */
+async function fetchHeroSlides(locale: string) {
+  const base = process.env.MEDUSA_BACKEND_URL;
+  const key = process.env.MEDUSA_PUBLISHABLE_KEY;
+  if (!base || !key) return null;
+  try {
+    const res = await fetch(`${base}/store/gl/hero`, {
+      headers: { 'x-publishable-api-key': key },
+      next: { revalidate: 120 },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const body = (await res.json()) as { slides: HeroSlideDoc[] };
+    if (!body.slides?.length) return null;
+    const pick = (m: Record<string, string> | undefined) => m?.[locale]?.trim() || m?.pl?.trim() || '';
+    return body.slides.map((s) => ({
+      src: s.image,
+      badge: pick(s.badge),
+      title: pick(s.title),
+      sub: pick(s.sub),
+      badgeBg: s.badgeBg ?? 'mandarin',
+      pos: s.pos,
+    }));
+  } catch {
+    return null;
+  }
+}
+
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('home');
+
+  // the hardcoded trio is only the safety net for a silent backend
+  const heroSlides =
+    (await fetchHeroSlides(locale)) ?? [
+      { src: '/photos/hero-crew.webp', badge: t('hs1b'), title: t('title'), sub: t('heroSub'), badgeBg: 'mandarin' as const, pos: '72% center' },
+      { src: '/photos/hero-fridge.webp', badge: t('heroPhotoBadge'), title: t('title'), sub: t('heroSub'), badgeBg: 'lime' as const, pos: '70% center' },
+      { src: '/photos/hero-rocznica.webp', badge: t('hs2b'), title: t('title'), sub: t('heroSub'), badgeBg: 'pink' as const, pos: '72% center' },
+    ];
 
   const steps = [IcoChar, IcoCut, IcoName, IcoBox];
   const stepRot = [-2.2, 1.6, -1.4, 2.2];
@@ -68,34 +114,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <main>
-      {/* ---- hero: a cinematic full-width carousel (2.35:1 crops, cover) with the
-             headline, sub and CTA over the calm LEFT band of every scene. Marker
-             stripes under the text keep it readable on any photo without a card
-             covering the figurines — they live in the right half of each frame. ---- */}
+      {/* ---- hero: a cinematic full-width carousel (2.35:1, cover). SLIDES AND THEIR
+             COPY COME FROM THE ADMIN (content doc `hero-slides`, edited on the Slajdy
+             page) — per-slide badge, headline and sub in the visitor's language with a
+             pl fallback; the hardcoded trio only kicks in if the backend is silent. ---- */}
       <section className="relative" style={{ borderBottom: 'var(--border)' }}>
-        <HeroCarousel
-          slides={[
-            { src: '/photos/hero-crew.webp', badge: t('hs1b'), badgeBg: 'mandarin', pos: '72% center' },
-            { src: '/photos/hero-fridge.webp', badge: t('heroPhotoBadge'), badgeBg: 'lime', pos: '70% center' },
-            { src: '/photos/hero-rocznica.webp', badge: t('hs2b'), badgeBg: 'pink', pos: '72% center' },
-          ]}
-        />
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
-          <div className="mx-auto w-full max-w-6xl px-4">
-            <div className="max-w-[300px] sm:max-w-[440px] lg:max-w-[520px]">
-              <h1 className="hero-title-outline m-0 font-display text-[26px] font-extrabold leading-[1.1] sm:text-[36px] lg:text-[46px]">
-                {t('title')}
-              </h1>
-              <p className="hero-sub-outline mt-3 hidden font-display text-[15px] font-bold sm:block sm:text-[17px]">
-                {t('heroSub')}
-              </p>
-              <Link href="/product" className="btn-p pointer-events-auto mt-5 px-6 text-[15px] sm:px-7 sm:text-[16px]" data-testid="hero-cta">
-                {t('cta')}
-                <ArrowR />
-              </Link>
-            </div>
-          </div>
-        </div>
+        <h1 className="sr-only">{t('title')}</h1>
+        <HeroCarousel slides={heroSlides} ctaLabel={t('cta')} />
       </section>
 
       {/* the ticker: pure decoration, and it stops for reduced motion */}

@@ -299,6 +299,19 @@ body {
 .hero-cap-in {
   animation: heroCap 0.45s ease both;
 }
+.hero-copy-in {
+  animation: heroCopyIn 0.5s ease both;
+}
+@keyframes heroCopyIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 @keyframes heroCap {
   from {
     opacity: 0;
@@ -316,7 +329,8 @@ body {
   }
   .hero-drop-bleed,
   .hero-kenburns,
-  .hero-cap-in {
+  .hero-cap-in,
+  .hero-copy-in {
     animation: none;
   }
   .rv,

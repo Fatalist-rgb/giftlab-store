@@ -7,10 +7,14 @@ const nextConfig = {
   // @gl/constructor ships as TypeScript source — let Next compile it
   transpilePackages: ['@gl/constructor', '@gl/cutout'],
   images: {
-    // The four "occasion" tiles are licensed Unsplash lifestyle shots, the same ones the
-    // approved design uses. Next fetches and re-encodes them server-side, so the visitor's
-    // browser never talks to unsplash.com — no third-party request on the landing.
-    remotePatterns: [{ protocol: 'https', hostname: 'images.unsplash.com' }],
+    // unsplash: legacy lifestyle shots; r2.dev + backend: admin-uploaded hero slides
+    // (the Slajdy page stores absolute URLs from the file module's R2 bucket)
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: '**.r2.dev' },
+      { protocol: 'https', hostname: 'backend-production-8e23.up.railway.app' },
+      { protocol: 'https', hostname: 'mavorashop.eu' },
+    ],
   },
   async headers() {
     return [
