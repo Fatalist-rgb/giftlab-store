@@ -94,6 +94,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             src={slides[prev]!.src}
             alt=""
             fill
+            quality={90}
             sizes="100vw"
             className="object-cover" style={{ objectPosition: slides[prev]!.pos ?? 'center' }}
           />
@@ -111,6 +112,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           alt={slide.badge}
           fill
           priority={idx === 0}
+          quality={90}
           sizes="100vw"
           className={`object-cover ${reduced.current ? '' : 'hero-kenburns'}`}
           style={{ objectPosition: slide.pos ?? 'center' }}
