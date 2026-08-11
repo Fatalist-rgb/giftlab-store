@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { Link } from '@/i18n/navigation';
 import { CheckIcon, SecHead, Stars as StarRow } from '@/components/icons';
 
 type Review = {
@@ -32,7 +33,7 @@ const Stars = ({ value, s = 14 }: { value: number; s?: number }) => (
  * those on a live shop is a banned commercial practice in the EU (UCPD Annex I), so
  * the layout is reproduced and the content is not.
  */
-export function Reviews() {
+export function Reviews({ full = false }: { full?: boolean }) {
   const t = useTranslations('reviews');
   const locale = useLocale();
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -139,11 +140,23 @@ export function Reviews() {
         </div>
       )}
 
-      {/* Omnibus: how reviews are verified — stated, not implied */}
-      <p className="mx-auto mt-7 max-w-3xl rounded-xl bg-cream px-3 py-2 text-center text-xs leading-relaxed opacity-70">
-        {t('verificationNote')}
-      </p>
+      {/* Omnibus: how verification works — stated on the FULL reviews page, where the
+          complete list (and the verified mark) lives; the landing block links there */}
+      {full && (
+        <p className="mx-auto mt-7 max-w-3xl rounded-xl bg-cream px-3 py-2 text-center text-xs leading-relaxed opacity-70">
+          {t('verificationNote')}
+        </p>
+      )}
 
+      {!full && (
+        <div className="mt-7">
+          <Link href="/opinie" className="btn-s px-5 py-2.5 text-[14.5px]" data-testid="reviews-all">
+            {t('seeAll')}
+          </Link>
+        </div>
+      )}
+
+      {full && (
       <div className="mx-auto mt-5 max-w-2xl">
       {sent ? (
         <p className="mt-5 rounded-xl bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-900">
@@ -191,6 +204,7 @@ export function Reviews() {
         </button>
       )}
       </div>
+      )}
     </section>
   );
 }

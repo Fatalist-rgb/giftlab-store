@@ -123,20 +123,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <HeroCarousel slides={heroSlides} ctaLabel={t('cta')} />
       </section>
 
-      {/* the ticker: pure decoration, and it stops for reduced motion */}
-      <div className="marquee" aria-hidden>
-        <div className="marquee-track">
-          {[0, 1].map((i) => (
-            <span key={i} className="flex shrink-0 items-center">
-              <span className="whitespace-nowrap px-5 py-3 font-display text-[15px] font-extrabold uppercase tracking-wide sm:text-[17px]">
-                {t('marquee')}
-              </span>
-              <Burst s={13} c="var(--mandarin)" />
-            </span>
-          ))}
-        </div>
-      </div>
-
       {/* ---- how it works: four steps ---- */}
       <section id="jak" className="bg-cream" style={{ borderTop: 'var(--border)', borderBottom: 'var(--border)' }}>
         <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">

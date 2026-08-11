@@ -349,7 +349,8 @@
     "error": "Could not submit. Please try again.",
     "subtitle": "4.8/5 average from 2300+ reviews.",
     "foot": "Reviews from confirmed buyers.",
-    "ratingAvg": "4.8"
+    "ratingAvg": "4.8",
+    "seeAll": "See all reviews"
   },
   "guarantee": {
     "title": "Our guarantee",

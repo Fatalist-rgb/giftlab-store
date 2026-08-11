@@ -34,7 +34,7 @@ export default async function OpinionsPage({ params }: { params: Promise<{ local
         <SecHead title={t('opTitle')} sub={t('opLead')} />
       </section>
 
-      <Reviews />
+      <Reviews full />
 
       <section className="mx-auto max-w-6xl px-4 pb-16 text-center">
         <Link href="/product" className="btn-p px-7 text-[16px]">
