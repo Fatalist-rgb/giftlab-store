@@ -10,7 +10,7 @@ import { GwarancjaDark } from '@/components/GwarancjaDark';
 import { HeroCarousel } from '@/components/HeroCarousel';
 import {
   ArrowR, Burst, Heart, IcoBox, IcoChar, IcoClock, IcoCut, IcoName,
-  IcoPay, IcoTruck, SecHead, Sparkle, Stars,
+  IcoPay, IcoTruck, SecHead, Sparkle,
 } from '@/components/icons';
 
 /**
@@ -68,10 +68,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <main>
-      {/* ---- hero: the FULL-WIDTH carousel is the stage, the copy card sits on it.
-             Desktop: the card floats over the left of the photo; mobile: the photo
-             leads and the card climbs onto its bottom edge ---- */}
+      {/* ---- hero: the FULL-WIDTH carousel IS the hero — no copy card on top (the
+             client's call: nothing may cover the figurines). The page keeps its H1
+             for search engines and screen readers only. ---- */}
       <section className="relative" style={{ borderBottom: 'var(--border)' }}>
+        <h1 className="sr-only">{t('title')}</h1>
         <HeroCarousel
           slides={[
             { src: '/photos/hero-crew.webp', badge: t('hs1b'), badgeBg: 'mandarin' },
@@ -81,36 +82,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             { src: '/photos/hero-rodzice.webp', badge: t('hs3b'), badgeBg: 'mandarin' },
           ]}
         />
-        <div className="pointer-events-none mx-auto max-w-6xl px-4 lg:absolute lg:inset-0 lg:flex lg:items-center">
-          <div
-            className="pointer-events-auto relative z-10 -mt-14 mb-8 max-w-[560px] rounded-[22px] bg-white p-5 b2 sh rv sm:p-6 lg:my-0 lg:p-7"
-            style={{ transform: 'rotate(-0.6deg)' } as React.CSSProperties}
-          >
-            <span className="stkr bg-lime text-[12.5px]" style={{ transform: 'rotate(-1.5deg)' }}>
-              <Sparkle s={13} c="var(--ink)" />
-              {t('badge')}
-            </span>
-            <h1 className="mt-4 font-display text-[30px] font-extrabold leading-[1.05] sm:text-[38px] lg:text-[42px]">
-              {t('title')}
-            </h1>
-            <p className="mt-3.5 max-w-[46ch] text-[15.5px] opacity-80 sm:text-[16.5px]">{t('sub')}</p>
-            <div className="mt-5 flex flex-wrap items-center gap-2">
-              <span className="stkr bg-white text-[12.5px]">
-                <Stars n={4.8} s={13} />
-                <b className="font-display">{t('rating')}</b>
-              </span>
-              <span className="stkr bg-white text-[12.5px] font-semibold">{t('reviewsN')}</span>
-              <span className="stkr bg-white text-[12.5px] font-semibold">
-                <IcoClock />
-                {t('ship48')}
-              </span>
-            </div>
-            <Link href="/product" className="btn-p mt-6 px-7 text-[16px]" data-testid="hero-cta">
-              {t('cta')}
-              <ArrowR />
-            </Link>
-          </div>
-        </div>
       </section>
 
       {/* the ticker: pure decoration, and it stops for reduced motion */}

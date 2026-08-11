@@ -267,7 +267,7 @@ body {
 }
 @keyframes heroKen {
   from {
-    transform: scale(1.08) translateX(1.6%);
+    transform: scale(1.045) translateX(0.8%);
   }
   to {
     transform: scale(1) translateX(0);

@@ -93,7 +93,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             alt=""
             fill
             sizes="100vw"
-            className="object-cover"
+            className="object-contain"
           />
         </div>
       )}
@@ -110,7 +110,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           fill
           priority={idx === 0}
           sizes="100vw"
-          className={`object-cover ${reduced.current ? '' : 'hero-kenburns'}`}
+          className={`object-contain ${reduced.current ? '' : 'hero-kenburns'}`}
         />
       </div>
 
