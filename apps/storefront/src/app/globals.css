@@ -281,23 +281,19 @@ body {
     width: 100%;
   }
 }
-/* marker stripes: white bands hugging each wrapped line of the hero copy, so the
-   text reads on any photo without a solid card covering the scene */
-.hero-stripe {
-  display: inline;
-  background: #fff;
-  box-shadow: 0.14em 0 0 #fff, -0.14em 0 0 #fff;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  padding: 0.06em 0;
+/* sticker lettering: white type with an ink outline and a hard offset shadow — the
+   brand's sticker look, readable on any photo with no background box behind it */
+.hero-title-outline {
+  color: #fff;
+  -webkit-text-stroke: 7px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 3px 4px 0 rgba(23, 19, 26, 0.85);
 }
-.hero-stripe-soft {
-  display: inline;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0.14em 0 0 rgba(255, 255, 255, 0.92), -0.14em 0 0 rgba(255, 255, 255, 0.92);
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  padding: 0.09em 0;
+.hero-sub-outline {
+  color: #fff;
+  -webkit-text-stroke: 4px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 2px 2.5px 0 rgba(23, 19, 26, 0.8);
 }
 
 .hero-cap-in {

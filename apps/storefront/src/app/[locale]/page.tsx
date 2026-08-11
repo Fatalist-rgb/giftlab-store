@@ -82,12 +82,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         />
         <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
           <div className="mx-auto w-full max-w-6xl px-4">
-            <div className="max-w-[300px] sm:max-w-[420px] lg:max-w-[480px]">
-              <h1 className="m-0 font-display text-[24px] font-extrabold leading-[1.18] sm:text-[34px] lg:text-[42px]">
-                <span className="hero-stripe">{t('title')}</span>
+            <div className="max-w-[300px] sm:max-w-[440px] lg:max-w-[520px]">
+              <h1 className="hero-title-outline m-0 font-display text-[26px] font-extrabold leading-[1.1] sm:text-[36px] lg:text-[46px]">
+                {t('title')}
               </h1>
-              <p className="mt-3 hidden text-[14.5px] sm:block sm:text-[16px]">
-                <span className="hero-stripe-soft">{t('sub')}</span>
+              <p className="hero-sub-outline mt-3 hidden font-display text-[15px] font-bold sm:block sm:text-[17px]">
+                {t('heroSub')}
               </p>
               <Link href="/product" className="btn-p pointer-events-auto mt-5 px-6 text-[15px] sm:px-7 sm:text-[16px]" data-testid="hero-cta">
                 {t('cta')}
