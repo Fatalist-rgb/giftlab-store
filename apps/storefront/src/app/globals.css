@@ -281,6 +281,25 @@ body {
     width: 100%;
   }
 }
+/* marker stripes: white bands hugging each wrapped line of the hero copy, so the
+   text reads on any photo without a solid card covering the scene */
+.hero-stripe {
+  display: inline;
+  background: #fff;
+  box-shadow: 0.14em 0 0 #fff, -0.14em 0 0 #fff;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.06em 0;
+}
+.hero-stripe-soft {
+  display: inline;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0.14em 0 0 rgba(255, 255, 255, 0.92), -0.14em 0 0 rgba(255, 255, 255, 0.92);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.09em 0;
+}
+
 .hero-cap-in {
   animation: heroCap 0.45s ease both;
 }

@@ -68,20 +68,34 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <main>
-      {/* ---- hero: the FULL-WIDTH carousel IS the hero — no copy card on top (the
-             client's call: nothing may cover the figurines). The page keeps its H1
-             for search engines and screen readers only. ---- */}
+      {/* ---- hero: a cinematic full-width carousel (2.35:1 crops, cover) with the
+             headline, sub and CTA over the calm LEFT band of every scene. Marker
+             stripes under the text keep it readable on any photo without a card
+             covering the figurines — they live in the right half of each frame. ---- */}
       <section className="relative" style={{ borderBottom: 'var(--border)' }}>
-        <h1 className="sr-only">{t('title')}</h1>
         <HeroCarousel
           slides={[
-            { src: '/photos/hero-crew.webp', badge: t('hs1b'), badgeBg: 'mandarin' },
-            { src: '/photos/hero-fridge.webp', badge: t('heroPhotoBadge'), badgeBg: 'lime' },
-            { src: '/photos/hero-worktop.webp', badge: t('hs5b'), badgeBg: 'blue' },
-            { src: '/photos/hero-rocznica.webp', badge: t('hs2b'), badgeBg: 'pink' },
-            { src: '/photos/hero-rodzice.webp', badge: t('hs3b'), badgeBg: 'mandarin' },
+            { src: '/photos/hero-crew.webp', badge: t('hs1b'), badgeBg: 'mandarin', pos: '72% center' },
+            { src: '/photos/hero-fridge.webp', badge: t('heroPhotoBadge'), badgeBg: 'lime', pos: '70% center' },
+            { src: '/photos/hero-rocznica.webp', badge: t('hs2b'), badgeBg: 'pink', pos: '72% center' },
           ]}
         />
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
+          <div className="mx-auto w-full max-w-6xl px-4">
+            <div className="max-w-[300px] sm:max-w-[420px] lg:max-w-[480px]">
+              <h1 className="m-0 font-display text-[24px] font-extrabold leading-[1.18] sm:text-[34px] lg:text-[42px]">
+                <span className="hero-stripe">{t('title')}</span>
+              </h1>
+              <p className="mt-3 hidden text-[14.5px] sm:block sm:text-[16px]">
+                <span className="hero-stripe-soft">{t('sub')}</span>
+              </p>
+              <Link href="/product" className="btn-p pointer-events-auto mt-5 px-6 text-[15px] sm:px-7 sm:text-[16px]" data-testid="hero-cta">
+                {t('cta')}
+                <ArrowR />
+              </Link>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* the ticker: pure decoration, and it stops for reduced motion */}

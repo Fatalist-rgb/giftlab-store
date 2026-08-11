@@ -10,6 +10,8 @@ export type HeroSlide = {
   badge: string;
   /** sticker colour rotation keeps the wall from looking stamped */
   badgeBg: 'mandarin' | 'lime' | 'pink' | 'blue';
+  /** where the figurines live — keeps them in frame when a phone crops the sides */
+  pos?: string;
 };
 
 const HOLD_MS = 4600;
@@ -70,7 +72,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
 
   return (
     <div
-      className="relative h-[52vh] min-h-[360px] w-full overflow-hidden bg-cream lg:h-[66vh] lg:max-h-[720px]"
+      className="relative h-[48vh] min-h-[340px] w-full overflow-hidden bg-cream lg:h-auto lg:min-h-0 lg:max-h-[680px] lg:aspect-[2.35/1]"
       data-testid="hero-carousel"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -93,7 +95,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             alt=""
             fill
             sizes="100vw"
-            className="object-contain"
+            className="object-cover" style={{ objectPosition: slides[prev]!.pos ?? 'center' }}
           />
         </div>
       )}
@@ -110,7 +112,8 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           fill
           priority={idx === 0}
           sizes="100vw"
-          className={`object-contain ${reduced.current ? '' : 'hero-kenburns'}`}
+          className={`object-cover ${reduced.current ? '' : 'hero-kenburns'}`}
+          style={{ objectPosition: slide.pos ?? 'center' }}
         />
       </div>
 
